@@ -1,0 +1,6 @@
+define wave
+    move right wrist pitch to 0
+    move head roll to 1
+    move left knee to 2.4
+    move head roll to 0
+end
