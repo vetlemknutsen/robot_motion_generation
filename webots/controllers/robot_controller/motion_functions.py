@@ -251,3 +251,4 @@ def wave_demo(robot):
 	# Keyframe
 	move(robot, True, 30.0, 'Wrist', 'Yaw', 'R')
 	move(robot, True, -30.0, 'Wrist', 'Yaw', 'R')
+

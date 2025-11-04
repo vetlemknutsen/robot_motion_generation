@@ -6,7 +6,7 @@ import yaml
 import Levenshtein
 import motion_functions
 import helpers
-from controller import Robot, Motor
+from controllers import Robot, Motor
 from subscriber import Subscriber
 
 
