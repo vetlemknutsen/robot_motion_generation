@@ -252,3 +252,9 @@ def wave_demo(robot):
 	move(robot, True, 30.0, 'Wrist', 'Yaw', 'R')
 	move(robot, True, -30.0, 'Wrist', 'Yaw', 'R')
 
+
+def simple_wave(robot):
+	# Keyframe
+	move(robot, True, -1.5, 'RShoulderPitch', '', '')
+	# Keyframe
+	move(robot, True, 1.5, 'RShoulderPitch', '', '')
