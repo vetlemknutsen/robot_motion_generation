@@ -13,14 +13,14 @@ import json
 
 def main() -> None:
     project_root = Path(__file__).resolve().parents[2]
-    default_input = project_root / "motion_pipeline" / "input" / "simple_wave.json"
     langium_root = project_root / "robot-motion-language"
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=default_input)
+    parser.add_argument("--motion", default="simple_wave")
     args = parser.parse_args()
 
-    payload = load_motion(args.input)
+    payload_path = project_root / "motion_pipeline" / "input" / f"{args.motion}.json"
+    payload = load_motion(payload_path)
  
     adapter = DemoAdapter()
     runner = PipelineRunner(adapter, BasicRMLEmitter())

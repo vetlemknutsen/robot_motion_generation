@@ -6,14 +6,15 @@ from motion_pipeline.core.schema import Move, Program
 
 class DemoAdapter(Adapter):
     def to_program(self, source: Dict[str, Any]) -> Program:
-        moves_data: List[Dict[str, Any]] = source.get("moves", [])
-        moves = [
-            Move(
-                side=move["side"],
-                joint=move["joint"],
-                rotation=move["rotation"],
-                position=float(move["position"]),
+        moves = []
+        for entry in source.get("moves", []):
+            side = entry.get("side")
+            moves.append(
+                Move(
+                    side=side.lower() if side else None,
+                    joint=entry["joint"].lower(),
+                    rotation=entry["rotation"].lower(),
+                    position=float(entry["position"]),
+                )
             )
-            for move in moves_data
-        ]
         return Program(name=source.get("name", "demo_motion"), moves=moves)
