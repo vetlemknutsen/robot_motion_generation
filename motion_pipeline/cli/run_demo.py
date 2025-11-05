@@ -2,6 +2,7 @@ from motion_pipeline.adapters.demo import DemoAdapter
 from motion_pipeline.runtime.pipeline import PipelineRunner
 from motion_pipeline.emitter.emitter import BasicRMLEmitter
 from motion_pipeline.rml.converter import program_to_legacy_payload
+from motion_pipeline.validator.langium import LangiumRMLValidator
 from pathlib import Path
 import importlib.util
 import os
@@ -10,10 +11,11 @@ import sys
 DEMO_INPUT = {
     "name": "simple_wave",
     "moves": [
-        {"joint": "RShoulderPitch", "position": -1.5},
-        {"joint": "RShoulderPitch", "position": 1.5},
+        {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": -1.5},
+        {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": 1.5},
     ],
 }
+
 
 
 def main() -> None:
@@ -22,9 +24,17 @@ def main() -> None:
     program = adapter.to_program(DEMO_INPUT)
 
     rml_text = runner.run(DEMO_INPUT)
-
     print("RML")
     print(rml_text)
+
+    project_root = Path(__file__).resolve().parents[2]
+    langium_root = project_root / "robot-motion-language"
+ 
+
+    validator = LangiumRMLValidator(langium_root)
+    validator.validate(rml_text)
+    print("\nRML validated by Langium.")
+
 
     rml_payload = program_to_legacy_payload(program)
     print(rml_payload)

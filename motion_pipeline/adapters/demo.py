@@ -9,8 +9,10 @@ class DemoAdapter(Adapter):
         moves_data: List[Dict[str, Any]] = source.get("moves", [])
         moves = [
             Move(
+                side=move["side"],
                 joint=move["joint"],
-                position=float(move["position"])
+                rotation=move["rotation"],
+                position=float(move["position"]),
             )
             for move in moves_data
         ]

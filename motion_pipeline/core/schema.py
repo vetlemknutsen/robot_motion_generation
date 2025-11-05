@@ -4,7 +4,9 @@ from typing import List
 
 @dataclass
 class Move:
-    joint: str          
+    side: str 
+    joint: str 
+    rotation: str         
     position: float    
 
 
