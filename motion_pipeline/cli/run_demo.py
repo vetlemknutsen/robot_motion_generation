@@ -1,3 +1,4 @@
+import argparse
 from motion_pipeline.adapters.demo import DemoAdapter
 from motion_pipeline.runtime.pipeline import PipelineRunner
 from motion_pipeline.emitter.emitter import BasicRMLEmitter
@@ -7,29 +8,27 @@ from pathlib import Path
 import importlib.util
 import os
 import sys
-
-DEMO_INPUT = {
-    "name": "simple_wave",
-    "moves": [
-        {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": -1.5},
-        {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": 1.5},
-    ],
-}
-
+import json
 
 
 def main() -> None:
+    project_root = Path(__file__).resolve().parents[2]
+    default_input = project_root / "motion_pipeline" / "input" / "simple_wave.json"
+    langium_root = project_root / "robot-motion-language"
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=Path, default=default_input)
+    args = parser.parse_args()
+
+    payload = load_motion(args.input)
+ 
     adapter = DemoAdapter()
     runner = PipelineRunner(adapter, BasicRMLEmitter())
-    program = adapter.to_program(DEMO_INPUT)
+    program = adapter.to_program(payload)
 
-    rml_text = runner.run(DEMO_INPUT)
+    rml_text = runner.run(payload)
     print("RML")
     print(rml_text)
-
-    project_root = Path(__file__).resolve().parents[2]
-    langium_root = project_root / "robot-motion-language"
- 
 
     validator = LangiumRMLValidator(langium_root)
     validator.validate(rml_text)
@@ -44,6 +43,9 @@ def main() -> None:
 
 
 
+def load_motion(path: Path) -> dict:
+    with path.open() as f:
+        return json.load(f)
 
 
 def append_motion_to_webots(payload: dict) -> None:
