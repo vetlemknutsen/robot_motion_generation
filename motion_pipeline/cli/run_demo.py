@@ -1,6 +1,6 @@
 import argparse
-from motion_pipeline.adapters.demo import DemoAdapter
-from motion_pipeline.runtime.pipeline import PipelineRunner
+from motion_pipeline.adapters.json_adapter import JsonAdapter
+from motion_pipeline.runtime import task_spec_to_program
 from motion_pipeline.emitter.emitter import BasicRMLEmitter
 from motion_pipeline.rml.converter import program_to_legacy_payload
 from motion_pipeline.validator.langium import LangiumRMLValidator
@@ -13,20 +13,23 @@ import json
 
 def main() -> None:
     project_root = Path(__file__).resolve().parents[2]
+    motions_dir = project_root / "motion_pipeline" / "input"
     langium_root = project_root / "robot-motion-language"
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--motion", default="simple_wave")
     args = parser.parse_args()
 
-    payload_path = project_root / "motion_pipeline" / "input" / f"{args.motion}.json"
+    payload_path = motions_dir / f"{args.motion}.json"
     payload = load_motion(payload_path)
- 
-    adapter = DemoAdapter()
-    runner = PipelineRunner(adapter, BasicRMLEmitter())
-    program = adapter.to_program(payload)
 
-    rml_text = runner.run(payload)
+    directive_adapter = JsonAdapter()
+    directive = directive_adapter.to_directive(payload)
+
+    program, stage_markers = task_spec_to_program.directive_to_program(directive)
+ 
+    emitter = BasicRMLEmitter()
+    rml_text = emitter.emit_with_stages(program, stage_markers)
     print("RML")
     print(rml_text)
 

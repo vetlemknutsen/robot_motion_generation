@@ -254,19 +254,20 @@ def wave_demo(robot):
 
 
 
-
-def demo_nod(robot):
-	# Keyframe
-	move(robot, True, 0.0, 'Head', 'Pitch', '')
-	# Keyframe
-	move(robot, True, 0.5, 'Head', 'Pitch', '')
-	# Keyframe
-	move(robot, True, -0.5, 'Head', 'Pitch', '')
-	# Keyframe
-	move(robot, True, 0.0, 'Head', 'Pitch', '')
-
-def simple_wave(robot):
+def medium_wave(robot):
 	# Keyframe
 	move(robot, True, -1.5, 'Shoulder', 'Pitch', 'R')
+	# Keyframe
+	move(robot, True, 0.3, 'Shoulder', 'Roll', 'R')
+	# Keyframe
+	move(robot, True, -0.5, 'Shoulder', 'Roll', 'R')
+	# Keyframe
+	move(robot, True, 0.3, 'Shoulder', 'Roll', 'R')
+	# Keyframe
+	move(robot, True, -0.5, 'Shoulder', 'Roll', 'R')
+	# Keyframe
+	move(robot, True, 0.3, 'Shoulder', 'Roll', 'R')
+	# Keyframe
+	move(robot, True, -0.5, 'Shoulder', 'Roll', 'R')
 	# Keyframe
 	move(robot, True, 1.5, 'Shoulder', 'Pitch', 'R')

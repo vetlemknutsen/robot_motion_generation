@@ -1,4 +1,4 @@
 from .base import Adapter 
-from .demo import DemoAdapter
+from .json_adapter import JsonAdapter
 
-__all__ = ['Adapter', 'DemoAdapter']
+__all__ = ['Adapter', 'JsonAdapter']

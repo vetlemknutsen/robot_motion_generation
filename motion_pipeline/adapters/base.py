@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from motion_pipeline.core.schema import Program
+from motion_pipeline.core.task_spec import MotionDirective
 
 
 class Adapter(ABC):
     @abstractmethod
-    def to_program(self, source: Any) -> Program:
+    def can_handle(self, source: Any) -> bool:
+        ...
+
+    @abstractmethod
+    def to_directive(self, source: Any) -> MotionDirective:
         ...
