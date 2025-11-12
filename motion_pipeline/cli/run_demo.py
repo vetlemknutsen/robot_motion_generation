@@ -10,6 +10,7 @@ import os
 import sys
 import json
 
+# full ipeline script 
 
 def main() -> None:
     project_root = Path(__file__).resolve().parents[2]
@@ -29,18 +30,22 @@ def main() -> None:
     program, stage_markers = task_spec_to_program.directive_to_program(directive)
  
     emitter = BasicRMLEmitter()
-    rml_text = emitter.emit_with_stages(program, stage_markers)
+    rml_text = emitter.emit(program)
+
+    # Print RML
     print("RML")
     print(rml_text)
 
+    # Validate RML
     validator = LangiumRMLValidator(langium_root)
     validator.validate(rml_text)
-    print("\nRML validated by Langium.")
+    print("RML validated by Langium.")
 
-
+    # RML in JSON
     rml_payload = program_to_legacy_payload(program)
     print(rml_payload)
 
+    # Send RML JSON payload to helper to create a new motion
     append_motion_to_webots(rml_payload)
     print("Motion appended to motion_functions.py")
 
@@ -51,6 +56,7 @@ def load_motion(path: Path) -> dict:
         return json.load(f)
 
 
+# Use helper from previous thesis to add new motion
 def append_motion_to_webots(payload: dict) -> None:
     controller_dir = Path(__file__).resolve().parents[2] / "webots" / "controllers" / "robot_controller"
     sys.path.insert(0, str(controller_dir))

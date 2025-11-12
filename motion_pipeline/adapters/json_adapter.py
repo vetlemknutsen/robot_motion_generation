@@ -3,46 +3,31 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.task_spec import MotionDirective, SceneObject, StageDefinition
+from motion_pipeline.core.task_spec import MotionDirective, StageDefinition
 
-
+# Adapter for JSON files
 class JsonAdapter(Adapter):
-    def can_handle(self, source: Any) -> bool:
-        if isinstance(source, (str, Path)):
-            return str(source).endswith(".json")
-        if isinstance(source, Mapping):
-            return "task" in source  
-        return False
 
     def to_directive(self, source: Any) -> MotionDirective:
-        data = self._load_data(source)
-
-        objects = [
-            SceneObject(obj["id"], tuple(obj["pose"]) if "pose" in obj else None)
-            for obj in data.get("objects", [])
-        ]
-
-        stages = []
-        for raw_stage in data.get("stages", []):
-            moves = raw_stage.get("moves", [])
-            stages.append(StageDefinition(
-                name=raw_stage.get("name", "stage"),
-                moves=moves,
-            ))
-
-        primitive_moves = data.get("moves", [])
-        for stage in stages:
-            primitive_moves.extend(stage.moves)
-
+        data = self._load(source)
+        stages = self._collect_stages(data)
+        
         return MotionDirective(
-            name=data.get("task", "unnamed"),
-            source=data.get("source"),
-            destination=data.get("destination"),
-            objects=objects,
-            stages=stages,
+            name=data.get("name"),
+            stages=stages
         )
+    
+    # collect all stages in input
+    def _collect_stages(self, data: Mapping[str, Any]) -> list[StageDefinition]:
+        stages = []
+        stages.append(StageDefinition(
+            name=data.get("name", "main"),
+            moves=data["moves"],))
 
-    def _load_data(self, source: Any) -> Mapping[str, Any]:
+        return stages
+
+    # load json input
+    def _load(self, source: Any) -> Mapping[str, Any]:
         if isinstance(source, (str, Path)):
             with open(source) as f:
                 return json.load(f)

@@ -1,6 +1,6 @@
 from motion_pipeline.core.schema import Move, Program
 
-
+# Convert to old JSON format so Webots helpers still work
 def program_to_legacy_payload(program: Program) -> dict:
     commands = []
     for move in program.moves:
@@ -18,3 +18,4 @@ def program_to_legacy_payload(program: Program) -> dict:
         "def": program.name,
         "commands": commands,
     }
+
