@@ -254,8 +254,14 @@ def wave_demo(robot):
 
 
 
-def medium_wave(robot):
+
+def double_wave(robot):
 	# Keyframe
-	move(robot, True, 0.7, 'Shoulder', 'Pitch', 'L')
+	move(robot, False, 0.8, 'Shoulder', 'Pitch', 'L')
+	move(robot, True, 0.8, 'Shoulder', 'Pitch', 'R')
 	# Keyframe
-	move(robot, True, 0.7, 'Shoulder', 'Pitch', 'R')
+	move(robot, True, -0.3, 'Wrist', 'Yaw', 'R')
+	# Keyframe
+	move(robot, True, 0.3, 'Wrist', 'Yaw', 'R')
+	# Keyframe
+	move(robot, True, -0.3, 'Wrist', 'Yaw', 'R')

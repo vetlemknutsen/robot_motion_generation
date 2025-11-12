@@ -1,12 +1,15 @@
 {
-  "name": "medium_wave",
+  "name": "double_wave",
   "moves": [
     {
       "type": "multimove",
       "moves": [
-        {"side": "left", "joint": "shoulder", "rotation": "pitch", "position": 0.7},
-        {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": 0.7}
+        {"side": "left", "joint": "shoulder", "rotation": "pitch", "position": 0.8},
+        {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": 0.8}
       ]
-    }
+    },
+    {"side": "right", "joint": "wrist", "rotation": "yaw", "position": -0.3},
+    {"side": "right", "joint": "wrist", "rotation": "yaw", "position": 0.3},
+    {"side": "right", "joint": "wrist", "rotation": "yaw", "position": -0.3}
   ]
 }
