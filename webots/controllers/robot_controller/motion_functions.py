@@ -252,3 +252,10 @@ def wave_demo(robot):
 	move(robot, True, 30.0, 'Wrist', 'Yaw', 'R')
 	move(robot, True, -30.0, 'Wrist', 'Yaw', 'R')
 
+
+
+def medium_wave(robot):
+	# Keyframe
+	move(robot, True, 0.7, 'Shoulder', 'Pitch', 'L')
+	# Keyframe
+	move(robot, True, 0.7, 'Shoulder', 'Pitch', 'R')

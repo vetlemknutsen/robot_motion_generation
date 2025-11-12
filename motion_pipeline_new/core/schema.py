@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
-# info about a move
+
 @dataclass
 class Move:
     side: Optional[str] 
@@ -13,9 +13,20 @@ class Move:
 class MultiMove: 
     moves: List[Move]
 
-ProgramInstruction = Union[Move, MultiMove]
+@dataclass 
+class Repeat:
+    count: int
+    instructions: List[Union[Move, MultiMove]]  
+
+StageInstruction = Union[Move, MultiMove, Repeat]
+
+@dataclass 
+class Stage:
+    name: str 
+    instructions: List[StageInstruction]
+
 
 @dataclass
 class Program:
     name: str
-    instructions: List[ProgramInstruction] = field(default_factory=list)
+    stages: List[Stage] = field(default_factory=list)

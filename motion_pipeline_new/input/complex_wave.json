@@ -1,0 +1,64 @@
+{
+  "task": "wave_complex",
+  "stages": [
+    {
+      "name": "raise_arm",
+      "instructions": [
+        {
+          "type": "move",
+          "side": "right",
+          "joint": "shoulder",
+          "rotation": "pitch",
+          "position": -1.5
+        }
+      ]
+    },
+    {
+      "name": "wave_cycle",
+      "instructions": [
+        {
+          "type": "repeat",
+          "count": 3,
+          "instructions": [
+            {
+              "type": "multi",
+              "moves": [
+                {
+                  "side": "right",
+                  "joint": "shoulder",
+                  "rotation": "roll",
+                  "position": 0.3
+                },
+                {
+                  "side": "right",
+                  "joint": "elbow",
+                  "rotation": "roll",
+                  "position": 0.2
+                }
+              ]
+            },
+            {
+              "type": "move",
+              "side": "right",
+              "joint": "shoulder",
+              "rotation": "roll",
+              "position": -0.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "reset",
+      "instructions": [
+        {
+          "type": "move",
+          "side": "right",
+          "joint": "shoulder",
+          "rotation": "pitch",
+          "position": 1.5
+        }
+      ]
+    }
+  ]
+}

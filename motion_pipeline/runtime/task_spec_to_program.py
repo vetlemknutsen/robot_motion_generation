@@ -1,22 +1,29 @@
 from typing import List, Tuple
 from motion_pipeline.core.task_spec import MotionDirective
-from motion_pipeline.core.schema import Move, Program
+from motion_pipeline.core.schema import Move, MultiMove, Program
 
 # Convert directive to Program format
 def directive_to_program(directive: MotionDirective) -> Tuple[Program, List[Tuple[int, str]]]:
-    moves=[]
-    markers=[]
-    idx = 0
+    instructions = []
+    
 
     for stage in directive.stages:
-        markers.append((idx, stage.name))
         for raw in stage.moves:
-            moves.append(Move(
-                side=(raw.get("side") or "").lower() or None,
-                joint=raw["joint"].lower(),
-                rotation=raw["rotation"].lower(),
-                position=float(raw["position"]),
-            ))
-            idx += 1
+            instructions.append(_entry_to_instruction(raw))
+           
+    return Program(name=directive.name, instructions=instructions)
 
-    return Program(name=directive.name or "unnamed", moves=moves), markers
+
+def _entry_to_instruction(entry: dict):
+    if entry.get("type") == "multimove":
+        moves = [_dict_to_move(move_dict) for move_dict in entry.get("moves", [])]
+        return MultiMove(moves=moves)
+    return _dict_to_move(entry)
+
+def _dict_to_move(entry: dict) -> Move: 
+    return Move(
+        side=(entry.get("side")),
+        joint=entry["joint"],
+        rotation=entry["rotation"],
+        position=float(entry["position"])
+    )
