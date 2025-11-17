@@ -1,69 +1,54 @@
 import csv
-from math import degrees
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
 from motion_pipeline.core.canonical import CanonicalFrame, CanonicalMotion, JointAngle
 
 
-YAW_MAX_RAD = 2.09
-PITCH_MIN_RAD = -0.67
-PITCH_MAX_RAD = 0.51
-YAW_MAX_DEG = degrees(YAW_MAX_RAD)
-PITCH_MIN_DEG = degrees(PITCH_MIN_RAD)
-PITCH_MAX_DEG = degrees(PITCH_MAX_RAD)
+YAW_MAX = 90
+PITCH_MAX = 60
 
 
 class MediaPipeCSVAdapter(Adapter):
     def to_motion(self, source) -> CanonicalMotion:
-        path = Path(source)
-        with path.open(newline="") as handle:
-            rows = list(csv.DictReader(handle))
+        rows = list(csv.DictReader(Path(source).open(newline="")))
+        if len(rows) > 12:
+            step = max(1, len(rows) // 24)
+            rows = rows[::step]
 
-        if len(rows) <= 12:
-            selected = rows
+        gaps = []
+        yaw_pitch = []
+        for row in rows:
+            nx = float(row["NOSE_x"])
+            lx = float(row["LEFT_SHOULDER_x"])
+            rx = float(row["RIGHT_SHOULDER_x"])
+            width = abs(lx - rx) or 1.0
+            cx = (lx + rx) / 2
+            yaw_norm = (nx - cx) / (width / 2)
+            yaw = max(-1, min(1, yaw_norm)) * YAW_MAX
+
+            ly = float(row["LEFT_SHOULDER_y"])
+            ry = float(row["RIGHT_SHOULDER_y"])
+            cy = (ly + ry) / 2
+            ny = float(row["NOSE_y"])
+            gap = cy - ny
+            gaps.append(gap)
+            yaw_pitch.append((yaw, gap))
+
+        if gaps:
+            mid = (min(gaps) + max(gaps)) / 2
+            span = (max(gaps) - min(gaps)) or 1
         else:
-            count = 24
-            selected = [
-                rows[int(i * (len(rows) - 1) / (count - 1))]
-                for i in range(count)
-            ]
-
-        processed = []
-        for row in selected:
-            nose_x = float(row["NOSE_x"])
-            left_x = float(row["LEFT_SHOULDER_x"])
-            right_x = float(row["RIGHT_SHOULDER_x"])
-            width = abs(left_x - right_x) or 1.0
-            center_x = (left_x + right_x) / 2
-            yaw_norm = (nose_x - center_x) / (width / 2)
-            yaw = max(-1, min(1, yaw_norm)) * YAW_MAX_DEG
-
-            left_y = float(row["LEFT_SHOULDER_y"])
-            right_y = float(row["RIGHT_SHOULDER_y"])
-            shoulder_y = (left_y + right_y) / 2
-            nose_y = float(row["NOSE_y"])
-            gap = shoulder_y - nose_y
-            processed.append((yaw, gap))
-
-        gaps = [gap for _, gap in processed]
-        gap_min = min(gaps) if gaps else 0.0
-        gap_max = max(gaps) if gaps else 0.0
-        span = gap_max - gap_min
-        mid = (gap_min + gap_max) / 2 if gaps else 0.0
+            mid = 0
+            span = 1
 
         frames = []
-        for index, (yaw, gap) in enumerate(processed):
-            if span == 0:
-                pitch_norm = 0.0
-            else:
-                pitch_norm = (gap - mid) / (span / 2)
-            pitch_norm = max(-1, min(1, pitch_norm))
-            pitch = ((pitch_norm + 1) / 2) * (PITCH_MAX_DEG - PITCH_MIN_DEG) + PITCH_MIN_DEG
-
+        for i, (yaw, gap) in enumerate(yaw_pitch):
+            pitch_norm = (gap - mid) / (span / 2)
+            pitch = max(-1, min(1, pitch_norm)) * PITCH_MAX
             frames.append(
                 CanonicalFrame(
-                    time=index,
+                    time=i,
                     joint_angles=[
                         JointAngle("head", "yaw", yaw),
                         JointAngle("head", "pitch", pitch),
@@ -71,4 +56,4 @@ class MediaPipeCSVAdapter(Adapter):
                 )
             )
 
-        return CanonicalMotion(path.stem, frames)
+        return CanonicalMotion(Path(source).stem, frames)
