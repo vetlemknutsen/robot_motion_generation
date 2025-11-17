@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from motion_pipeline.core.task_spec import MotionDirective
+from motion_pipeline.core.canonical import CanonicalMotion
 
 
 class Adapter(ABC):
     @abstractmethod
-    def to_directive(self, source: Any) -> MotionDirective:
+    def to_motion(self, source: Any) -> CanonicalMotion:
         ...

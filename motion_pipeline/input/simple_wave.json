@@ -1,7 +1,0 @@
-{
-  "name": "simple_wave",
-  "moves": [
-    {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": -1.5},
-    {"side": "right", "joint": "shoulder", "rotation": "pitch", "position": 1.5}
-  ]
-}

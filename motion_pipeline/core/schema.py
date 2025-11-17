@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
-# info about a move
 @dataclass
 class Move:
     side: Optional[str] 

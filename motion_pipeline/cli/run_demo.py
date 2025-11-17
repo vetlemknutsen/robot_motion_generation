@@ -1,14 +1,15 @@
 import argparse
-from motion_pipeline.adapters.json_adapter import JsonAdapter
-from motion_pipeline.runtime import task_spec_to_program
+import importlib.util
+import json
+import os
+import sys
+from pathlib import Path
+
+from motion_pipeline.adapters import JsonAdapter, MediaPipeCSVAdapter
+from motion_pipeline.runtime import retargeter
 from motion_pipeline.emitter.emitter import BasicRMLEmitter
 from motion_pipeline.rml.converter import program_to_legacy_payload
 from motion_pipeline.validator.langium import LangiumRMLValidator
-from pathlib import Path
-import importlib.util
-import os
-import sys
-import json
 
 # full ipeline script 
 
@@ -19,15 +20,20 @@ def main() -> None:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--motion", default="simple_wave")
+    parser.add_argument("--format", choices=("json", "csv"), default="json")
     args = parser.parse_args()
 
-    payload_path = motions_dir / f"{args.motion}.json"
-    payload = load_motion(payload_path)
+    motion_path = motions_dir / f"{args.motion}.{args.format}"
 
-    directive_adapter = JsonAdapter()
-    directive = directive_adapter.to_directive(payload)
+    if args.format == "json":
+        payload = load_motion(motion_path)
+        motion_adapter = JsonAdapter()
+        canonical_motion = motion_adapter.to_motion(payload)
+    else:
+        motion_adapter = MediaPipeCSVAdapter()
+        canonical_motion = motion_adapter.to_motion(motion_path)
 
-    program = task_spec_to_program.directive_to_program(directive)
+    program = retargeter.motion_to_program(canonical_motion)
  
     emitter = BasicRMLEmitter()
     rml_text = emitter.emit(program)

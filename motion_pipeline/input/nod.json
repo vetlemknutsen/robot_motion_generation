@@ -1,9 +1,0 @@
-{
-  "name": "demo_nod",
-  "moves": [
-    {"joint": "head", "rotation": "pitch", "position": 0.0},
-    {"joint": "head", "rotation": "pitch", "position": 0.5},
-    {"joint": "head", "rotation": "pitch", "position": -0.5},
-    {"joint": "head", "rotation": "pitch", "position": 0.0}
-  ]
-}

@@ -236,32 +236,7 @@ def move(robot, sync, position, joint, rotation='', side='', delay=250, accelera
         raise Exception(f'Wrong args. Your args resulted in trying to move "{motor}"...')
 
 
-def wave_demo(robot):
-	# Keyframe
-	move(robot, True, 30.0, 'Shoulder', 'Pitch', 'R')
-	# Keyframe
-	move(robot, False, 45.0, 'Elbow', 'Pitch', 'R')
-	move(robot, True, 60.0, 'Wrist', 'Yaw', 'R')
-	# Keyframe
-	move(robot, True, 30.0, 'Wrist', 'Yaw', 'R')
-	move(robot, True, -30.0, 'Wrist', 'Yaw', 'R')
-	# Keyframe
-	move(robot, True, 30.0, 'Wrist', 'Yaw', 'R')
-	move(robot, True, -30.0, 'Wrist', 'Yaw', 'R')
-	# Keyframe
-	move(robot, True, 30.0, 'Wrist', 'Yaw', 'R')
-	move(robot, True, -30.0, 'Wrist', 'Yaw', 'R')
 
 
 
 
-def double_wave(robot):
-	# Keyframe
-	move(robot, False, 0.8, 'Shoulder', 'Pitch', 'L')
-	move(robot, True, 0.8, 'Shoulder', 'Pitch', 'R')
-	# Keyframe
-	move(robot, True, -0.3, 'Wrist', 'Yaw', 'R')
-	# Keyframe
-	move(robot, True, 0.3, 'Wrist', 'Yaw', 'R')
-	# Keyframe
-	move(robot, True, -0.3, 'Wrist', 'Yaw', 'R')
