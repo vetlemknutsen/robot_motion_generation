@@ -5,7 +5,7 @@ import os
 import sys
 from pathlib import Path
 
-from motion_pipeline.adapters import JsonAdapter, MediaPipeCSVAdapter
+from motion_pipeline.adapters import MediaPipeCSVAdapter
 from motion_pipeline.runtime import retargeter
 from motion_pipeline.emitter.emitter import BasicRMLEmitter
 from motion_pipeline.rml.converter import program_to_legacy_payload
@@ -25,15 +25,10 @@ def main() -> None:
 
     motion_path = motions_dir / f"{args.motion}.{args.format}"
 
-    if args.format == "json":
-        payload = load_motion(motion_path)
-        motion_adapter = JsonAdapter()
-        canonical_motion = motion_adapter.to_motion(payload)
-    else:
-        motion_adapter = MediaPipeCSVAdapter()
-        canonical_motion = motion_adapter.to_motion(motion_path)
+    motion_adapter = MediaPipeCSVAdapter()
+    motion = motion_adapter.to_motion(motion_path)
 
-    program = retargeter.motion_to_program(canonical_motion)
+    program = retargeter.motion_to_program(motion)
  
     emitter = BasicRMLEmitter()
     rml_text = emitter.emit(program)

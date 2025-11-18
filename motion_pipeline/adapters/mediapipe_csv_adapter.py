@@ -2,52 +2,57 @@ import csv
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.canonical import CanonicalFrame, CanonicalMotion, JointAngle
+from motion_pipeline.core.motion import PoseFrame, MotionSequence, JointAngle
 
 
+# Human-like head ranges
 YAW_MAX = 90
 PITCH_MAX = 60
+PITCH_GAIN = 2
 
 
 class MediaPipeCSVAdapter(Adapter):
-    def to_motion(self, source) -> CanonicalMotion:
+    def to_motion(self, source) -> MotionSequence:
         rows = list(csv.DictReader(Path(source).open(newline="")))
+        # At most 24 frames
         if len(rows) > 12:
             step = max(1, len(rows) // 24)
             rows = rows[::step]
 
-        gaps = []
-        yaw_pitch = []
-        for row in rows:
+        neutral_gap = None
+        frames = []
+        for i, row in enumerate(rows):
+            # Estimate yaw by findinging nose x position and left/right shoulder x positions.
             nx = float(row["NOSE_x"])
             lx = float(row["LEFT_SHOULDER_x"])
             rx = float(row["RIGHT_SHOULDER_x"])
-            width = abs(lx - rx) or 1.0
+            width = abs(lx - rx) or 1.0 
+
+            # Shoulder midpoint
             cx = (lx + rx) / 2
-            yaw_norm = (nx - cx) / (width / 2)
+            # How far the nose is from the center
+            yaw_norm = (nx - cx) / (width / 2) 
             yaw = max(-1, min(1, yaw_norm)) * YAW_MAX
 
+            
             ly = float(row["LEFT_SHOULDER_y"])
             ry = float(row["RIGHT_SHOULDER_y"])
+            # Average shoulder height
             cy = (ly + ry) / 2
             ny = float(row["NOSE_y"])
+            # Compare shoulder height to nose height
             gap = cy - ny
-            gaps.append(gap)
-            yaw_pitch.append((yaw, gap))
 
-        if gaps:
-            mid = (min(gaps) + max(gaps)) / 2
-            span = (max(gaps) - min(gaps)) or 1
-        else:
-            mid = 0
-            span = 1
-
-        frames = []
-        for i, (yaw, gap) in enumerate(yaw_pitch):
-            pitch_norm = (gap - mid) / (span / 2)
-            pitch = max(-1, min(1, pitch_norm)) * PITCH_MAX
+            if neutral_gap is None: 
+                neutral_gap = gap 
+            
+            pitch_norm = (gap - neutral_gap) / (width or 1.0)
+            pitch_norm *= PITCH_GAIN
+            pitch_norm = max(-1, min(1, pitch_norm))
+            pitch = pitch_norm * PITCH_MAX
+       
             frames.append(
-                CanonicalFrame(
+                PoseFrame(
                     time=i,
                     joint_angles=[
                         JointAngle("head", "yaw", yaw),
@@ -56,4 +61,4 @@ class MediaPipeCSVAdapter(Adapter):
                 )
             )
 
-        return CanonicalMotion(Path(source).stem, frames)
+        return MotionSequence(Path(source).stem, frames)

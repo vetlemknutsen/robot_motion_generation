@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from motion_pipeline.core.canonical import CanonicalMotion
+from motion_pipeline.core.motion import MotionSequence
 
 
 class Adapter(ABC):
     @abstractmethod
-    def to_motion(self, source: Any) -> CanonicalMotion:
+    def to_motion(self, source: Any) -> MotionSequence:
         ...

@@ -1,3 +1,4 @@
+'''
 import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -46,3 +47,5 @@ class JsonAdapter(Adapter):
             with open(source) as f:
                 return json.load(f)
         return source
+
+'''
