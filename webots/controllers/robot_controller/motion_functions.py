@@ -236,3 +236,5 @@ def move(robot, sync, position, joint, rotation='', side='', delay=250, accelera
         raise Exception(f'Wrong args. Your args resulted in trying to move "{motor}"...')
 
 
+
+

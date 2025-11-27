@@ -1,195 +1,70 @@
-name: NAO
+name: TIAGo
 
 joints: {
-  # HEAD
-  HeadYaw: {
-    motor: HeadYaw,
-    sensor: HeadYawS
-  },
-  HeadPitch: {
-    motor: HeadPitch,
-    sensor: HeadPitchS
-  },
-  HeadRoll: {
-    motor: NULL,
-    sensor: NULL
-  },
-  
-  # LEFT ARM
-  LFinger1: {
-    motor: NULL,
-    sensor: NULL
-  },
-  LFinger2: {
-    motor: NULL,
-    sensor: NULL
-  },
-  LFinger3: {
-    motor: NULL,
-    sensor: NULL
+  # TORSO
+  RTorso_lift_joint: {
+    motor: torso_lift_joint,
+    sensor: torso_lift_joint_sensor
   },
 
-  LWristPitch: {
-    motor: NULL,
-    sensor: NULL
+  # ARM (Right)
+  # Mapping generated names (RArm_X_joint) to actual motor names (arm_X_joint)
+  RArm_1_joint: {
+    motor: arm_1_joint,
+    sensor: arm_1_joint_sensor
   },
-  LWristYaw: {
-    motor: LWristYaw,
-    sensor: LWristYawS
+  RArm_2_joint: {
+    motor: arm_2_joint,
+    sensor: arm_2_joint_sensor
   },
-  LWristRoll: {
-    motor: NULL,
-    sensor: NULL
+  RArm_3_joint: {
+    motor: arm_3_joint,
+    sensor: arm_3_joint_sensor
   },
-
-  LElbowYaw: {
-    motor: LElbowYaw,
-    sensor: LElbowYawS
+  RArm_4_joint: {
+    motor: arm_4_joint,
+    sensor: arm_4_joint_sensor
   },
-  LElbowRoll: {
-    motor: LElbowRoll,
-    sensor: LElbowRollS
+  RArm_5_joint: {
+    motor: arm_5_joint,
+    sensor: arm_5_joint_sensor
   },
-
-  LShoulderPitch: {
-    motor: LShoulderPitch,
-    sensor: LShoulderPitchS
+  RArm_6_joint: {
+    motor: arm_6_joint,
+    sensor: arm_6_joint_sensor
   },
-  LShoulderRoll: {
-    motor: LShoulderRoll,
-    sensor: LShoulderRollS
-  },
-
-  # RIGHT ARM
-  RFinger1: {
-    motor: NULL,
-    sensor: NULL
-  },
-  RFinger2: {
-    motor: NULL,
-    sensor: NULL
-  },
-  RFinger3: {
-    motor: NULL,
-    sensor: NULL
+  RArm_7_joint: {
+    motor: arm_7_joint,
+    sensor: arm_7_joint_sensor
   },
 
-  RWristPitch: {
-    motor: NULL,
-    sensor: NULL
+  # GRIPPER (Steel parallel gripper)
+  RGripper_left_finger_joint: {
+    motor: gripper_left_finger_joint,
+    sensor: null
   },
-  RWristYaw: {
-    motor: RWristYaw,
-    sensor: RWristYawS
-  },
-  RWristRoll: {
-    motor: NULL,
-    sensor: NULL
+  RGripper_right_finger_joint: {
+    motor: gripper_right_finger_joint,
+    sensor: null
   },
 
-  RElbowYaw: {
-    motor: RElbowYaw,
-    sensor: RElbowYawS
+  # HEAD (Optional mapping if needed later)
+  Head_1_joint: {
+    motor: head_1_joint,
+    sensor: head_1_joint_sensor
   },
-  RElbowRoll: {
-    motor: RElbowRoll,
-    sensor: RElbowRollS
-  },
-
-  RShoulderPitch: {
-    motor: RShoulderPitch,
-    sensor: RShoulderPitchS
-  },
-  RShoulderRoll: {
-    motor: RShoulderRoll,
-    sensor: RShoulderRollS
-  },
-  
-  # BODY
-  TorsoPitch: {
-    motor: NULL,
-    sensor: NULL
-  },
-  TorsoYaw: {
-    motor: NULL,
-    sensor: NULL
-  },
-  TorsoRoll: {
-    motor: NULL,
-    sensor: NULL
-  },
-  
-  # LEFT LEG
-  LHipPitch: {
-    motor: LHipPitch,
-    sensor: LHipPitchS
-  },
-  LHipYaw: {
-    motor: LHipYawPitch,
-    sensor: LHipYawPitchS
-  },
-  LHipRoll: {
-    motor: LHipRoll,
-    sensor: LHipRollS
+  Head_2_joint: {
+    motor: head_2_joint,
+    sensor: head_2_joint_sensor
   },
 
-  LKneePitch: {
-    motor: LKneePitch,
-    sensor: LKneePitchS
+  # WHEELS (Optional)
+  Wheel_left_joint: {
+    motor: wheel_left_joint,
+    sensor: wheel_left_joint_sensor
   },
-
-  LAnklePitch: {
-    motor: LAnklePitch,
-    sensor: LAnklePitchS
-  },
-  LAnkleYaw: {
-    motor: NULL,
-    sensor: NULL
-  },
-  LAnkleRoll: {
-    motor: LAnkleRoll,
-    sensor: LAnkleRollS
-  },
-
-  LToes: {
-    motor: NULL,
-    sensor: NULL
-  },
-
-  # RIGHT LEG
-  RHipPitch: {
-    motor: RHipPitch,
-    sensor: RHipPitchS
-  },
-  RHipYaw: {
-    motor: RHipYawPitch,
-    sensor: RHipYawPitchS
-  },
-  RHipRoll: {
-    motor: RHipRoll,
-    sensor: RHipRollS
-  },
-
-  RKneePitch: {
-    motor: RKneePitch,
-    sensor: RKneePitchS
-  },
-
-  RAnklePitch: {
-    motor: RAnklePitch,
-    sensor: RAnklePitchS
-  },
-  RAnkleYaw: {
-    motor: NULL,
-    sensor: NULL
-  },
-  RAnkleRoll: {
-    motor: RAnkleRoll,
-    sensor: RAnkleRollS
-  },
-
-  RToes: {
-    motor: NULL,
-    sensor: NULL
+  Wheel_right_joint: {
+    motor: wheel_right_joint,
+    sensor: wheel_right_joint_sensor
   }
 }

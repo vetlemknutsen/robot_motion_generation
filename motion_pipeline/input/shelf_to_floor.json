@@ -1,0 +1,14 @@
+{
+    "name": "shelf_to_floor",
+    "frames": [
+        {
+            "action": "reach",
+            "side": "right",
+            "position": [
+                0.45,
+                2.5,
+                0.8
+            ]
+        }
+    ]
+}
