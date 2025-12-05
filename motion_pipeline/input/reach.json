@@ -1,0 +1,7 @@
+{
+  "name": "reach",
+  "frames": [
+    { "action": "reach", "side": "right", "position": [0.45, -0.5, 0.5] },
+    { "action": "move",  "side": "right", "position": [0.40, 0.5, 0.5] }
+  ]
+}

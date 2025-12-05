@@ -1,20 +1,27 @@
+
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 
 @dataclass
 class RobotConfig:
+    # robot name
     name: str
-    urdf_path: Path
-    chains: Dict[str, List[str]] = field(default_factory=dict)
-    limits: Dict[str, tuple[float, float]] = field(default_factory=dict)
+    # which joint belong to each arm
+    chains: dict = field(default_factory=dict)
+    # limits for joint
+    limits: dict = field(default_factory=dict)
+    end_effectors: dict = field(default_factory=dict)  
 
     def get_chain(self, name: str) -> List[str]:
         return self.chains.get(name, [])
 
+    def get_end_effector(self, name: str) -> Tuple[str, str]:
+        return self.end_effectors[name]
+
+    # keep a joint inside its limits
     def clamp_joint(self, joint_name: str, value: float) -> float:
         if joint_name in self.limits:
-            a, b = self.limits[joint_name]
-            return max(a, min(b, value))
+            lo, hi = self.limits[joint_name]
+            return max(lo, min(hi, value))
         return value
