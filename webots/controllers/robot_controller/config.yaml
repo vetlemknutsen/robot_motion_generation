@@ -41,11 +41,11 @@ joints: {
   # GRIPPER (Steel parallel gripper)
   RGripper_left_finger_joint: {
     motor: gripper_left_finger_joint,
-    sensor: null
+    sensor: gripper_left_finger_joint_sensor
   },
   RGripper_right_finger_joint: {
     motor: gripper_right_finger_joint,
-    sensor: null
+    sensor: gripper_right_finger_joint_sensor
   },
 
   # HEAD (Optional mapping if needed later)

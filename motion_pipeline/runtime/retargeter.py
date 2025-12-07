@@ -28,7 +28,9 @@ def motion_to_program(motion: MotionSequence, config: RobotConfig) -> Program:
                 _, tip_link = config.get_end_effector(chain_name)
                 moveit_ik = MoveItIKClient(group_name="arm_torso", base_frame=base_frame, ee_link=tip_link)
 
+            print(f"IK target side={chain_name} pos={target.position} orient={target.orientation} base={base_frame} group=arm_torso")
             solution = moveit_ik.solve(target.position, target.orientation)
+            print(f"IK solution joints={ {j: round(solution.get(j, 0), 3) for j in joints} }")
             for joint_full in joints:
                 if joint_full not in solution:
                     continue
@@ -41,6 +43,18 @@ def motion_to_program(motion: MotionSequence, config: RobotConfig) -> Program:
 
         if moves:
             instructions.append(moves[0] if len(moves) == 1 else MultiMove(moves))
+
+        for gripper in frame.grippers:
+            gripper_config = config.get_gripper(gripper.side)
+            if gripper_config:
+                pos = gripper_config["closed"] if gripper.closed else gripper_config["open"]
+                # Map side to prefix (right -> R, left -> L)
+                side_prefix = gripper.side[0].upper() if gripper.side else ""
+                gripper_moves = [
+                    Move(side_prefix, joint, "", pos)
+                    for joint in gripper_config["joints"]
+                ]
+                instructions.append(gripper_moves[0] if len(gripper_moves) == 1 else MultiMove(gripper_moves))
 
     return Program(motion.name, instructions)
 

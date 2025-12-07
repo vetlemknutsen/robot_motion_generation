@@ -12,8 +12,14 @@ class JointAngle:
 @dataclass
 class EndEffectorTarget:
     side: str
-    position: List[float] 
-    orientation: Optional[List[float]] = None  
+    position: List[float]
+    orientation: Optional[List[float]] = None
+
+
+@dataclass
+class GripperState:
+    side: str
+    closed: bool  
 
 
 # A list of JointAngle's for a frame
@@ -22,6 +28,7 @@ class PoseFrame:
     time: float
     joint_angles: List[JointAngle] = field(default_factory=list)
     targets: List[EndEffectorTarget] = field(default_factory=list)
+    grippers: List[GripperState] = field(default_factory=list)
 
 
 # List of frames = Motion

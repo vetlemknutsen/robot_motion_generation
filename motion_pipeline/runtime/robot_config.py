@@ -11,7 +11,8 @@ class RobotConfig:
     chains: dict = field(default_factory=dict)
     # limits for joint
     limits: dict = field(default_factory=dict)
-    end_effectors: dict = field(default_factory=dict)  
+    end_effectors: dict = field(default_factory=dict)
+    grippers: dict = field(default_factory=dict)  
 
     def get_chain(self, name: str) -> List[str]:
         return self.chains.get(name, [])
@@ -25,3 +26,6 @@ class RobotConfig:
             lo, hi = self.limits[joint_name]
             return max(lo, min(hi, value))
         return value
+
+    def get_gripper(self, side: str) -> dict:
+        return self.grippers.get(side, {})

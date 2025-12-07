@@ -7,35 +7,26 @@ from motion_pipeline.runtime.robot_config import RobotConfig
 from motion_pipeline.runtime.retargeter import motion_to_program
 from motion_pipeline.rml.converter import program_to_legacy_payload
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
+from motion_pipeline.runtime.robots import TIAGO
 
 def main():
     parser = argparse.ArgumentParser(description="Run the motion pipeline.")
-    parser.add_argument("json_path", type=Path, help="Path to the input JSON file.")
+    parser.add_argument("input_path", type=Path, help="Path to the input file.")
+    parser.add_argument("--adapter", choices=["json", "mediapipe_csv"], default="json", help="Which adapter to use.")
     parser.add_argument("--webots", action="store_true", help="Append motion to Webots controller.")
     args = parser.parse_args()
 
-    config = RobotConfig(
-        name="TIAGo",
-        chains={
-            "right": ["arm_1_joint", "arm_2_joint", "arm_3_joint", "arm_4_joint", "arm_5_joint", "arm_6_joint", "arm_7_joint"]
-        },
-        limits={
-            "arm_1_joint": (0.0, 2.67),
-            "arm_2_joint": (-1.4, 1.01),
-            "arm_3_joint": (-3.53, 1.5),
-            "arm_4_joint": (-0.32, 2.35),
-            "arm_5_joint": (-2.09, 2.09),
-            "arm_6_joint": (-1.41, 1.41),
-            "arm_7_joint": (-2.07, 2.07),
-        },
-        end_effectors={
-            "right": ("torso_lift_link", "gripper_tool_link")
-        },
+    robot = RobotConfig(
+        name=TIAGO["name"],
+        chains=TIAGO["chains"],
+        limits=TIAGO["limits"],
+        end_effectors=TIAGO["end_effectors"],
+        grippers=TIAGO["grippers"]
     )
 
-    adapter = JsonScenarioAdapter()
-    motion = adapter.to_motion(args.json_path)
-    program = motion_to_program(motion, config)
+    adapter = JsonScenarioAdapter() if args.adapter == "json" else MediaPipeCSVAdapter()
+    motion = adapter.to_motion(args.input_path)
+    program = motion_to_program(motion, robot)
     payload = program_to_legacy_payload(program)
     if args.webots:
         append_motion_to_webots(payload)
