@@ -24,25 +24,26 @@ class MediaPipeCSVAdapter(Adapter):
         grippers = []
 
         if "RIGHT_WRIST_x" in row:
-            # get wrist position 
-            mp_x = float(row["RIGHT_WRIST_x"])
-            mp_y = float(row["RIGHT_WRIST_y"])
+            # X=right, Y=down, Z=toward camera
+            wrist_x = float(row["RIGHT_WRIST_x"])
+            wrist_y = float(row["RIGHT_WRIST_y"])
+            wrist_z = float(row["RIGHT_WRIST_z"])
 
-            # TODO: hardcoded
-            robot_x = 0.4  # forward 
-            robot_y = (0.5 - mp_x) * 2.0  # Left/right
-            robot_z = 1.0 - mp_y  # Height
+            # X=forward, Y=left, Z=up
+            robot_x = wrist_z + 0.5
+            robot_y = -wrist_x     
+            robot_z = -wrist_y + 0.5
 
-            # workspace limits
+            # TIAGo reachable workspace
+            robot_x = max(0.25, min(0.7, robot_x))
             robot_y = max(-0.5, min(0.5, robot_y))
-            robot_z = max(0.3, min(0.7, robot_z))
+            robot_z = max(0.4, min(1.1, robot_z))
 
             targets.append(EndEffectorTarget(
                 side="right",
-                position=[robot_x, round(robot_y, 3), round(robot_z, 3)]
+                position=[round(robot_x, 3), round(robot_y, 3), round(robot_z, 3)]
             ))
 
-            # Detect grip from pinch gesture
             grip = self._detect_pinch(row)
             if grip is not None:
                 grippers.append(GripperState(side="right", closed=grip))
@@ -68,6 +69,5 @@ class MediaPipeCSVAdapter(Adapter):
             (thumb_y - index_y) ** 2 +
             (thumb_z - index_z) ** 2
         )
-
-        # check against threshold, 5 cm
+        
         return dist < 0.05

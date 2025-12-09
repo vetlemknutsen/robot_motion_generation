@@ -22,7 +22,9 @@ def main():
         chains=TIAGO["chains"],
         limits=TIAGO["limits"],
         end_effectors=TIAGO["end_effectors"],
-        grippers=TIAGO["grippers"]
+        grippers=TIAGO["grippers"],
+        default_orientation=TIAGO.get("default_orientation"),
+        orientation_options=TIAGO.get("orientation_options")
     )
 
     adapter = JsonScenarioAdapter() if args.adapter == "json" else MediaPipeCSVAdapter()

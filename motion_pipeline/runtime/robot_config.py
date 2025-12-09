@@ -12,7 +12,9 @@ class RobotConfig:
     # limits for joint
     limits: dict = field(default_factory=dict)
     end_effectors: dict = field(default_factory=dict)
-    grippers: dict = field(default_factory=dict)  
+    grippers: dict = field(default_factory=dict)
+    default_orientation: list = None
+    orientation_options: list = None   
 
     def get_chain(self, name: str) -> List[str]:
         return self.chains.get(name, [])
@@ -20,7 +22,6 @@ class RobotConfig:
     def get_end_effector(self, name: str) -> Tuple[str, str]:
         return self.end_effectors[name]
 
-    # keep a joint inside its limits
     def clamp_joint(self, joint_name: str, value: float) -> float:
         if joint_name in self.limits:
             lo, hi = self.limits[joint_name]
@@ -29,3 +30,13 @@ class RobotConfig:
 
     def get_gripper(self, side: str) -> dict:
         return self.grippers.get(side, {})
+
+    def get_default_orientation(self):
+        return self.default_orientation
+
+    def get_orientation_options(self):
+        if self.orientation_options:
+            return self.orientation_options
+        if self.default_orientation:
+            return [self.default_orientation]
+        return None

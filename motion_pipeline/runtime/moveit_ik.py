@@ -36,9 +36,6 @@ class MoveItIKClient:
             req.ik_request.pose_stamped.pose.orientation.y = orientation[1]
             req.ik_request.pose_stamped.pose.orientation.z = orientation[2]
             req.ik_request.pose_stamped.pose.orientation.w = orientation[3]
-        else:
-            # Default orientation
-            req.ik_request.pose_stamped.pose.orientation.w = 1.0
         req.ik_request.avoid_collisions = avoid_collisions
         # currently give MoveIt 2 seconds to solve
         req.ik_request.timeout = Duration(sec=1, nanosec=0)
@@ -48,3 +45,15 @@ class MoveItIKClient:
         if res.error_code.val != res.error_code.SUCCESS:
             raise RuntimeError(f"IK failed {res.error_code.val}")
         return dict(zip(res.solution.joint_state.name, res.solution.joint_state.position))
+
+    def try_solve(
+        self,
+        position: Sequence[float],
+        orientation: Optional[Sequence[float]] = None,
+        avoid_collisions: bool = False,
+    ) -> Optional[Dict[str, float]]:
+        """Like solve(), but returns None instead of raising on failure."""
+        try:
+            return self.solve(position, orientation, avoid_collisions)
+        except RuntimeError:
+            return None

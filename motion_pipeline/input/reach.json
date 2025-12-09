@@ -1,9 +1,0 @@
-{
-  "name": "pick_and_place",
-  "frames": [
-    { "action": "reach", "side": "right", "position": [0.5, -0.3, 0.5] },
-    { "action": "grasp", "side": "right" },
-    { "action": "move", "side": "right", "position": [0.5, 0.3, 0.5] },
-    { "action": "release", "side": "right" }
-  ]
-}

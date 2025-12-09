@@ -3,6 +3,13 @@ TIAGO = {
     "chains": {
         "right": ["arm_1_joint","arm_2_joint","arm_3_joint","arm_4_joint","arm_5_joint","arm_6_joint","arm_7_joint"],
     },
+    "orientation_options": [
+        [0.5, -0.5, -0.5, 0.5],   
+        [0.0, -0.707, 0.0, 0.707],
+        [0.5, -0.5, 0.5, 0.5],   
+        [0.5, -0.5, -0.5, -0.5],
+    ],
+    "default_orientation": [0.5, -0.5, -0.5, 0.5], 
     "limits": {
         "arm_1_joint": (0.0, 2.67),
         "arm_2_joint": (-1.4, 1.01),
