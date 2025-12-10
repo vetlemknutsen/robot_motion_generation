@@ -16,7 +16,7 @@ TIAGO = {
         "arm_3_joint": (-3.53, 1.5),
         "arm_4_joint": (-0.32, 2.35),
         "arm_5_joint": (-2.09, 2.09),
-        "arm_6_joint": (-1.41, 1.41),
+        "arm_6_joint": (-1.39, 1.39),
         "arm_7_joint": (-2.07, 2.07),
     },
     "end_effectors": {

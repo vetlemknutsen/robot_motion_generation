@@ -25,8 +25,8 @@ class GripperState:
 # A list of JointAngle's for a frame
 @dataclass
 class PoseFrame:
-    time: float
-    joint_angles: List[JointAngle] = field(default_factory=list)
+    time: float # unused
+    joint_angles: List[JointAngle] = field(default_factory=list) # ?
     targets: List[EndEffectorTarget] = field(default_factory=list)
     grippers: List[GripperState] = field(default_factory=list)
 
