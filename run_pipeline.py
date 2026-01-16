@@ -3,12 +3,12 @@ import importlib.util
 import os
 import sys
 from pathlib import Path
-from motion_pipeline.runtime.robot_config import RobotConfig
-from motion_pipeline.runtime.retargeter import motion_to_program
+from motion_pipeline.runtime.configs.robot_config import RobotConfig
+from motion_pipeline.runtime.task_to_joint import motion_to_program
 from motion_pipeline.rml.converter import program_to_legacy_payload
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
 from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
-from motion_pipeline.runtime.robots import TIAGO, NAO, UR5E
+from motion_pipeline.runtime.configs.robots import TIAGO, NAO, UR5E
 
 ROBOT_PRESETS = {
     "tiago" : TIAGO,

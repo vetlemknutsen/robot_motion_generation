@@ -1,11 +1,11 @@
 import os
-from motion_pipeline.core.motion import MotionSequence
-from motion_pipeline.core.schema import Move, MultiMove, Program
-from motion_pipeline.runtime.moveit_ik import MoveItIKClient
-from motion_pipeline.runtime.robot_config import RobotConfig
+from motion_pipeline.core.task_level import Motion
+from motion_pipeline.core.joint_level import Move, MultiMove, Program
+from motion_pipeline.runtime.ik_solver import MoveItIKClient
+from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 
-def motion_to_program(motion: MotionSequence, config: RobotConfig) -> Program:
+def motion_to_program(motion: Motion, config: RobotConfig) -> Program:
     instructions = []
     ik = None
     prev_joints = None

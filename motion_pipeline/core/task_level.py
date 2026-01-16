@@ -1,16 +1,10 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-# Information for a specific joint
-@dataclass
-class JointAngle:
-    joint: str
-    component: str
-    degrees: float
-    side: Optional[str] = None
+
 
 @dataclass
-class EndEffectorTarget:
+class Target:
     side: str
     position: List[float]
     orientation: Optional[List[float]] = None
@@ -24,15 +18,14 @@ class GripperState:
 
 # A list of JointAngle's for a frame
 @dataclass
-class PoseFrame:
+class Frame:
     time: float # unused
-    joint_angles: List[JointAngle] = field(default_factory=list) # ?
-    targets: List[EndEffectorTarget] = field(default_factory=list)
+    targets: List[Target] = field(default_factory=list)
     grippers: List[GripperState] = field(default_factory=list)
 
 
 # List of frames = Motion
 @dataclass
-class MotionSequence:
+class Motion:
     name: str
-    frames: List[PoseFrame] = field(default_factory=list)
+    frames: List[Frame] = field(default_factory=list)

@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from motion_pipeline.core.schema import Move, MultiMove, Program
+from motion_pipeline.core.joint_level import Move, MultiMove, Program
 
 # Emitter that writes Program into RML
 class BasicRMLEmitter:

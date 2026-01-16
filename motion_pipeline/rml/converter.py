@@ -1,4 +1,4 @@
-from motion_pipeline.core.schema import Move, MultiMove, Program
+from motion_pipeline.core.joint_level import Move, MultiMove, Program
 
 
 def _parse_joint_name(name: str) -> tuple:

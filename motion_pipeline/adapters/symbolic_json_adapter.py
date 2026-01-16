@@ -2,11 +2,11 @@ import json
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.motion import PoseFrame, MotionSequence, EndEffectorTarget, GripperState
+from motion_pipeline.core.task_level import Frame, Motion, Target, GripperState
 
 
 class JsonScenarioAdapter(Adapter):
-    def to_motion(self, source) -> MotionSequence:
+    def to_motion(self, source) -> Motion:
         with Path(source).open() as f:
             data = json.load(f)
 
@@ -18,7 +18,7 @@ class JsonScenarioAdapter(Adapter):
             frame = self._parse_frame(i, frame_data)
             frames.append(frame)
 
-        return MotionSequence(motion_name, frames)
+        return Motion(motion_name, frames)
 
     def _parse_frame(self, time, frame_data):
         action = frame_data.get("action")
@@ -32,7 +32,7 @@ class JsonScenarioAdapter(Adapter):
             orientation = frame_data.get("orientation")
             if orientation:
                 orientation = [float(v) for v in orientation] 
-            targets.append(EndEffectorTarget(side=side, position=position, orientation=orientation))
+            targets.append(Target(side=side, position=position, orientation=orientation))
 
         elif action == "gripper":
             state = frame_data.get("state", "open")
@@ -41,4 +41,4 @@ class JsonScenarioAdapter(Adapter):
         else:
             raise ValueError(f"Unknown action: {action}")
 
-        return PoseFrame(time=float(time), targets=targets, grippers=grippers)
+        return Frame(time=float(time), targets=targets, grippers=grippers)

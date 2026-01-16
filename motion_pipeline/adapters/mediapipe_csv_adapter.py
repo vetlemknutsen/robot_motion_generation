@@ -3,15 +3,15 @@ import math
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.motion import PoseFrame, MotionSequence, EndEffectorTarget, GripperState
-from motion_pipeline.runtime.robot_config import RobotConfig
+from motion_pipeline.core.task_level import Frame, Motion, Target, GripperState
+from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 
 class MediaPipeCSVAdapter(Adapter):
     def __init__(self, config: RobotConfig):
         self.config = config
 
-    def to_motion(self, source) -> MotionSequence:
+    def to_motion(self, source) -> Motion:
         path = Path(source)
         frames = []
 
@@ -21,7 +21,7 @@ class MediaPipeCSVAdapter(Adapter):
                 frame = self._parse_row(i, row)
                 frames.append(frame)
 
-        return MotionSequence(path.stem, frames)
+        return Motion(path.stem, frames)
 
     def _parse_row(self, frame_num, row):
         targets = []
@@ -42,7 +42,7 @@ class MediaPipeCSVAdapter(Adapter):
             robot_y = self.config.clamp_position("y", robot_y)
             robot_z = self.config.clamp_position("z", robot_z)
 
-            targets.append(EndEffectorTarget(
+            targets.append(Target(
                 side="right",
                 position=[round(robot_x, 3), round(robot_y, 3), round(robot_z, 3)]
             ))
@@ -51,7 +51,7 @@ class MediaPipeCSVAdapter(Adapter):
             if grip is not None:
                 grippers.append(GripperState(side="right", closed=grip))
 
-        return PoseFrame(time=float(frame_num), targets=targets, grippers=grippers)
+        return Frame(time=float(frame_num), targets=targets, grippers=grippers)
 
     def _detect_pinch(self, row):
         required_fields = [
