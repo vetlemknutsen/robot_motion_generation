@@ -4,9 +4,13 @@ from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
 from motion_pipeline.core.motion import PoseFrame, MotionSequence, EndEffectorTarget, GripperState
+from motion_pipeline.runtime.robot_config import RobotConfig
 
 
 class MediaPipeCSVAdapter(Adapter):
+    def __init__(self, config: RobotConfig):
+        self.config = config
+
     def to_motion(self, source) -> MotionSequence:
         path = Path(source)
         frames = []
@@ -33,11 +37,10 @@ class MediaPipeCSVAdapter(Adapter):
             robot_x = wrist_z + 0.2
             robot_y = -wrist_x - 0.2
             robot_z = -wrist_y + 0.4
-            print(robot_x,robot_y,robot_z)
-            # TIAGo reachable workspace
-            robot_x = max(0.25, min(0.7, robot_x))
-            robot_y = max(-0.5, min(0.5, robot_y))
-            robot_z = max(0.4, min(1.2, robot_z))
+
+            robot_x = self.config.clamp_position("x", robot_x)
+            robot_y = self.config.clamp_position("y", robot_y)
+            robot_z = self.config.clamp_position("z", robot_z)
 
             targets.append(EndEffectorTarget(
                 side="right",
@@ -61,15 +64,15 @@ class MediaPipeCSVAdapter(Adapter):
         ]
 
         if not row:
-            return None
+            return True 
 
         try:
             values = {field: row[field] for field in required_fields}
         except KeyError:
-            return None
+            return True  
 
         if any(v is None or str(v).strip() == "" for v in values.values()):
-            return None
+            return True  
 
         # thumb and index finger positions
         thumb_x = float(values["RIGHT_THUMB_TIP_x"])
@@ -87,4 +90,4 @@ class MediaPipeCSVAdapter(Adapter):
             (thumb_z - index_z) ** 2
         )
 
-        return dist < 0.05
+        return dist < 0.051

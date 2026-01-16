@@ -138,9 +138,16 @@ class RobotController(Robot):
 
 ######## RUNS ON SIMULATION START ########
 
-# Read config.yaml
+# Read main config to get active robot
 with open('config.yaml') as f:
+  main_config = yaml.safe_load(f)
+
+# Load robot-specific config
+robot_name = main_config.get('robot', 'tiago')
+with open(f'configs/{robot_name}.yaml') as f:
   config = yaml.safe_load(f)
+
+print(f"Loading robot configuration: {config['name']}")
 
 # Init robot controller
 robot_controller = RobotController(config)

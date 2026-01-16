@@ -7,10 +7,15 @@ from typing import Dict, List, Tuple
 class RobotConfig:
     # robot name
     name: str
+    # for moveit ik solver
+    moveit_group: str
+    base_frame: str
     # which joint belong to each arm
     chains: dict = field(default_factory=dict)
     # limits for joint
     limits: dict = field(default_factory=dict)
+    # workspace limits for end-effector position
+    workspace_limits: dict = field(default_factory=dict)
     end_effectors: dict = field(default_factory=dict)
     grippers: dict = field(default_factory=dict)
     default_orientation: list = None
@@ -28,6 +33,12 @@ class RobotConfig:
             return max(lo, min(hi, value))
         return value
 
+    def clamp_position(self, axis: str, value: float) -> float:
+        if axis in self.workspace_limits:
+            lo, hi = self.workspace_limits[axis]
+            return max(lo, min(hi, value))
+        return value
+
     def get_gripper(self, side: str) -> dict:
         return self.grippers.get(side, {})
 
@@ -40,3 +51,9 @@ class RobotConfig:
         if self.default_orientation:
             return [self.default_orientation]
         return None
+    
+    def get_group_name(self):
+        return self.moveit_group
+
+    def get_base_frame(self):
+        return self.base_frame

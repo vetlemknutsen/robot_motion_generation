@@ -22,6 +22,7 @@ class MoveItIKClient:
         position: Sequence[float],
         orientation: Optional[Sequence[float]] = None,
         avoid_collisions: bool = False,
+        seed_state: Dict[str, float] = None
     ):
         req = GetPositionIK.Request()
         req.ik_request.group_name = self.group_name
@@ -36,6 +37,9 @@ class MoveItIKClient:
             req.ik_request.pose_stamped.pose.orientation.y = orientation[1]
             req.ik_request.pose_stamped.pose.orientation.z = orientation[2]
             req.ik_request.pose_stamped.pose.orientation.w = orientation[3]
+        if seed_state:
+            req.ik_request.robot_state.joint_state.name = list(seed_state.keys())
+            req.ik_request.robot_state.joint_state.position = list(seed_state.values())
         req.ik_request.avoid_collisions = avoid_collisions
         # currently give MoveIt 2 seconds to solve
         req.ik_request.timeout = Duration(sec=1, nanosec=0)
@@ -51,9 +55,9 @@ class MoveItIKClient:
         position: Sequence[float],
         orientation: Optional[Sequence[float]] = None,
         avoid_collisions: bool = False,
+        seed_state: Dict[str, float] = None,
     ) -> Optional[Dict[str, float]]:
-        """Like solve(), but returns None instead of raising on failure."""
         try:
-            return self.solve(position, orientation, avoid_collisions)
+            return self.solve(position, orientation, avoid_collisions, seed_state)
         except RuntimeError:
             return None

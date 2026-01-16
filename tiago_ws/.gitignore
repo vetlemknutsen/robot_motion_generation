@@ -1,8 +1,0 @@
-build/
-install/
-log/
-.colcon/
-.colcon_install_layout
-**/__pycache__/
-*.pyc
-tiago_ws/src/*/.git/

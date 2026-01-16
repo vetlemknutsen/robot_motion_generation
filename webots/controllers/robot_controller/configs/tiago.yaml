@@ -1,0 +1,54 @@
+name: TIAGo
+
+joints:
+  # TORSO
+  torso_lift_joint:
+    motor: torso_lift_joint
+    sensor: torso_lift_joint_sensor
+
+  # ARM
+  arm_1_joint:
+    motor: arm_1_joint
+    sensor: arm_1_joint_sensor
+  arm_2_joint:
+    motor: arm_2_joint
+    sensor: arm_2_joint_sensor
+  arm_3_joint:
+    motor: arm_3_joint
+    sensor: arm_3_joint_sensor
+  arm_4_joint:
+    motor: arm_4_joint
+    sensor: arm_4_joint_sensor
+  arm_5_joint:
+    motor: arm_5_joint
+    sensor: arm_5_joint_sensor
+  arm_6_joint:
+    motor: arm_6_joint
+    sensor: arm_6_joint_sensor
+  arm_7_joint:
+    motor: arm_7_joint
+    sensor: arm_7_joint_sensor
+
+  # GRIPPER
+  gripper_left_finger_joint:
+    motor: gripper_left_finger_joint
+    sensor: gripper_left_finger_joint_sensor
+  gripper_right_finger_joint:
+    motor: gripper_right_finger_joint
+    sensor: gripper_right_finger_joint_sensor
+
+  # HEAD
+  HeadYaw:
+    motor: head_1_joint
+    sensor: head_1_joint_sensor
+  HeadPitch:
+    motor: head_2_joint
+    sensor: head_2_joint_sensor
+
+  # WHEELS
+  Wheel_left_joint:
+    motor: wheel_left_joint
+    sensor: wheel_left_joint_sensor
+  Wheel_right_joint:
+    motor: wheel_right_joint
+    sensor: wheel_right_joint_sensor

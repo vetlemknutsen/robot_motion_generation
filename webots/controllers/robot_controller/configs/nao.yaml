@@ -1,0 +1,195 @@
+name: NAO
+
+joints: {
+  # HEAD
+  HeadYaw: {
+    motor: HeadYaw,
+    sensor: HeadYawS
+  },
+  HeadPitch: {
+    motor: HeadPitch,
+    sensor: HeadPitchS
+  },
+  HeadRoll: {
+    motor: NULL,
+    sensor: NULL
+  },
+  
+  # LEFT ARM
+  LFinger1: {
+    motor: NULL,
+    sensor: NULL
+  },
+  LFinger2: {
+    motor: NULL,
+    sensor: NULL
+  },
+  LFinger3: {
+    motor: NULL,
+    sensor: NULL
+  },
+
+  LWristPitch: {
+    motor: NULL,
+    sensor: NULL
+  },
+  LWristYaw: {
+    motor: LWristYaw,
+    sensor: LWristYawS
+  },
+  LWristRoll: {
+    motor: NULL,
+    sensor: NULL
+  },
+
+  LElbowYaw: {
+    motor: LElbowYaw,
+    sensor: LElbowYawS
+  },
+  LElbowRoll: {
+    motor: LElbowRoll,
+    sensor: LElbowRollS
+  },
+
+  LShoulderPitch: {
+    motor: LShoulderPitch,
+    sensor: LShoulderPitchS
+  },
+  LShoulderRoll: {
+    motor: LShoulderRoll,
+    sensor: LShoulderRollS
+  },
+
+  # RIGHT ARM
+  RFinger1: {
+    motor: NULL,
+    sensor: NULL
+  },
+  RFinger2: {
+    motor: NULL,
+    sensor: NULL
+  },
+  RFinger3: {
+    motor: NULL,
+    sensor: NULL
+  },
+
+  RWristPitch: {
+    motor: NULL,
+    sensor: NULL
+  },
+  RWristYaw: {
+    motor: RWristYaw,
+    sensor: RWristYawS
+  },
+  RWristRoll: {
+    motor: NULL,
+    sensor: NULL
+  },
+
+  RElbowYaw: {
+    motor: RElbowYaw,
+    sensor: RElbowYawS
+  },
+  RElbowRoll: {
+    motor: RElbowRoll,
+    sensor: RElbowRollS
+  },
+
+  RShoulderPitch: {
+    motor: RShoulderPitch,
+    sensor: RShoulderPitchS
+  },
+  RShoulderRoll: {
+    motor: RShoulderRoll,
+    sensor: RShoulderRollS
+  },
+  
+  # BODY
+  TorsoPitch: {
+    motor: NULL,
+    sensor: NULL
+  },
+  TorsoYaw: {
+    motor: NULL,
+    sensor: NULL
+  },
+  TorsoRoll: {
+    motor: NULL,
+    sensor: NULL
+  },
+  
+  # LEFT LEG
+  LHipPitch: {
+    motor: LHipPitch,
+    sensor: LHipPitchS
+  },
+  LHipYaw: {
+    motor: LHipYawPitch,
+    sensor: LHipYawPitchS
+  },
+  LHipRoll: {
+    motor: LHipRoll,
+    sensor: LHipRollS
+  },
+
+  LKneePitch: {
+    motor: LKneePitch,
+    sensor: LKneePitchS
+  },
+
+  LAnklePitch: {
+    motor: LAnklePitch,
+    sensor: LAnklePitchS
+  },
+  LAnkleYaw: {
+    motor: NULL,
+    sensor: NULL
+  },
+  LAnkleRoll: {
+    motor: LAnkleRoll,
+    sensor: LAnkleRollS
+  },
+
+  LToes: {
+    motor: NULL,
+    sensor: NULL
+  },
+
+  # RIGHT LEG
+  RHipPitch: {
+    motor: RHipPitch,
+    sensor: RHipPitchS
+  },
+  RHipYaw: {
+    motor: RHipYawPitch,
+    sensor: RHipYawPitchS
+  },
+  RHipRoll: {
+    motor: RHipRoll,
+    sensor: RHipRollS
+  },
+
+  RKneePitch: {
+    motor: RKneePitch,
+    sensor: RKneePitchS
+  },
+
+  RAnklePitch: {
+    motor: RAnklePitch,
+    sensor: RAnklePitchS
+  },
+  RAnkleYaw: {
+    motor: NULL,
+    sensor: NULL
+  },
+  RAnkleRoll: {
+    motor: RAnkleRoll,
+    sensor: RAnkleRollS
+  },
+
+  RToes: {
+    motor: NULL,
+    sensor: NULL
+  }
+}

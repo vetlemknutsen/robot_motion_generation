@@ -8,26 +8,37 @@ from motion_pipeline.runtime.retargeter import motion_to_program
 from motion_pipeline.rml.converter import program_to_legacy_payload
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
 from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
-from motion_pipeline.runtime.robots import TIAGO
+from motion_pipeline.runtime.robots import TIAGO, NAO, UR5E
+
+ROBOT_PRESETS = {
+    "tiago" : TIAGO,
+    "nao" : NAO,
+    "ur5e" : UR5E
+}
 
 def main():
-    parser = argparse.ArgumentParser(description="Run the motion pipeline.")
-    parser.add_argument("input_path", type=Path, help="Path to the input file.")
-    parser.add_argument("--adapter", choices=["json", "mediapipe_csv"], default="json", help="Which adapter to use.")
-    parser.add_argument("--webots", action="store_true", help="Append motion to Webots controller.")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_path", type=Path)
+    parser.add_argument("--adapter", choices=["json", "mediapipe_csv"])
+    parser.add_argument("--robot", choices=ROBOT_PRESETS.keys())
+    parser.add_argument("--webots", action="store_true")
     args = parser.parse_args()
 
+    preset = ROBOT_PRESETS[args.robot]
     robot = RobotConfig(
-        name=TIAGO["name"],
-        chains=TIAGO["chains"],
-        limits=TIAGO["limits"],
-        end_effectors=TIAGO["end_effectors"],
-        grippers=TIAGO["grippers"],
-        default_orientation=TIAGO.get("default_orientation"),
-        orientation_options=TIAGO.get("orientation_options")
+        name=preset["name"],
+        chains=preset["chains"],
+        limits=preset["limits"],
+        workspace_limits=preset.get("workspace_limits", {}),
+        end_effectors=preset["end_effectors"],
+        grippers=preset.get("grippers", {}),
+        default_orientation=preset.get("default_orientation"),
+        orientation_options=preset.get("orientation_options"),
+        moveit_group=preset["moveit_group"],
+        base_frame=preset["base_frame"],
     )
 
-    adapter = JsonScenarioAdapter() if args.adapter == "json" else MediaPipeCSVAdapter()
+    adapter = JsonScenarioAdapter() if args.adapter == "json" else MediaPipeCSVAdapter(robot)
     motion = adapter.to_motion(args.input_path)
     program = motion_to_program(motion, robot)
     payload = program_to_legacy_payload(program)

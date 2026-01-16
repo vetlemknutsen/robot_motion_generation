@@ -1,0 +1,73 @@
+name: UR5e
+
+joints: {
+  shoulder_pan_joint: {
+    motor: shoulder_pan_joint,
+    sensor: shoulder_pan_joint_sensor
+  },
+  shoulder_lift_joint: {
+    motor: shoulder_lift_joint,
+    sensor: shoulder_lift_joint_sensor
+  },
+  elbow_joint: {
+    motor: elbow_joint,
+    sensor: elbow_joint_sensor
+  },
+  wrist_1_joint: {
+    motor: wrist_1_joint,
+    sensor: wrist_1_joint_sensor
+  },
+  wrist_2_joint: {
+    motor: wrist_2_joint,
+    sensor: wrist_2_joint_sensor
+  },
+  wrist_3_joint: {
+    motor: wrist_3_joint,
+    sensor: wrist_3_joint_sensor
+  },
+
+  palm_finger_1_joint: {
+    motor: palm_finger_1_joint,
+    sensor: palm_finger_1_joint_sensor
+  },
+  finger_1_joint_1: {
+    motor: finger_1_joint_1,
+    sensor: finger_1_joint_1_sensor
+  },
+  finger_1_joint_2: {
+    motor: finger_1_joint_2,
+    sensor: finger_1_joint_2_sensor
+  },
+  finger_1_joint_3: {
+    motor: finger_1_joint_3,
+    sensor: finger_1_joint_3_sensor
+  },
+  palm_finger_2_joint: {
+    motor: palm_finger_2_joint,
+    sensor: palm_finger_2_joint_sensor
+  },
+  finger_2_joint_1: {
+    motor: finger_2_joint_1,
+    sensor: finger_2_joint_1_sensor
+  },
+  finger_2_joint_2: {
+    motor: finger_2_joint_2,
+    sensor: finger_2_joint_2_sensor
+  },
+  finger_2_joint_3: {
+    motor: finger_2_joint_3,
+    sensor: finger_2_joint_3_sensor
+  },
+  finger_middle_joint_1: {
+    motor: finger_middle_joint_1,
+    sensor: finger_middle_joint_1_sensor
+  },
+  finger_middle_joint_2: {
+    motor: finger_middle_joint_2,
+    sensor: finger_middle_joint_2_sensor
+  },
+  finger_middle_joint_3: {
+    motor: finger_middle_joint_3,
+    sensor: finger_middle_joint_3_sensor
+  }
+}

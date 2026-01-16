@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: "nao_moveit_config"
+    relative_path: /home/vetle/robot_motion_generation/nao_ws/src/nao.urdf
+  srdf:
+    relative_path: config/NaoH25V50.srdf
+  package_settings:
+    author_name: x
+    author_email: x@gmail.com
+    generated_timestamp: 1765462099
