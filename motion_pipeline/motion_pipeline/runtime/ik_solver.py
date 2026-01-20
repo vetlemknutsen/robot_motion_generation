@@ -11,7 +11,6 @@ class MoveItIKClient:
         self.group_name = group_name
         self.base_frame = base_frame
         self.ee_link = ee_link
-        rclpy.init(args=None)
         self.node = Node("motion_pipeline_ik_client")
         self.cli = self.node.create_client(GetPositionIK, "/compute_ik")
         self.cli.wait_for_service()

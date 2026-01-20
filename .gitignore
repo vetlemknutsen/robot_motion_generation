@@ -12,3 +12,4 @@ frontend/log/
 .vscode/
 .qtcreator-build
 CMakeLists.txt.user
+*.egg-info/

@@ -3,46 +3,24 @@ import importlib.util
 import os
 import sys
 from pathlib import Path
-from motion_pipeline.runtime.configs.robot_config import RobotConfig
-from motion_pipeline.runtime.task_to_joint import motion_to_program
-from motion_pipeline.rml.converter import program_to_legacy_payload
-from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
-from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
-from motion_pipeline.runtime.configs.robots import TIAGO, NAO, UR5E
+from motion_pipeline.runtime.generate import generate_rml, generate_rml_payload
 
-ROBOT_PRESETS = {
-    "tiago" : TIAGO,
-    "nao" : NAO,
-    "ur5e" : UR5E
-}
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path", type=Path)
-    parser.add_argument("--adapter", choices=["json", "mediapipe_csv"])
-    parser.add_argument("--robot", choices=ROBOT_PRESETS.keys())
+    parser.add_argument("--adapter", choices=["json", "mediapipe_csv"], required=True)
+    parser.add_argument("--robot", choices=["tiago", "nao", "ur5e"], required=True)
     parser.add_argument("--webots", action="store_true")
+    parser.add_argument("--print-rml", action="store_true")
     args = parser.parse_args()
 
-    preset = ROBOT_PRESETS[args.robot]
-    robot = RobotConfig(
-        name=preset["name"],
-        chains=preset["chains"],
-        limits=preset["limits"],
-        workspace_limits=preset.get("workspace_limits", {}),
-        end_effectors=preset["end_effectors"],
-        grippers=preset.get("grippers", {}),
-        default_orientation=preset.get("default_orientation"),
-        orientation_options=preset.get("orientation_options"),
-        moveit_group=preset["moveit_group"],
-        base_frame=preset["base_frame"],
-    )
+    if args.print_rml:
+        rml = generate_rml(args.input_path, args.adapter, args.robot)
+        print(rml)
 
-    adapter = JsonScenarioAdapter() if args.adapter == "json" else MediaPipeCSVAdapter(robot)
-    motion = adapter.to_motion(args.input_path)
-    program = motion_to_program(motion, robot)
-    payload = program_to_legacy_payload(program)
     if args.webots:
+        payload = generate_rml_payload(args.input_path, args.adapter, args.robot)
         append_motion_to_webots(payload)
 
 def append_motion_to_webots(payload: dict) -> None:

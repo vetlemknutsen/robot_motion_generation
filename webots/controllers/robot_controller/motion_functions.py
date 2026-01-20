@@ -237,21 +237,3 @@ def move(robot, sync, position, joint, rotation='', side='', delay=5000, acceler
 
 
 
-
-def json_test(robot):
-	# Keyframe
-	move(robot, False, 1.9699, 'arm_1_joint', '', '')
-	move(robot, False, -1.3737, 'arm_2_joint', '', '')
-	move(robot, False, 1.3711, 'arm_3_joint', '', '')
-	move(robot, False, 1.3415, 'arm_4_joint', '', '')
-	move(robot, False, -0.1341, 'arm_5_joint', '', '')
-	move(robot, False, -1.3312, 'arm_6_joint', '', '')
-	move(robot, True, 1.2991, 'arm_7_joint', '', '')
-	# Keyframe
-	move(robot, False, 0.8783, 'arm_1_joint', '', '')
-	move(robot, False, 0.8113, 'arm_2_joint', '', '')
-	move(robot, False, -2.1552, 'arm_3_joint', '', '')
-	move(robot, False, 1.8807, 'arm_4_joint', '', '')
-	move(robot, False, 1.3114, 'arm_5_joint', '', '')
-	move(robot, False, -0.1506, 'arm_6_joint', '', '')
-	move(robot, True, 1.2151, 'arm_7_joint', '', '')

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Tuple, Optional
 
@@ -44,3 +42,21 @@ def build_adapter(adapter_key: str, robot: RobotConfig):
     if adapter_key=="mediapipe_csv":
         return MediaPipeCSVAdapter()
     
+def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Program:
+    input_path = Path(input_path)
+    robot = build_robot_config(robot_key)
+    adapter = build_adapter(adapter_key, robot)
+    motion = adapter.to_motion(input_path)
+    program = motion_to_program(motion, robot)
+    return program
+
+def generate_rml(input_path: Path, adapter_key: str, robot_key: str):
+    program = generate_program(input_path, adapter_key, robot_key)
+    rml = BasicRMLEmitter().emit(program)
+    return rml
+
+def generate_rml_payload(input_path: Path, adapter_key: str, robot_key: str) -> dict: 
+    program = generate_program(input_path, adapter_key, robot_key)
+    rml_payload = program_to_legacy_payload(program)
+    return rml_payload
+
