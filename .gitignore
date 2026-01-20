@@ -6,3 +6,9 @@ build/
 install/
 log/
 webots/worlds/*.wbproj
+frontend/build/
+frontend/install/
+frontend/log/
+.vscode/
+.qtcreator-build
+CMakeLists.txt.user
