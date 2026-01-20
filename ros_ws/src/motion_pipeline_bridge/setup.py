@@ -23,7 +23,9 @@ setup(
         ],
     },
     entry_points={
-        'console_scripts': [
-        ],
-    },
+    "console_scripts": [
+        "generator_node = motion_pipeline_bridge.generator_node:main",
+    ],
+},
+
 )

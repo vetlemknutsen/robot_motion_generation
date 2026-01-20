@@ -47,10 +47,10 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QLineEdit" name="lineEdit"/>
+            <widget class="QLineEdit" name="pathLineEdit"/>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="browseButton">
              <property name="text">
               <string>Browse</string>
              </property>
@@ -69,29 +69,34 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <widget class="QComboBox" name="comboBox_2">
+            <widget class="QComboBox" name="adapterBox">
              <item>
               <property name="text">
-               <string>Adapter A</string>
+               <string>json</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Adapter B</string>
+               <string>mediapipe_csv</string>
               </property>
              </item>
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QComboBox" name="robotBox">
              <item>
               <property name="text">
-               <string>Robot A</string>
+               <string>tiago</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Robot B</string>
+               <string>nao</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ur5e</string>
               </property>
              </item>
             </widget>
@@ -100,7 +105,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="generateButton">
           <property name="text">
            <string>Generate</string>
           </property>

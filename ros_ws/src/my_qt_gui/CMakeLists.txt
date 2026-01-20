@@ -12,6 +12,7 @@ SET(CMAKE_AUTOUIC ON)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(std_msgs REQUIRED)
 
 add_executable(my_qt_gui_node
   src/main.cpp
@@ -28,7 +29,7 @@ set_target_properties(my_qt_gui_node PROPERTIES
   AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/ui")
 
 target_link_libraries(my_qt_gui_node Qt6::Widgets)
-ament_target_dependencies(my_qt_gui_node rclcpp)
+ament_target_dependencies(my_qt_gui_node rclcpp std_msgs)
 
 install(TARGETS my_qt_gui_node
   DESTINATION lib/${PROJECT_NAME})
