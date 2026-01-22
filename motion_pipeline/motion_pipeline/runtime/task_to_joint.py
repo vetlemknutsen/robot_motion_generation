@@ -1,7 +1,7 @@
 import os
 from motion_pipeline.core.task_level import Motion
 from motion_pipeline.core.joint_level import Move, MultiMove, Program
-from motion_pipeline.runtime.ik_solver import MoveItIKClient
+from motion_pipeline.kinematics.ik_solver import MoveItIKClient
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 

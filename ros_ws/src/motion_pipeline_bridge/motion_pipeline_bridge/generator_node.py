@@ -6,13 +6,16 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from motion_pipeline.runtime.generate import generate_rml
-
+from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
 
 class PipelineGeneratorNode(Node):
     def __init__(self):
         super().__init__("motion_pipeline_generator")
         self.sub = self.create_subscription(String, "generate_request", self.on_request, 10)
         self.pub = self.create_publisher(String, "rml_output", 10)
+
+        self.send_sub = self.create_subscription(String, "send_webots", self.on_send_request, 10)
+        self.send_pub = self.create_publisher(String, "webots_motion", 10)
         self.get_logger().info("Generator node started")
 
     def on_request(self, msg: String):
@@ -36,6 +39,14 @@ class PipelineGeneratorNode(Node):
             self.pub.publish(out)
         except Exception as e: 
             self.__publish_error("No rml text")
+
+    def on_send_request(self, msg):
+        rml_plaintext = msg.data
+        rml_json = generate_rml_json_from_plaintext(rml_plaintext)
+        out = String()
+        out.data = json.dumps(rml_json)
+        self.send_pub.publish(out)
+
 
     def _publish_error(self, text: str):
         self.get_logger().error(text)

@@ -1,11 +1,15 @@
+import importlib
+import os
 from pathlib import Path
+import sys
 from typing import Tuple, Optional
 
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
 from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
 from motion_pipeline.core.joint_level import Program
-from motion_pipeline.emitter.emitter import BasicRMLEmitter
-from motion_pipeline.rml.converter import program_to_legacy_payload
+from motion_pipeline.rml.rml_emitter import BasicRMLEmitter
+from motion_pipeline.rml.program_to_legacy import program_to_legacy_payload
+from motion_pipeline.rml.rml_text_to_json import rml_text_to_legacy_payload
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 from motion_pipeline.runtime.configs.robots import TIAGO, NAO, UR5E
 from motion_pipeline.runtime.task_to_joint import motion_to_program
@@ -40,7 +44,7 @@ def build_adapter(adapter_key: str, robot: RobotConfig):
     if adapter_key=="json":
         return JsonScenarioAdapter()
     if adapter_key=="mediapipe_csv":
-        return MediaPipeCSVAdapter()
+        return MediaPipeCSVAdapter(robot)
     
 def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Program:
     input_path = Path(input_path)
@@ -60,3 +64,5 @@ def generate_rml_payload(input_path: Path, adapter_key: str, robot_key: str) -> 
     rml_payload = program_to_legacy_payload(program)
     return rml_payload
 
+def generate_rml_json_from_plaintext(text: str):
+    return rml_text_to_legacy_payload(text)

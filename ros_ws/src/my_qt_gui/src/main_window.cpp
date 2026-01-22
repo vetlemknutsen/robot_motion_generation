@@ -11,6 +11,8 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
     generate_pub_ = node_->create_publisher<std_msgs::msg::String>("generate_request", 10);
     rml_sub_ = node_->create_subscription<std_msgs::msg::String>("rml_output", 10, std::bind(&MainWindow::onRmlReceived, this, std::placeholders::_1));
 
+    send_pub_ = node_->create_publisher<std_msgs::msg::String>("send_webots", 10);
+
     connect(
         ui->generateButton,
         &QPushButton::clicked,
@@ -22,6 +24,12 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
         &QPushButton::clicked,
         this,
         &MainWindow::onBrowseClicked);
+
+    connect(
+        ui->sendButton,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::onSendClicked);
 
 
     statusBar()->showMessage("Ready!");
@@ -60,6 +68,14 @@ void MainWindow::onBrowseClicked(){
         QString fileName = fileNames.at(0);
         ui->pathLineEdit->setText(fileName);
     }
+}
+
+void MainWindow::onSendClicked(){
+    QString rmlPlain = ui->txt_editor->toPlainText();
+    std_msgs::msg::String msg;
+    msg.data = rmlPlain.toStdString();
+    send_pub_->publish(msg);
+
 }
 
 

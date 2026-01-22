@@ -28,7 +28,10 @@ private:
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr generate_pub_;
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr rml_sub_;
 
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr send_pub_;
+
     void onBrowseClicked();
     void onGenerateClicked();
+    void onSendClicked();
     void onRmlReceived(const std_msgs::msg::String::SharedPtr msg);
 };

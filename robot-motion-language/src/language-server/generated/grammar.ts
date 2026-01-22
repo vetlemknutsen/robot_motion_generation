@@ -226,7 +226,7 @@ export const RobotMotionLanguageGrammar = (): Grammar => loadedRobotMotionLangua
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$refText": "JOINT"
+                "$refText": "ID"
               },
               "arguments": []
             }
@@ -301,127 +301,6 @@ export const RobotMotionLanguageGrammar = (): Grammar => loadedRobotMotionLangua
             "left": {
               "$type": "Keyword",
               "value": "left"
-            }
-          }
-        ]
-      },
-      "fragment": false,
-      "hidden": false
-    },
-    {
-      "$type": "TerminalRule",
-      "name": "JOINT",
-      "definition": {
-        "$type": "TerminalAlternatives",
-        "elements": [
-          {
-            "$type": "TerminalAlternatives",
-            "elements": [
-              {
-                "$type": "TerminalAlternatives",
-                "elements": [
-                  {
-                    "$type": "TerminalAlternatives",
-                    "elements": [
-                      {
-                        "$type": "TerminalAlternatives",
-                        "elements": [
-                          {
-                            "$type": "TerminalAlternatives",
-                            "elements": [
-                              {
-                                "$type": "TerminalAlternatives",
-                                "elements": [
-                                  {
-                                    "$type": "TerminalAlternatives",
-                                    "elements": [
-                                      {
-                                        "$type": "TerminalAlternatives",
-                                        "elements": [
-                                          {
-                                            "$type": "CharacterRange",
-                                            "left": {
-                                              "$type": "Keyword",
-                                              "value": "head"
-                                            }
-                                          },
-                                          {
-                                            "$type": "CharacterRange",
-                                            "left": {
-                                              "$type": "Keyword",
-                                              "value": "fingers"
-                                            }
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "$type": "CharacterRange",
-                                        "left": {
-                                          "$type": "Keyword",
-                                          "value": "wrist"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "$type": "CharacterRange",
-                                    "left": {
-                                      "$type": "Keyword",
-                                      "value": "elbow"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "$type": "CharacterRange",
-                                "left": {
-                                  "$type": "Keyword",
-                                  "value": "shoulder"
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "$type": "CharacterRange",
-                            "left": {
-                              "$type": "Keyword",
-                              "value": "torso"
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "$type": "CharacterRange",
-                        "left": {
-                          "$type": "Keyword",
-                          "value": "hip"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "$type": "CharacterRange",
-                    "left": {
-                      "$type": "Keyword",
-                      "value": "knee"
-                    }
-                  }
-                ]
-              },
-              {
-                "$type": "CharacterRange",
-                "left": {
-                  "$type": "Keyword",
-                  "value": "ankle"
-                }
-              }
-            ]
-          },
-          {
-            "$type": "CharacterRange",
-            "left": {
-              "$type": "Keyword",
-              "value": "toes"
             }
           }
         ]

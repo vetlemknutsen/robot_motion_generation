@@ -125,7 +125,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_3">
+         <widget class="QPushButton" name="sendButton">
           <property name="text">
            <string>Send to Webots</string>
           </property>

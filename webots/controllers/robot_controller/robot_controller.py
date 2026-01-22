@@ -1,21 +1,16 @@
-import sys
-import os
+import importlib
 import threading
 import json
 import yaml
-import Levenshtein
 import motion_functions
 import helpers
-from controller import Robot, Motor
+from controller import Robot
 from subscriber import Subscriber
+import rclpy
 
 
 class RobotController(Robot):
     def __init__(self, config):
-
-        # Resolver config file
-        self.config = config
-
         # Instance variable instruction
         self.instruction = ''
 
@@ -24,9 +19,10 @@ class RobotController(Robot):
 
         # Initialize Robot from Webots API
         super().__init__()
+        rclpy.init()
 
         # Initialize subscriber/listener
-        self.subscriber = Subscriber('routing_exchange', 'webots', self.messageCallback)
+        self.subscriber = Subscriber('webots_motion', self.messageCallback)
 
         # Initialize devices (motors, sensors, cameras..)
         self.findAndEnableDevices(config)
@@ -51,36 +47,15 @@ class RobotController(Robot):
 
 
     # Callback when receiving message through messaging system
-    def messageCallback(self, channel, method, properties, body):
-        body = json.loads(body)
+    def messageCallback(self, msg):
+        body = json.loads(msg)
         if 'instruction' in body:
-            self.instruction = self.findMatchingMotionFunction(body['instruction'])
-        elif 'schedule' in body:
-            self.scheduled = [self.findMatchingMotionFunction(instruction) for instruction in body['schedule']]
+            self.instruction = body['instruction']
         else:
             helpers.createNewMotion(body)
-
-
-    def findMatchingMotionFunction(self, s):
-        '''
-        Finds the closest matching motion-function to match argument using Levenshtein.
-        Returns None if minimum edit distance found is >= 5
-
-        ARGS:
-            s (str): The string to match on
-
-        RETURNS:
-            The name of the closest matching motion-function
-        '''
-        func_list = helpers.getMotionFunctions()
-        min_edit_distance = 5 # The maximum distance allowed
-        closest_match = None
-        for func in func_list:
-            edit_distance = Levenshtein.distance(s, func)
-            if  edit_distance < min_edit_distance:
-                min_edit_distance = edit_distance
-                closest_match = func
-        return closest_match
+            importlib.reload(motion_functions)
+            if 'def' in body:
+                self.instruction = body['def']
 
 
     def motor_set_position_sync(self, tag_motor, tag_sensor, target, delay):

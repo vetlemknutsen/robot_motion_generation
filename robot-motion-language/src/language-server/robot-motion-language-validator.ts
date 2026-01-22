@@ -31,8 +31,8 @@ export class RobotMotionLanguageValidator {
 
     //CHECK MOVE
     checkMove(move: Move, accept: ValidationAcceptor) : void {
-        this.checkMoveSideArg(move, accept);
-        this.checkMoveRotationArg(move, accept);
+        //this.checkMoveSideArg(move, accept);
+        //this.checkMoveRotationArg(move, accept);
     }
     checkMoveSideArg(move: Move, accept: ValidationAcceptor): void {
         if (move.joint === 'head' || move.joint === 'torso') {
