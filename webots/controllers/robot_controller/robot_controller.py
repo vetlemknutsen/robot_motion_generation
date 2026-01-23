@@ -48,7 +48,7 @@ class RobotController(Robot):
 
     # Callback when receiving message through messaging system
     def messageCallback(self, msg):
-        body = json.loads(msg)
+        body = json.loads(msg.data)
         if 'instruction' in body:
             self.instruction = body['instruction']
         else:
