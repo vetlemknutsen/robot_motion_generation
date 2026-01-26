@@ -16,9 +16,11 @@ def generate_launch_description():
         Node(
             package="motion_pipeline_bridge",
             executable="generator_node",
-            name="motion_pipeline_generator",
             output="screen",
-        ),
+            emulate_tty=True,
+            additional_env={"PYTHONUNBUFFERED": "1"},
+        )
+        ,
         Node(
             package="my_qt_gui",
             executable="my_qt_gui_node",

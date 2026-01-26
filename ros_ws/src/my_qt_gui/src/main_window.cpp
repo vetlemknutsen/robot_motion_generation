@@ -46,6 +46,7 @@ void MainWindow::onGenerateClicked(){
                "\",\"robot\":\"" + robot.toStdString() + "\"}";
 
     generate_pub_->publish(msg);
+    ui->lbl_metadata->setText("File: " + path + "   |   " + "Adapter: " + "   |   " + "Robot: " + robot);
     statusBar()->showMessage("Generate request sent");
 }
 

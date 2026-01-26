@@ -62,6 +62,8 @@ def move(robot, sync, position, joint, rotation='', side='', delay=5000, acceler
 
 
 
+
+
 def json_test(robot):
 	# Keyframe
 	move(robot, False, 1.9699, 'arm_1_joint', '', '')
@@ -72,10 +74,45 @@ def json_test(robot):
 	move(robot, False, -1.3312, 'arm_6_joint', '', '')
 	move(robot, True, 1.2991, 'arm_7_joint', '', '')
 	# Keyframe
-	move(robot, False, 0.8883, 'arm_1_joint', '', '')
-	move(robot, False, 0.7943, 'arm_2_joint', '', '')
-	move(robot, False, -2.1629, 'arm_3_joint', '', '')
-	move(robot, False, 1.8841, 'arm_4_joint', '', '')
-	move(robot, False, 1.1793, 'arm_5_joint', '', '')
-	move(robot, False, -0.1571, 'arm_6_joint', '', '')
-	move(robot, True, 1.3361, 'arm_7_joint', '', '')
+	move(robot, False, 0.8889, 'arm_1_joint', '', '')
+	move(robot, False, 0.7931, 'arm_2_joint', '', '')
+	move(robot, False, -2.1634, 'arm_3_joint', '', '')
+	move(robot, False, 1.8844, 'arm_4_joint', '', '')
+	move(robot, False, 1.1708, 'arm_5_joint', '', '')
+	move(robot, False, -0.1576, 'arm_6_joint', '', '')
+	move(robot, True, 1.3438, 'arm_7_joint', '', '')
+
+def sander(robot):
+	# Keyframe
+	move(robot, False, 0.6089, 'arm_1_joint', '', '')
+	move(robot, False, -0.3879, 'arm_2_joint', '', '')
+	move(robot, False, -0.2349, 'arm_3_joint', '', '')
+	move(robot, False, 2.2186, 'arm_4_joint', '', '')
+	move(robot, False, -0.6166, 'arm_5_joint', '', '')
+	move(robot, False, 0.6352, 'arm_6_joint', '', '')
+	move(robot, True, 0.9708, 'arm_7_joint', '', '')
+	# Keyframe
+	move(robot, False, 0, 'gripper_left_finger_joint', '', '')
+	move(robot, True, 0, 'gripper_right_finger_joint', '', '')
+	# Keyframe
+	move(robot, False, 0.5152, 'arm_1_joint', '', '')
+	move(robot, False, 0.8319, 'arm_2_joint', '', '')
+	move(robot, False, -2.9053, 'arm_3_joint', '', '')
+	move(robot, False, 1.4152, 'arm_4_joint', '', '')
+	move(robot, False, 1.1287, 'arm_5_joint', '', '')
+	move(robot, False, -0.8751, 'arm_6_joint', '', '')
+	move(robot, True, 1.6976, 'arm_7_joint', '', '')
+	# Keyframe
+	move(robot, False, 0.044, 'gripper_left_finger_joint', '', '')
+	move(robot, True, 0.044, 'gripper_right_finger_joint', '', '')
+	# Keyframe
+	move(robot, False, 0.5342, 'arm_1_joint', '', '')
+	move(robot, False, 0.8509, 'arm_2_joint', '', '')
+	move(robot, False, -2.8948, 'arm_3_joint', '', '')
+	move(robot, False, 1.414, 'arm_4_joint', '', '')
+	move(robot, False, 1.111, 'arm_5_joint', '', '')
+	move(robot, False, -0.8578, 'arm_6_joint', '', '')
+	move(robot, True, 1.7122, 'arm_7_joint', '', '')
+	# Keyframe
+	move(robot, False, 0, 'gripper_left_finger_joint', '', '')
+	move(robot, True, 0, 'gripper_right_finger_joint', '', '')

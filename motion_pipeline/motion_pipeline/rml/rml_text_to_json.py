@@ -24,3 +24,4 @@ def rml_text_to_legacy_payload(rml_text: str, langium_root: Path = LANGIUM_ROOT)
         return data
     else:
         raise FileNotFoundError(f"Langium CLI did not create {output_json}")
+    

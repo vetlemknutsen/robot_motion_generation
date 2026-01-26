@@ -59,10 +59,13 @@ def generate_rml(input_path: Path, adapter_key: str, robot_key: str):
     rml = BasicRMLEmitter().emit(program)
     return rml
 
+# unused
 def generate_rml_payload(input_path: Path, adapter_key: str, robot_key: str) -> dict: 
     program = generate_program(input_path, adapter_key, robot_key)
     rml_payload = program_to_legacy_payload(program)
     return rml_payload
 
 def generate_rml_json_from_plaintext(text: str):
-    return rml_text_to_legacy_payload(text)
+    data = rml_text_to_legacy_payload(text)
+    print(rml_text_to_legacy_payload(text))
+    return data

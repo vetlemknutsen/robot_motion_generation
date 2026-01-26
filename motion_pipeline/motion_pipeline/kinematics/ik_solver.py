@@ -39,6 +39,11 @@ class MoveItIKClient:
         if seed_state:
             req.ik_request.robot_state.joint_state.name = list(seed_state.keys())
             req.ik_request.robot_state.joint_state.position = list(seed_state.values())
+            req.ik_request.robot_state.is_diff = True
+        else:
+            req.ik_request.robot_state.joint_state.name = []
+            req.ik_request.robot_state.joint_state.position = []
+
         req.ik_request.avoid_collisions = avoid_collisions
         # currently give MoveIt 2 seconds to solve
         req.ik_request.timeout = Duration(sec=1, nanosec=0)
@@ -58,5 +63,6 @@ class MoveItIKClient:
     ) -> Optional[Dict[str, float]]:
         try:
             return self.solve(position, orientation, avoid_collisions, seed_state)
-        except RuntimeError:
+        except RuntimeError as e:
+            print(e)
             return None

@@ -177,7 +177,7 @@
            <item>
             <widget class="QLabel" name="lbl_metadata">
              <property name="text">
-              <string>TextLabel</string>
+              <string/>
              </property>
             </widget>
            </item>

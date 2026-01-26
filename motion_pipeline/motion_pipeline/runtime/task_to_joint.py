@@ -25,7 +25,9 @@ def motion_to_program(motion: Motion, config: RobotConfig) -> Program:
             # Try different orientations until IK succeeds
             orientations = [target.orientation] if target.orientation else config.get_orientation_options() or [None]
             joints = None
+
             for orient in orientations:
+
                 joints = ik.try_solve(target.position, orient, seed_state=prev_joints)
  
                 if not joints:

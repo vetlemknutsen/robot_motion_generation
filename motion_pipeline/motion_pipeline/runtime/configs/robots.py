@@ -51,6 +51,7 @@ NAO = {
             "RWristYaw",
         ],
     },
+    "default_orientation": [0.0,0.0,0.0,1.0], 
     "limits": {
         "RShoulderPitch": (-2.0857, 2.0857),
         "RShoulderRoll": (-1.3265, 0.3142),
@@ -66,9 +67,7 @@ NAO = {
     "end_effectors": {
         "right": ("base_link", "r_wrist"),
     },
-    "grippers": {},
-    "default_orientation": None,
-    "orientation_options": None,
+    "grippers": {}
 }
 
 UR5E = {

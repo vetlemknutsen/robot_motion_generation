@@ -38,7 +38,7 @@ class PipelineGeneratorNode(Node):
             out.data = rml_text 
             self.pub.publish(out)
         except Exception as e: 
-            self.__publish_error("No rml text")
+            self._publish_error("No rml text")
 
     def on_send_request(self, msg):
         rml_plaintext = msg.data
