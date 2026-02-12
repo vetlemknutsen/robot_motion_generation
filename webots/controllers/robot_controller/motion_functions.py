@@ -61,4 +61,20 @@ def move(robot, sync, position, joint, rotation='', side='', delay=5000, acceler
 
 
 
-
+def json_test(robot):
+	# Keyframe
+	move(robot, False, 1.9699, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, -1.3737, 'Shoulder', 'Roll', 'R')
+	move(robot, False, 1.3711, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.3415, 'Elbow', 'Pitch', 'R')
+	move(robot, False, -0.1341, 'Elbow', 'Yaw', 'R')
+	move(robot, False, -1.3312, 'Wrist', 'Pitch', 'R')
+	move(robot, True, 1.2991, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 1.8135, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, 0.0718, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -0.0196, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 0.8677, 'Elbow', 'Pitch', 'R')
+	move(robot, False, -1.2369, 'Elbow', 'Yaw', 'R')
+	move(robot, False, -0.8291, 'Wrist', 'Pitch', 'R')
+	move(robot, True, -0.2503, 'Wrist', 'Roll', 'R')

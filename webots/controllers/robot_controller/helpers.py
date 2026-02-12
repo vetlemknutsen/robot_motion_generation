@@ -21,10 +21,7 @@ def createNewMotion(body):
 
         def writeMove(move, sync):
             pos = move['position']
-            joint = move['joint']
-            # Only capitalize for NAO-style short joint names (no underscores)
-            if '_' not in joint:
-                joint = joint.capitalize()
+            joint = move['joint'].capitalize()
             side = move['side'][0].capitalize() if 'side' in move else ''
             rot = move['rotation'].capitalize() if 'rotation' in move else ''
             f.write(f"\tmove(robot, {sync}, {pos}, '{joint}', '{rot}', '{side}')\n")

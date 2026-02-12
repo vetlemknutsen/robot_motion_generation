@@ -3,6 +3,7 @@
 #include "ui_main_window.h"
 #include <rclcpp/rclcpp.hpp>
 #include <QMetaObject>
+#include <QTimer>
 
 MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QMainWindow(parent), node_(node), ui(new Ui::MainWindow)
 {
@@ -12,6 +13,9 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
     rml_sub_ = node_->create_subscription<std_msgs::msg::String>("rml_output", 10, std::bind(&MainWindow::onRmlReceived, this, std::placeholders::_1));
 
     send_pub_ = node_->create_publisher<std_msgs::msg::String>("send_webots", 10);
+
+    switch_robot_pub_ = node_->create_publisher<std_msgs::msg::String>("switch_robot", 10);
+    robot_ready_sub_ = node_->create_subscription<std_msgs::msg::String>("robot_ready", 10, std::bind(&MainWindow::onRobotReady, this, std::placeholders::_1));
 
     connect(
         ui->generateButton,
@@ -31,11 +35,23 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
         this,
         &MainWindow::onSendClicked);
 
+    connect(
+        ui->robotBox,
+        &QComboBox::currentTextChanged, 
+        this, 
+        &MainWindow::onRobotDropdownChanged);
+
 
     statusBar()->showMessage("Ready!");
+
+    current_robot_ = "nao";
 }
 
 void MainWindow::onGenerateClicked(){
+    if(robot_loading_){
+        return;
+    }
+
     QString path = ui->pathLineEdit->text();
     QString adapter = ui->adapterBox->currentText();
     QString robot = ui->robotBox->currentText();
@@ -79,9 +95,46 @@ void MainWindow::onSendClicked(){
 
 }
 
+void MainWindow::onRobotDropdownChanged(const QString& robot){
+    if (robot == current_robot_ || robot.isEmpty()){
+        return;
+    }
+
+    setLoadingState(true);
+    statusBar()->showMessage("Loading " + robot + "...");
+
+    std_msgs::msg::String msg; 
+    msg.data = robot.toStdString();
+    switch_robot_pub_->publish(msg);
+}
+
+void MainWindow::onRobotReady(const std_msgs::msg::String::SharedPtr msg){
+    QString robot = QString::fromStdString(msg->data);
+    QMetaObject::invokeMethod(this, [this, robot]() {
+        current_robot_ = robot;
+
+        QTimer::singleShot(3000, this, [this, robot](){
+            setLoadingState(false);
+            statusBar()->showMessage(robot + " ready!");
+        });
+    
+    });
+}
+
+void MainWindow::setLoadingState(bool loading){
+    robot_loading_ = loading;
+    ui->generateButton->setEnabled(!loading);
+    ui->robotBox->setEnabled(!loading);
+    
+    if (loading) {
+        ui->generateButton->setText("Loading...");
+    } else {
+        ui->generateButton->setText("Generate");
+    }
+}
+
 
 
 MainWindow::~MainWindow(){
     delete ui;
 }
-

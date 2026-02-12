@@ -5,6 +5,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
 #include <QFileDialog>
+#include <QMovie>
 
 
 namespace rclcpp {
@@ -30,8 +31,17 @@ private:
 
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr send_pub_;
 
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr switch_robot_pub_; 
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr robot_ready_sub_; 
+    QString current_robot_; 
+    bool robot_loading_ = false; 
+
     void onBrowseClicked();
     void onGenerateClicked();
     void onSendClicked();
     void onRmlReceived(const std_msgs::msg::String::SharedPtr msg);
+
+    void onRobotDropdownChanged(const QString& robot);
+    void onRobotReady(const std_msgs::msg::String::SharedPtr msg);
+    void setLoadingState(bool loading);
 };

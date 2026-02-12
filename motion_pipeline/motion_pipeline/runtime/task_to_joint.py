@@ -45,10 +45,7 @@ def motion_to_program(motion: Motion, config: RobotConfig) -> Program:
             for name in config.get_chain(target.side):
                 if name in joints:
                     val = config.clamp_joint(name, joints[name])
-                    # for NAO
-                    # For one-armed, side is not needed
-                    side = target.side if (name and name[0] in ('R', 'L') and len(name) > 1 and name[1].isupper()) else ""
-                    moves.append(Move(side, name, "", round(val, 4)))
+                    moves.append(Move(target.side, name, "", round(val, 4)))
 
         if moves:
             instructions.append(moves[0] if len(moves) == 1 else MultiMove(moves))
@@ -59,9 +56,7 @@ def motion_to_program(motion: Motion, config: RobotConfig) -> Program:
                 val = gripper_config["closed"] if grip.closed else gripper_config["open"]
                 gripper_moves = []
                 for j in gripper_config["joints"]:
-                    # Only pass side for NAO
-                    side = grip.side[0].upper() if (j and j[0] in ('R', 'L') and len(j) > 1 and j[1].isupper()) else ""
-                    gripper_moves.append(Move(side, j, "", val))
+                    gripper_moves.append(Move(grip.side, j, "", val))
                 instructions.append(gripper_moves[0] if len(gripper_moves) == 1 else MultiMove(gripper_moves))
 
     return Program(motion.name, instructions)

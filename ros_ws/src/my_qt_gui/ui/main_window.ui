@@ -100,12 +100,12 @@
             <widget class="QComboBox" name="robotBox">
              <item>
               <property name="text">
-               <string>tiago</string>
+               <string>nao</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>nao</string>
+               <string>tiago</string>
               </property>
              </item>
              <item>
