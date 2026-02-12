@@ -1,0 +1,56 @@
+name: TIAGo
+moveit_group: arm_torso
+base_frame: base_footprint
+
+chains:
+  right:
+    - arm_1_joint
+    - arm_2_joint
+    - arm_3_joint
+    - arm_4_joint
+    - arm_5_joint
+    - arm_6_joint
+    - arm_7_joint
+
+joint_groups:
+  right:
+    shoulder:
+      pitch: arm_1_joint
+      roll: arm_2_joint
+      yaw: arm_3_joint
+    elbow:
+      pitch: arm_4_joint
+      yaw: arm_5_joint
+    wrist:
+      pitch: arm_6_joint
+      roll: arm_7_joint
+
+limits:
+  arm_1_joint: [0.0, 2.67]
+  arm_2_joint: [-1.4, 1.01]
+  arm_3_joint: [-3.53, 1.5]
+  arm_4_joint: [-0.32, 2.35]
+  arm_5_joint: [-2.09, 2.09]
+  arm_6_joint: [-1.39, 1.39]
+  arm_7_joint: [-2.07, 2.07]
+
+workspace_limits:
+  x: [0.25, 0.7]
+  y: [-0.5, 0.5]
+  z: [0.4, 1.2]
+
+end_effectors:
+  right: [torso_lift_link, gripper_tool_link]
+
+grippers:
+  right:
+    joints: [gripper_left_finger_joint, gripper_right_finger_joint]
+    open: 0.044
+    closed: 0.0
+
+default_orientation: [0.5, -0.5, -0.5, 0.5]
+orientation_options:
+  - [0.5, -0.5, -0.5, 0.5]
+  - [0.0, -0.707, 0.0, 0.707]
+  - [0.5, -0.5, 0.5, 0.5]
+  - [0.5, -0.5, -0.5, -0.5]

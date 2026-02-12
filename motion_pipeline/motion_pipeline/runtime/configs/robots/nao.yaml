@@ -1,0 +1,50 @@
+name: NAO
+moveit_group: right_arm
+base_frame: base_link
+
+chains:
+  right:
+    - RShoulderPitch
+    - RShoulderRoll
+    - RElbowYaw
+    - RElbowRoll
+    - RWristYaw
+
+joint_groups:
+  right:
+    shoulder:
+      pitch: RShoulderPitch
+      roll: RShoulderRoll
+    elbow:
+      yaw: RElbowYaw
+      roll: RElbowRoll
+    wrist:
+      yaw: RWristYaw
+  left:
+    shoulder:
+      pitch: LShoulderPitch
+      roll: LShoulderRoll
+    elbow:
+      yaw: LElbowYaw
+      roll: LElbowRoll
+    wrist:
+      yaw: LWristYaw
+
+default_orientation: [0.0, 0.0, 0.0, 1.0]
+
+limits:
+  RShoulderPitch: [-2.0857, 2.0857]
+  RShoulderRoll: [-1.3265, 0.3142]
+  RElbowYaw: [-2.0857, 2.0857]
+  RElbowRoll: [0.0349, 1.5446]
+  RWristYaw: [-1.8238, 1.8238]
+
+workspace_limits:
+  x: [0.0, 0.1]
+  y: [-0.25, 0.0]
+  z: [0.0, 0.17]
+
+end_effectors:
+  right: [base_link, r_wrist]
+
+grippers: {}

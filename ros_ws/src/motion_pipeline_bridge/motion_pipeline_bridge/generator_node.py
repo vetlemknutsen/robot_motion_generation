@@ -4,6 +4,11 @@ from pathlib import Path
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+import subprocess
+import time 
+from moveit_msgs.srv import GetPositionIK 
+import os 
+import signal
 
 from motion_pipeline.runtime.generate import generate_rml
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
@@ -16,6 +21,8 @@ class PipelineGeneratorNode(Node):
 
         self.send_sub = self.create_subscription(String, "send_webots", self.on_send_request, 10)
         self.send_pub = self.create_publisher(String, "webots_motion", 10)
+
+        
         self.get_logger().info("Generator node started")
 
     def on_request(self, msg: String):

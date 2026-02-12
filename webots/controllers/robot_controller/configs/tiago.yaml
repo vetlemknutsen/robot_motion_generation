@@ -6,26 +6,26 @@ joints:
     motor: torso_lift_joint
     sensor: torso_lift_joint_sensor
 
-  # ARM
-  arm_1_joint:
+  # ARM — keys match RML: Side[0] + Joint.capitalize() + Rotation.capitalize()
+  RShoulderPitch:
     motor: arm_1_joint
     sensor: arm_1_joint_sensor
-  arm_2_joint:
+  RShoulderRoll:
     motor: arm_2_joint
     sensor: arm_2_joint_sensor
-  arm_3_joint:
+  RShoulderYaw:
     motor: arm_3_joint
     sensor: arm_3_joint_sensor
-  arm_4_joint:
+  RElbowPitch:
     motor: arm_4_joint
     sensor: arm_4_joint_sensor
-  arm_5_joint:
+  RElbowYaw:
     motor: arm_5_joint
     sensor: arm_5_joint_sensor
-  arm_6_joint:
+  RWristPitch:
     motor: arm_6_joint
     sensor: arm_6_joint_sensor
-  arm_7_joint:
+  RWristRoll:
     motor: arm_7_joint
     sensor: arm_7_joint_sensor
 

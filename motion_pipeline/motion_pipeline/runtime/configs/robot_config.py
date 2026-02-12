@@ -19,7 +19,19 @@ class RobotConfig:
     end_effectors: dict = field(default_factory=dict)
     grippers: dict = field(default_factory=dict)
     default_orientation: list = None
-    orientation_options: list = None   
+    orientation_options: list = None
+    # joint_groups: {side: {group: {rotation: joint_name}}}
+    #               {"right": {"shoulder": {"pitch": "arm_1_joint"}}}
+    joint_groups: dict = field(default_factory=dict)
+    
+    # built automatically from joint_groups in __post_init__
+    joint_map: dict = field(default_factory=dict, init=False)
+
+    def __post_init__(self):
+        for side, groups in self.joint_groups.items():
+            for group_name, rotations in groups.items():
+                for rotation, joint_name in rotations.items():
+                    self.joint_map[joint_name] = (side, group_name, rotation)
 
     def get_chain(self, name: str) -> List[str]:
         return self.chains.get(name, [])
