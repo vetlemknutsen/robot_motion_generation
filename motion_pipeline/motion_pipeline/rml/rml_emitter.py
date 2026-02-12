@@ -12,7 +12,9 @@ class BasicRMLEmitter:
 
         for instr in program.instructions:
             if isinstance(instr, Move):
-                lines.append(self._emit_move(instr))
+                line = self._emit_move(instr)
+                if line:
+                    lines.append(line)
             else:
                 lines.extend(self._emit_multimove(instr))
         lines.append("end")
@@ -21,13 +23,16 @@ class BasicRMLEmitter:
     def _emit_move(self, move: Move) -> str:
         joint = move.joint
         if joint not in self.joint_map:
-            raise ValueError(f"Joint '{joint}' not found in joint_map. Add it to joint_groups in the robot config.")
+            return None  
         side, group, rotation = self.joint_map[joint]
         return f"{self.tab}move {side} {group} {rotation} to {move.position}"
 
     def _emit_multimove(self, block: MultiMove) -> list[str]:
-        lines = [f"{self.tab}multimove"]
+        move_lines = []
         for move in block.moves:
-            lines.append(f"{self.tab}{self._emit_move(move)}")
-        lines.append(f"{self.tab}end")
-        return lines
+            line = self._emit_move(move)
+            if line:
+                move_lines.append(f"{self.tab}{line}")
+        if not move_lines:
+            return []
+        return [f"{self.tab}multimove"] + move_lines + [f"{self.tab}end"]

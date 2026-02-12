@@ -73,7 +73,11 @@ def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Prog
 
 def generate_rml(input_path: Path, adapter_key: str, robot_key: str):
     robot = build_robot_config(robot_key)
+
     program = generate_program(input_path, adapter_key, robot_key)
+
+    if program.instructions:
+        first = program.instructions[0]
     rml = BasicRMLEmitter(robot).emit(program)
     return rml
 
