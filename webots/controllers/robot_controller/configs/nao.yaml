@@ -15,8 +15,8 @@ joints: {
     sensor: NULL
   },
   
-  # LEFT ARM
-  LFinger1: {
+
+  LGripperFinger1: {
     motor: NULL,
     sensor: NULL
   },
@@ -61,11 +61,11 @@ joints: {
   },
 
   # RIGHT ARM
-  RFinger1: {
+  RGripperFinger1: {
     motor: NULL,
     sensor: NULL
   },
-  RFinger2: {
+  RGripperFinger2: {
     motor: NULL,
     sensor: NULL
   },

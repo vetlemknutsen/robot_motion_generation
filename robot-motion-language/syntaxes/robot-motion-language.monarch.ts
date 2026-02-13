@@ -11,6 +11,7 @@ export default {
     tokenizer: {
         initial: [
             { regex: /[+-]?[0-9]+(\.[0-9]*)?/, action: {"token":"number"} },
+            { regex: /finger[0-9]+/, action: {"token":"FINGER"} },
             { regex: /[_a-zA-Z][\w_]*/, action: { cases: { '@keywords': {"token":"keyword"}, '@default': {"token":"ID"} }} },
             { include: '@whitespace' },
             { regex: /@symbols/, action: { cases: { '@operators': {"token":"operator"}, '@default': {"token":""} }} },

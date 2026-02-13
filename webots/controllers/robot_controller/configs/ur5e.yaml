@@ -21,7 +21,16 @@ joints:
     motor: wrist_3_joint
     sensor: wrist_3_joint_sensor
 
-  # GRIPPER
+  RGripperFinger1:
+    motor: finger_1_joint_1
+    sensor: finger_1_joint_1_sensor
+  RGripperFinger2:
+    motor: finger_2_joint_1
+    sensor: finger_2_joint_1_sensor
+  RGripperFinger3:
+    motor: finger_middle_joint_1
+    sensor: finger_middle_joint_1_sensor
+
   palm_finger_1_joint:
     motor: palm_finger_1_joint
     sensor: palm_finger_1_joint_sensor

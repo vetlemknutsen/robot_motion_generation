@@ -236,11 +236,23 @@ export const RobotMotionLanguageGrammar = (): Grammar => loadedRobotMotionLangua
             "feature": "rotation",
             "operator": "=",
             "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$refText": "ROT"
-              },
-              "arguments": []
+              "$type": "Alternatives",
+              "elements": [
+                {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$refText": "ROT"
+                  },
+                  "arguments": []
+                },
+                {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$refText": "FINGER"
+                  },
+                  "arguments": []
+                }
+              ]
             },
             "cardinality": "?"
           },
@@ -341,6 +353,16 @@ export const RobotMotionLanguageGrammar = (): Grammar => loadedRobotMotionLangua
             }
           }
         ]
+      },
+      "fragment": false,
+      "hidden": false
+    },
+    {
+      "$type": "TerminalRule",
+      "name": "FINGER",
+      "definition": {
+        "$type": "RegexToken",
+        "regex": "finger[0-9]+"
       },
       "fragment": false,
       "hidden": false

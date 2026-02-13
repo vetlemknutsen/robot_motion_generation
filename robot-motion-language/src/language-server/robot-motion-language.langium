@@ -13,12 +13,13 @@ MultiMove:
     'multimove' compositeMoves+=(Move)* 'end';
 
 Move:
-    'move' (side=SIDE)? joint=ID (rotation=ROT)? 'to' position=NUMBER;
+    'move' (side=SIDE)? joint=ID (rotation=(ROT|FINGER))? 'to' position=NUMBER;
 
 
 terminal NUMBER returns number: /[+-]?[0-9]+(\.[0-9]*)?/;
 terminal SIDE: ('right' | 'left');
 terminal ROT: ('pitch' | 'roll' | 'yaw');
+terminal FINGER: /finger[0-9]+/;
 terminal ID: /[_a-zA-Z][\w_]*/;
 
 hidden terminal WS: /\s+/;

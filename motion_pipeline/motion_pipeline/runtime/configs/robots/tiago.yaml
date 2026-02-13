@@ -24,6 +24,10 @@ joint_groups:
     wrist:
       pitch: arm_6_joint
       roll: arm_7_joint
+    gripper:
+      finger1: gripper_left_finger_joint
+      finger2: gripper_right_finger_joint
+
 
 limits:
   arm_1_joint: [0.0, 2.67]

@@ -29,11 +29,10 @@ joints:
     motor: arm_7_joint
     sensor: arm_7_joint_sensor
 
-  # GRIPPER
-  gripper_left_finger_joint:
+  RGripperFinger1:
     motor: gripper_left_finger_joint
     sensor: gripper_left_finger_joint_sensor
-  gripper_right_finger_joint:
+  RGripperFinger2:
     motor: gripper_right_finger_joint
     sensor: gripper_right_finger_joint_sensor
 
