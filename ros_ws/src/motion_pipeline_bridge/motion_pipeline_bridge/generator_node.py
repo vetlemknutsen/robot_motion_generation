@@ -26,6 +26,8 @@ class PipelineGeneratorNode(Node):
         self.switch_sub = self.create_subscription(String, "switch_robot", self.on_switch_robot,10)
         self.ready_pub = self.create_publisher(String, "robot_ready", 10)
 
+        self.log_pub = self.create_publisher(String, "pipeline_logs", 10)
+
         self.current_robot = None
         self.switching = False
         self.move_group_process = None
@@ -80,7 +82,7 @@ class PipelineGeneratorNode(Node):
         self.get_logger().error(text)
         out = String()
         out.data = "ERROR: " + text 
-        self.pub.publish(out)
+        self.log_pub.publish(out)
 
     def on_switch_robot(self, msg: String):
         robot = msg.data
@@ -101,15 +103,15 @@ class PipelineGeneratorNode(Node):
                 self.get_logger().warn("Error killing old move group")
 
 
-        self.get_logger().info(f"Starting new move_group for {robot}...")
+        self.log_pub.publish(String(data=f"Starting IK solver for {robot}..."))
         self.move_group_process = subprocess.Popen(['ros2', 'launch', f'{robot}_moveit_config', 'move_group.launch.py'], start_new_session=True)
 
         client = self.create_client(GetPositionIK, '/compute_ik')
         self.get_logger().info("Waiting for /compute_ik service...")
-        while not client.wait_for_service(timeout_sec=1.0):
+        while not client.wait_for_service(timeout_sec=3.0):
             self.get_logger().info("Still waiting...")
 
-        self.get_logger().info("Service ready!")
+        self.log_pub.publish(String(data=f"IK solver for robot: {robot} ready!"))
         self.destroy_client(client)
 
         self.current_robot = robot

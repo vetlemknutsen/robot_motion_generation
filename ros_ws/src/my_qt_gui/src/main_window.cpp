@@ -17,6 +17,8 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
     switch_robot_pub_ = node_->create_publisher<std_msgs::msg::String>("switch_robot", 10);
     robot_ready_sub_ = node_->create_subscription<std_msgs::msg::String>("robot_ready", 10, std::bind(&MainWindow::onRobotReady, this, std::placeholders::_1));
 
+    log_sub_ = node_->create_subscription<std_msgs::msg::String>("pipeline_logs", 10, std::bind(&MainWindow::onLogReceived, this, std::placeholders::_1));
+
     connect(
         ui->generateButton,
         &QPushButton::clicked,
@@ -42,7 +44,7 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
         &MainWindow::onRobotDropdownChanged);
 
 
-    statusBar()->showMessage("Ready!");
+    ui->txt_logs->appendPlainText("Ready!");
 
     current_robot_ = "nao";
 }
@@ -63,14 +65,14 @@ void MainWindow::onGenerateClicked(){
 
     generate_pub_->publish(msg);
     ui->lbl_metadata->setText("File: " + path + "   |   " + "Adapter: " + adapter +  "   |   " + "Robot: " + robot);
-    statusBar()->showMessage("Generate request sent");
+    ui->txt_logs->appendPlainText("Generate request sent");
 }
 
 void MainWindow::onRmlReceived(const std_msgs::msg::String::SharedPtr msg){
     QString rml = QString::fromStdString(msg->data);
     QMetaObject::invokeMethod(this, [this, rml]() {
         ui->txt_editor->setPlainText(rml);
-        statusBar()->showMessage("RML received");
+        ui->txt_logs->appendPlainText("RML Received!");
     });
 }
 
@@ -101,7 +103,6 @@ void MainWindow::onRobotDropdownChanged(const QString& robot){
     }
 
     setLoadingState(true);
-    statusBar()->showMessage("Loading " + robot + "...");
 
     std_msgs::msg::String msg; 
     msg.data = robot.toStdString();
@@ -115,7 +116,6 @@ void MainWindow::onRobotReady(const std_msgs::msg::String::SharedPtr msg){
 
         QTimer::singleShot(3000, this, [this, robot](){
             setLoadingState(false);
-            statusBar()->showMessage(robot + " ready!");
         });
     
     });
@@ -133,6 +133,12 @@ void MainWindow::setLoadingState(bool loading){
     }
 }
 
+void MainWindow::onLogReceived(const std_msgs::msg::String::SharedPtr msg){
+    QString text = QString::fromStdString(msg->data);
+    QMetaObject::invokeMethod(this, [this, text](){
+        ui->txt_logs->appendPlainText(text);
+    });
+}
 
 
 MainWindow::~MainWindow(){

@@ -5,23 +5,27 @@ from typing import Dict, List, Tuple
 
 @dataclass
 class RobotConfig:
-    # robot name
-    name: str
-    # for moveit ik solver
-    moveit_group: str
-    base_frame: str
-    # which joint belong to each arm
-    chains: dict = field(default_factory=dict)
-    # limits for joint
-    limits: dict = field(default_factory=dict)
-    # workspace limits for end-effector position
-    workspace_limits: dict = field(default_factory=dict)
-    end_effectors: dict = field(default_factory=dict)
-    grippers: dict = field(default_factory=dict)
-    default_orientation: list = None
-    orientation_options: list = None
-    # joint_groups: {side: {group: {rotation: joint_name}}}
-    #               {"right": {"shoulder": {"pitch": "arm_1_joint"}}}
+    """
+    Configuration for a robot in the pipeline
+
+    To add a new robot, create a YAML file in configs/robots/
+    It will be auto-discovered by the pipeline
+    """
+    name: str                   # display name, for example "NAO", "TIAGo"
+    moveit_group: str           # MoveIt planning group, for example "right_arm" 
+    base_frame: str             # transformation base frame, for example "base_link"
+
+    chains: dict = field(default_factory=dict)           # joints per side, {"right": ["joint1", "joint2", ...]}
+    limits: dict = field(default_factory=dict)           # joint angle limits, {"joint1": (-1.0, 1.0)}
+    workspace_limits: dict = field(default_factory=dict) # end-effector position limits, where it's possible to reach {"x": (0.0, 0.5), "y": ...}
+    end_effectors: dict = field(default_factory=dict)    # (base_link, tip_link) per side for IK, {"right": ("base_link", "r_wrist")}
+    grippers: dict = field(default_factory=dict)         # gripper joints + open/close per side
+    default_orientation: list = None                     # default end-effector orientation 
+    orientation_options: list = None                     # list of orientations to try if IK fails with default
+
+
+    # Structure: {side: {group: {rotation: joint_name}}}
+    # Example: {"right": {"shoulder": {"pitch": "arm_1_joint", "roll": "arm_2_joint"}, "gripper": {"finger1": "gripper_joint"}}}
     joint_groups: dict = field(default_factory=dict)
     
     # built automatically from joint_groups in __post_init__

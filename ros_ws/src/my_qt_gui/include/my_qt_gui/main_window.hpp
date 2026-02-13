@@ -33,6 +33,8 @@ private:
 
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr switch_robot_pub_; 
     rclcpp::Subscription<std_msgs::msg::String>::SharedPtr robot_ready_sub_; 
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr log_sub_; 
+
     QString current_robot_; 
     bool robot_loading_ = false; 
 
@@ -44,4 +46,6 @@ private:
     void onRobotDropdownChanged(const QString& robot);
     void onRobotReady(const std_msgs::msg::String::SharedPtr msg);
     void setLoadingState(bool loading);
+
+    void onLogReceived(const std_msgs::msg::String::SharedPtr msg);
 };
