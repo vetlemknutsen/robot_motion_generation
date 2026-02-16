@@ -16,7 +16,6 @@ Copy an existing config (e.g. `nao.yaml`) and fill in the values. See `robot_con
 | `moveit_group` | MoveIt planning group name | `"right_arm"` |
 | `base_frame` | TF base frame | `"base_link"` |
 | `chains` | Joints per side | `right: [joint1, joint2, ...]` |
-| `limits` | Joint angle limits | `joint1: [-1.0, 1.0]` |
 | `end_effectors` | Base + tip link per side (for IK) | `right: [base_link, tool0]` |
 | `joint_groups` | Abstract joint grouping for RML | see below |
 
@@ -30,7 +29,7 @@ joint_groups:
 ```
 This lets the RML say `move right shoulder 1 to 1.5` instead of `move joint1 to 1.5`.
 
-Optional fields: `workspace_limits`, `grippers`, `default_orientation`, `orientation_options`.
+Optional fields: `grippers`, `default_orientation`, `orientation_options`.
 
 The pipeline auto-discovers YAML files in this folder, so no code changes are needed.
 

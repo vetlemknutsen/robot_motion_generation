@@ -44,8 +44,7 @@ def motion_to_program(motion: Motion, config: RobotConfig) -> Program:
 
             for name in config.get_chain(target.side):
                 if name in joints:
-                    val = config.clamp_joint(name, joints[name])
-                    moves.append(Move(target.side, name, "", round(val, 4)))
+                    moves.append(Move(target.side, name, "", round(joints[name], 4)))
 
         if moves:
             instructions.append(moves[0] if len(moves) == 1 else MultiMove(moves))

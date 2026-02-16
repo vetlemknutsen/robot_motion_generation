@@ -29,20 +29,6 @@ joint_groups:
       finger2: gripper_right_finger_joint
 
 
-limits:
-  arm_1_joint: [0.0, 2.67]
-  arm_2_joint: [-1.4, 1.01]
-  arm_3_joint: [-3.53, 1.5]
-  arm_4_joint: [-0.32, 2.35]
-  arm_5_joint: [-2.09, 2.09]
-  arm_6_joint: [-1.39, 1.39]
-  arm_7_joint: [-2.07, 2.07]
-
-workspace_limits:
-  x: [0.25, 0.7]
-  y: [-0.5, 0.5]
-  z: [0.4, 1.2]
-
 end_effectors:
   right: [torso_lift_link, gripper_tool_link]
 

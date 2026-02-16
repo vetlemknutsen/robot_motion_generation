@@ -41,7 +41,9 @@ class RobotController(Robot):
         # Populate Motors and motor position sensors from config file (dict of {joint_name : Webots unique_tag})
         for key, val in config['joints'].items():
             if val['motor'] is not None:
-                self.motors[key] = self.getDevice(val['motor'])
+                motor = self.getDevice(val['motor'])
+                motor.setVelocity(motor.getMaxVelocity() * 0.5)
+                self.motors[key] = motor
             if val['sensor'] is not None:
                 self.sensors[key] = self.getDevice(val['sensor'])
 
@@ -58,7 +60,7 @@ class RobotController(Robot):
                 self.instruction = body['def']
 
 
-    def motor_set_position_sync(self, tag_motor, tag_sensor, target, delay):
+    def motor_set_position_sync(self, tag_motor, tag_sensor, target, delay=None):
         '''
         Sets motor position and waits for it to reach target position.
         This stops target-positions to be overwritten.
@@ -67,24 +69,25 @@ class RobotController(Robot):
             tag_motor: (Webots tag) tag of motor to activate
             tag_sensor: (Webots tag) tag of position sensor for motor
             target: (Radians) target position of motor
-            delay: (int) delay to apply
+            delay: (int) optional max wait time in ms (default: no limit)
 
         USAGE:
-            Use for one motion every keyframe (preferably on motor where target position is changed next keyframe). 
+            Use for one motion every keyframe (preferably on motor where target position is changed next keyframe).
         '''
         DELTA = 0.001;  # max tolerated difference
         tag_motor.setPosition(target)
         tag_sensor.enable(self.timeStep)
 
-        condition = True # flag for emulating "do while"
-
-        while condition:
-            # Break simulation
+        while True:
             if self.step(self.timeStep) == -1:
                 break
-            delay -= self.timeStep
-            effective = tag_sensor.getValue() # effective position
-            condition = (abs(target - effective) > DELTA and delay > 0)
+            effective = tag_sensor.getValue()
+            if abs(target - effective) <= DELTA:
+                break
+            if delay is not None:
+                delay -= self.timeStep
+                if delay <= 0:
+                    break
         tag_sensor.disable()
 
 

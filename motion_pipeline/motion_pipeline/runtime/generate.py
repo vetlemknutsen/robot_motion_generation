@@ -27,8 +27,6 @@ def build_robot_config(robot_key: str) -> RobotConfig:
     return RobotConfig(
         name=preset["name"],
         chains=preset["chains"],
-        limits=preset["limits"],
-        workspace_limits=preset.get("workspace_limits", {}),
         end_effectors=preset["end_effectors"],
         grippers=preset.get("grippers", {}),
         default_orientation=preset.get("default_orientation"),
@@ -42,7 +40,7 @@ def build_adapter(adapter_key: str, robot: RobotConfig):
     if adapter_key=="json":
         return JsonScenarioAdapter()
     if adapter_key=="mediapipe_csv":
-        return MediaPipeCSVAdapter(robot)
+        return MediaPipeCSVAdapter()
     raise ValueError(f"Unknown adapter: '{adapter_key}'. Available: {list(ADAPTERS.keys())}")
 
 def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Program:

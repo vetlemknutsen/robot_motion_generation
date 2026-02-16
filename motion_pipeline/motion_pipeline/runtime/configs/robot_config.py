@@ -16,8 +16,6 @@ class RobotConfig:
     base_frame: str             # transformation base frame, for example "base_link"
 
     chains: dict = field(default_factory=dict)           # joints per side, {"right": ["joint1", "joint2", ...]}
-    limits: dict = field(default_factory=dict)           # joint angle limits, {"joint1": (-1.0, 1.0)}
-    workspace_limits: dict = field(default_factory=dict) # end-effector position limits, where it's possible to reach {"x": (0.0, 0.5), "y": ...}
     end_effectors: dict = field(default_factory=dict)    # (base_link, tip_link) per side for IK, {"right": ("base_link", "r_wrist")}
     grippers: dict = field(default_factory=dict)         # gripper joints + open/close per side
     default_orientation: list = None                     # default end-effector orientation 
@@ -42,18 +40,6 @@ class RobotConfig:
 
     def get_end_effector(self, name: str) -> Tuple[str, str]:
         return self.end_effectors[name]
-
-    def clamp_joint(self, joint_name: str, value: float) -> float:
-        if joint_name in self.limits:
-            lo, hi = self.limits[joint_name]
-            return max(lo, min(hi, value))
-        return value
-
-    def clamp_position(self, axis: str, value: float) -> float:
-        if axis in self.workspace_limits:
-            lo, hi = self.workspace_limits[axis]
-            return max(lo, min(hi, value))
-        return value
 
     def get_gripper(self, side: str) -> dict:
         return self.grippers.get(side, {})
