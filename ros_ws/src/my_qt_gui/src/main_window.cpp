@@ -48,8 +48,7 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
         this, 
         &MainWindow::onRobotDropdownChanged);
 
-
-    ui->txt_logs->appendPlainText("Ready!");
+    log("Ready!");
 
     current_robot_ = "nao";
 }
@@ -64,7 +63,7 @@ void MainWindow::onGenerateClicked(){
     QString robot = ui->robotBox->currentText();
 
     ui->lbl_metadata->setText("File: " + path + "   |   " + "Adapter: " + adapter +  "   |   " + "Robot: " + robot);
-    ui->txt_logs->appendPlainText("Generate request sent");
+    log("Generate request sent...");
 
     auto request = std::make_shared<motion_pipeline_msgs::srv::GenerateRequest::Request>();
     request->input_path = path.toStdString();
@@ -82,8 +81,14 @@ void MainWindow::onGenerateClicked(){
             spinner_->stop();
             spinnerLabel_->hide();
 
-            if (response->success)
+            if (response->success){
                 ui->txt_editor->setPlainText(QString::fromStdString(response->rml_text));
+                log("RML generated successfully.");
+            }
+            else {
+                log("RML generate failed: " + QString::fromStdString(response->error_message));
+            }
+
         });
     });
     
@@ -150,7 +155,11 @@ void MainWindow::onLogReceived(const motion_pipeline_msgs::msg::PipelineLog::Sha
     });
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+void MainWindow::log(const QString& text){
+    ui->txt_logs->appendPlainText(text);
+}
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
     if (obj == ui->txt_editor && event->type() == QEvent::Resize) {
         spinnerLabel_->move(
             (ui->txt_editor->width() - 64) / 2,

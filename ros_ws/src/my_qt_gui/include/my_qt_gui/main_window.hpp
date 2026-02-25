@@ -51,4 +51,5 @@ private:
     void setLoadingState(bool loading);
 
     void onLogReceived(const motion_pipeline_msgs::msg::PipelineLog::SharedPtr msg);
+    void log(const QString& text);
 };
