@@ -6,6 +6,9 @@
 #include <std_msgs/msg/string.hpp>
 #include <QFileDialog>
 #include <QMovie>
+#include <motion_pipeline_msgs/srv/generate_request.hpp>
+#include <motion_pipeline_msgs/srv/switch_robot.hpp>
+#include <motion_pipeline_msgs/msg/pipeline_log.hpp>
 
 
 namespace rclcpp {
@@ -26,14 +29,11 @@ private:
     std::shared_ptr<rclcpp::Node> node_;
     Ui::MainWindow *ui;
 
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr generate_pub_;
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr rml_sub_;
+    rclcpp::Client<motion_pipeline_msgs::srv::GenerateRequest>::SharedPtr generate_client_;
+    rclcpp::Client<motion_pipeline_msgs::srv::SwitchRobot>::SharedPtr switch_robot_client_;
 
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr send_pub_;
-
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr switch_robot_pub_; 
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr robot_ready_sub_; 
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr log_sub_; 
+    rclcpp::Subscription<motion_pipeline_msgs::msg::PipelineLog>::SharedPtr log_sub_; 
 
     QString current_robot_; 
     bool robot_loading_ = false; 
@@ -41,11 +41,9 @@ private:
     void onBrowseClicked();
     void onGenerateClicked();
     void onSendClicked();
-    void onRmlReceived(const std_msgs::msg::String::SharedPtr msg);
 
     void onRobotDropdownChanged(const QString& robot);
-    void onRobotReady(const std_msgs::msg::String::SharedPtr msg);
     void setLoadingState(bool loading);
 
-    void onLogReceived(const std_msgs::msg::String::SharedPtr msg);
+    void onLogReceived(const motion_pipeline_msgs::msg::PipelineLog::SharedPtr msg);
 };

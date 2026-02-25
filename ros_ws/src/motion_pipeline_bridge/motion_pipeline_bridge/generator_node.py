@@ -13,20 +13,21 @@ import signal
 
 from motion_pipeline.runtime.generate import generate_rml
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
+from motion_pipeline_msgs.msg import PipelineLog
+from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot
 
 class PipelineGeneratorNode(Node):
     def __init__(self):
         super().__init__("motion_pipeline_generator")
-        self.sub = self.create_subscription(String, "generate_request", self.on_request, 10)
-        self.pub = self.create_publisher(String, "rml_output", 10)
+
+        self.generate_srv = self.create_service(GenerateRequest, "generate_rml", self.on_generate_request)
+        self.switch_srv = self.create_service(SwitchRobot, "switch_robot", self.on_switch_robot)
+        
 
         self.send_sub = self.create_subscription(String, "send_webots", self.on_send_request, 10)
         self.send_pub = self.create_publisher(String, "webots_motion", 10)
 
-        self.switch_sub = self.create_subscription(String, "switch_robot", self.on_switch_robot,10)
-        self.ready_pub = self.create_publisher(String, "robot_ready", 10)
-
-        self.log_pub = self.create_publisher(String, "pipeline_logs", 10)
+        self.log_pub = self.create_publisher(PipelineLog, "pipeline_logs", 10)
 
         self.current_robot = None
         self.switching = False
@@ -36,39 +37,18 @@ class PipelineGeneratorNode(Node):
 
         self._switch_robot("nao")
 
-    def on_request(self, msg: String):
-        try: 
-            req = json.loads(msg.data)
-            input_path = Path(req["input_path"])
-            adapter = req["adapter"]
-            robot = req["robot"]
+    def on_generate_request(self, request, response):
+        self.get_logger().info(f"Generate request: input_path='{request.input_path}")
 
+        try: 
+            rml_text = generate_rml(Path(request.input_path), request.adapter, request.robot)
+            response.rml_text = rml_text 
+            response.success = True
         except Exception as e: 
-            self._publish_error(f"Bad JSON request: {e}")
-            return
-
-        self.get_logger().info(
-            f"Generate request: input_path='{input_path}', adapter='{adapter}', robot='{robot}'"
-        )
-
-        try: 
-            rml_text = generate_rml(input_path, adapter, robot)
-        except Exception as e:
-            self.get_logger().error(
-                f"Pipeline failed for input_path='{input_path}', adapter='{adapter}', robot='{robot}': "
-                f"{type(e).__name__}: {e}"
-            )
-            self.get_logger().error(traceback.format_exc())
             self._publish_error(f"Pipeline failed: {type(e).__name__}: {e}")
-            return
-
-        try:
-            out = String()
-            out.data = rml_text 
-            self.pub.publish(out)
-            self.get_logger().info("RML generation succeeded and published")
-        except Exception as e: 
-            self._publish_error(f"No rml text: {type(e).__name__}: {e}")
+            response.success = False
+            response.error_message = str(e)
+        return response
 
     def on_send_request(self, msg):
         rml_plaintext = msg.data
@@ -79,20 +59,17 @@ class PipelineGeneratorNode(Node):
 
 
     def _publish_error(self, text: str):
-        self.get_logger().error(text)
-        out = String()
-        out.data = "ERROR: " + text 
-        self.log_pub.publish(out)
+        output = PipelineLog(level=PipelineLog.ERROR, message=text)
+        self.log_pub.publish(output)
 
-    def on_switch_robot(self, msg: String):
-        robot = msg.data
-
-        if robot == self.current_robot or self.switching:
-            return
-
-        self.switching = True
-        self._switch_robot(robot)
-        self.switching = False
+    def on_switch_robot(self, request, response):
+        if request.name != self.current_robot and not self.switching:
+            self.switching = True 
+            self._switch_robot(request.name)
+            self.switching = False 
+        response.success = True 
+        return response
+        
 
     def _switch_robot(self, robot: str):
         if self.move_group_process:
@@ -103,7 +80,7 @@ class PipelineGeneratorNode(Node):
                 self.get_logger().warn("Error killing old move group")
 
 
-        self.log_pub.publish(String(data=f"Starting IK solver for {robot}..."))
+        self.log_pub.publish(PipelineLog(level=PipelineLog.INFO, message=f"Starting IK solver for {robot}..."))
         self.move_group_process = subprocess.Popen(['ros2', 'launch', f'{robot}_moveit_config', 'move_group.launch.py'], start_new_session=True)
 
         client = self.create_client(GetPositionIK, '/compute_ik')
@@ -111,11 +88,10 @@ class PipelineGeneratorNode(Node):
         while not client.wait_for_service(timeout_sec=3.0):
             self.get_logger().info("Still waiting...")
 
-        self.log_pub.publish(String(data=f"IK solver for robot: {robot} ready!"))
+        self.log_pub.publish(PipelineLog(level=PipelineLog.INFO, message=f"IK solver for robot: {robot} ready!"))
         self.destroy_client(client)
 
         self.current_robot = robot
-        self.ready_pub.publish(String(data=robot))
         
 
 def main():

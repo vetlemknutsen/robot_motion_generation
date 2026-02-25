@@ -1,0 +1,7 @@
+string input_path
+string adapter
+string robot
+---
+string rml_text
+bool success
+string error_message

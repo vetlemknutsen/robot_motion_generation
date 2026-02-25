@@ -22,7 +22,7 @@ Arguments are represented with strings instead of enums to avoid extra syntax fo
 
 Arguments "acceleration" and "speed" are not used. You should be able to use the webots API to enable them.
 '''
-def move(robot, sync, position, joint, rotation='', side='', delay=None, acceleration=None, speed=None):
+def move(robot, sync, position, joint, rotation='', side='', delay=5000, acceleration=None, speed=None):
     '''
     Moves the specified joint.
 
@@ -58,4 +58,6 @@ def move(robot, sync, position, joint, rotation='', side='', delay=None, acceler
             robot.motor_set_position_sync(robot.motors[motor], robot.sensors[motor], position, delay)
     except:
         raise Exception(f'Wrong args. Your args resulted in trying to move "{motor}"...')
+
+
 
