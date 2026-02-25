@@ -6,6 +6,7 @@
 #include <std_msgs/msg/string.hpp>
 #include <QFileDialog>
 #include <QMovie>
+#include <QLabel>
 #include <motion_pipeline_msgs/srv/generate_request.hpp>
 #include <motion_pipeline_msgs/srv/switch_robot.hpp>
 #include <motion_pipeline_msgs/msg/pipeline_log.hpp>
@@ -37,6 +38,10 @@ private:
 
     QString current_robot_; 
     bool robot_loading_ = false; 
+    bool eventFilter(QObject *obj, QEvent *event) override; 
+
+    QLabel* spinnerLabel_;
+    QMovie* spinner_;
 
     void onBrowseClicked();
     void onGenerateClicked();

@@ -15,6 +15,15 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget *parent) : QM
     send_pub_ = node_->create_publisher<std_msgs::msg::String>("send_webots", 10);
     log_sub_ = node_->create_subscription<motion_pipeline_msgs::msg::PipelineLog>("pipeline_logs", 10, std::bind(&MainWindow::onLogReceived, this, std::placeholders::_1));
 
+    ui->txt_editor->installEventFilter(this);
+    spinner_ = new QMovie("/home/vetle/robot_motion_generation/ros_ws/src/my_qt_gui/resources/loading.gif");
+    spinnerLabel_ = new QLabel(ui->txt_editor);
+    spinnerLabel_->setMovie(spinner_);
+    spinnerLabel_->setFixedSize(64, 64);
+    spinnerLabel_->setScaledContents(true);
+    spinnerLabel_->hide();
+    
+
     connect(
         ui->generateButton,
         &QPushButton::clicked,
@@ -62,10 +71,17 @@ void MainWindow::onGenerateClicked(){
     request->adapter = adapter.toStdString();
     request->robot = robot.toStdString();
 
+    spinnerLabel_->show();
+    spinner_->start();
+    ui->txt_editor->clear();
+
     generate_client_->async_send_request(request, 
     [this](rclcpp::Client<motion_pipeline_msgs::srv::GenerateRequest>::SharedFuture future){
         auto response = future.get();
         QMetaObject::invokeMethod(this, [this, response](){
+            spinner_->stop();
+            spinnerLabel_->hide();
+
             if (response->success)
                 ui->txt_editor->setPlainText(QString::fromStdString(response->rml_text));
         });
@@ -132,6 +148,16 @@ void MainWindow::onLogReceived(const motion_pipeline_msgs::msg::PipelineLog::Sha
     QMetaObject::invokeMethod(this, [this, text](){
         ui->txt_logs->appendPlainText(text);
     });
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+    if (obj == ui->txt_editor && event->type() == QEvent::Resize) {
+        spinnerLabel_->move(
+            (ui->txt_editor->width() - 64) / 2,
+            (ui->txt_editor->height() - 64) / 2
+        );
+    }
+    return QMainWindow::eventFilter(obj, event);
 }
 
 
