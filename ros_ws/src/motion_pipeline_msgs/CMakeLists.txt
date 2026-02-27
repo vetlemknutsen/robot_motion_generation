@@ -7,6 +7,9 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/GenerateRequest.srv"
   "srv/SwitchRobot.srv"
+  "srv/GetMotions.srv"
+  "srv/DeleteMotion.srv"
+  "srv/SaveMotion.srv"
   "msg/PipelineLog.msg"
 )
 

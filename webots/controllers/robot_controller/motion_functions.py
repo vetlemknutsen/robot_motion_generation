@@ -61,3 +61,71 @@ def move(robot, sync, position, joint, rotation='', side='', delay=5000, acceler
 
 
 
+
+def adrian(robot):
+	# Keyframe
+	move(robot, False, 2.4695, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, -0.0671, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -3.3613, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.5369, 'Elbow', 'Pitch', 'R')
+	move(robot, False, 0.6828, 'Elbow', 'Yaw', 'R')
+	move(robot, False, 1.3364, 'Wrist', 'Pitch', 'R')
+	move(robot, True, -0.0596, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 0, 'Gripper', 'Finger1', 'R')
+	move(robot, True, 0, 'Gripper', 'Finger2', 'R')
+	# Keyframe
+	move(robot, False, 2.4702, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, -0.0669, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -3.3605, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.5343, 'Elbow', 'Pitch', 'R')
+	move(robot, False, 0.6814, 'Elbow', 'Yaw', 'R')
+	move(robot, False, 1.3354, 'Wrist', 'Pitch', 'R')
+	move(robot, True, -0.057, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 0.044, 'Gripper', 'Finger1', 'R')
+	move(robot, True, 0.044, 'Gripper', 'Finger2', 'R')
+	# Keyframe
+	move(robot, False, 2.4716, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, -0.0665, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -3.3589, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.529, 'Elbow', 'Pitch', 'R')
+	move(robot, False, 0.6788, 'Elbow', 'Yaw', 'R')
+	move(robot, False, 1.3336, 'Wrist', 'Pitch', 'R')
+	move(robot, True, -0.0517, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 0, 'Gripper', 'Finger1', 'R')
+	move(robot, True, 0, 'Gripper', 'Finger2', 'R')
+	# Keyframe
+	move(robot, False, 0.3904, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, 0.0807, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -2.6369, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.4569, 'Elbow', 'Pitch', 'R')
+	move(robot, False, -0.3799, 'Elbow', 'Yaw', 'R')
+	move(robot, False, -1.0921, 'Wrist', 'Pitch', 'R')
+	move(robot, True, 1.7326, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 0.044, 'Gripper', 'Finger1', 'R')
+	move(robot, True, 0.044, 'Gripper', 'Finger2', 'R')
+	# Keyframe
+	move(robot, False, 0.3693, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, 0.0784, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -2.6126, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.4458, 'Elbow', 'Pitch', 'R')
+	move(robot, False, -0.3525, 'Elbow', 'Yaw', 'R')
+	move(robot, False, -1.0614, 'Wrist', 'Pitch', 'R')
+	move(robot, True, 1.7173, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 0, 'Gripper', 'Finger1', 'R')
+	move(robot, True, 0, 'Gripper', 'Finger2', 'R')
+	# Keyframe
+	move(robot, False, 0.1064, 'Shoulder', 'Pitch', 'R')
+	move(robot, False, 0.9419, 'Shoulder', 'Roll', 'R')
+	move(robot, False, -1.0628, 'Shoulder', 'Yaw', 'R')
+	move(robot, False, 1.26, 'Elbow', 'Pitch', 'R')
+	move(robot, False, -0.492, 'Elbow', 'Yaw', 'R')
+	move(robot, False, 0.4821, 'Wrist', 'Pitch', 'R')
+	move(robot, True, -1.625, 'Wrist', 'Roll', 'R')
+	# Keyframe
+	move(robot, False, 0.044, 'Gripper', 'Finger1', 'R')
+	move(robot, True, 0.044, 'Gripper', 'Finger2', 'R')

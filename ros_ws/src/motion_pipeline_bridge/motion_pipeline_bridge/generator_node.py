@@ -13,16 +13,22 @@ import signal
 
 from motion_pipeline.runtime.generate import generate_rml
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
+from motion_pipeline_bridge.database_logic import DatabaseLogic
 from motion_pipeline_msgs.msg import PipelineLog
-from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot
+from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot, GetMotions, SaveMotion, DeleteMotion
 
 class PipelineGeneratorNode(Node):
     def __init__(self):
         super().__init__("motion_pipeline_generator")
+        self.db = DatabaseLogic("~/motions.db")
 
         self.generate_srv = self.create_service(GenerateRequest, "generate_rml", self.on_generate_request)
         self.switch_srv = self.create_service(SwitchRobot, "switch_robot", self.on_switch_robot)
         
+        self.get_motions_srv = self.create_service(GetMotions, "get_motions", self.on_get_motions)
+        self.save_motion_srv = self.create_service(SaveMotion, "save_motion", self.on_save_motion)
+        self.delete_motions_srv = self.create_service(DeleteMotion, "delete_motion", self.on_delete_motion)
+
 
         self.send_sub = self.create_subscription(String, "send_webots", self.on_send_request, 10)
         self.send_pub = self.create_publisher(String, "webots_motion", 10)
@@ -92,6 +98,28 @@ class PipelineGeneratorNode(Node):
         self.destroy_client(client)
 
         self.current_robot = robot
+
+
+    # Database handlers 
+    def on_get_motions(self, request, response):
+        rows = self.db.get_all()
+        for row in rows: 
+            response.ids.append(row[0])
+            response.names.append(row[1])
+            response.robots.append(row[2])
+            response.rmls.append(row[3])
+        return response 
+    
+    def on_save_motion(self, request, response):
+        self.db.insert(request.name, request.robot, request.rml)
+        response.success = True
+        return response 
+    
+    def on_delete_motion(self,request, response):
+        self.db.delete(request.id)
+        response.success = True 
+        return response
+
         
 
 def main():
@@ -102,5 +130,6 @@ def main():
     finally:
         if node.move_group_process:
             node.move_group_process.terminate()
+        node.db.connection.close()
         node.destroy_node()
         rclpy.shutdown()
