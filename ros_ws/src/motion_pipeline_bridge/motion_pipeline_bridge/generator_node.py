@@ -42,6 +42,7 @@ class PipelineGeneratorNode(Node):
         self.get_logger().info("Generator node started")
 
         self._switch_robot("nao")
+    
 
     def on_generate_request(self, request, response):
         self.get_logger().info(f"Generate request: input_path='{request.input_path}")

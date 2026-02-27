@@ -6,6 +6,7 @@
 namespace Ui { class MainWindow; }
 class EditorPanel;
 class OptionsPanel;
+class DatabasePanel;
 
 class MainWindow : public QMainWindow
 {
@@ -19,4 +20,5 @@ private:
 
     EditorPanel* editorPanel_;
     OptionsPanel* optionsPanel_;
+    DatabasePanel* databasePanel_;
 };

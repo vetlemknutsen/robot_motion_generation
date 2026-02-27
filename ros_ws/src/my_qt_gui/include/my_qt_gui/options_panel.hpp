@@ -16,6 +16,10 @@ class OptionsPanel : public QWidget
 public:
     OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QLabel* statusLabel, QWidget* parent = nullptr);
 
+    QString getCurrentRobot() const {
+        return currentRobot_; 
+    }
+
 signals:
     void generateStarted(const QString& metadataText);
     void rmlGenerated(const QString& rml);

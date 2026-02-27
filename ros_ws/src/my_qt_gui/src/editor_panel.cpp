@@ -2,7 +2,7 @@
 #include <QEvent>
 #include <QMetaObject>
 
-EditorPanel::EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* editor, QPlainTextEdit* logs, QLabel* metadata, QPushButton* sendButton, QWidget* parent)
+EditorPanel::EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* editor, QPlainTextEdit* logs, QLabel* metadata, QPushButton* sendButton, QPushButton* saveButton, QWidget* parent)
 : QWidget(parent), node_(node), editor_(editor), logs_(logs), metadata_(metadata)
 {
     send_pub_ = node_->create_publisher<std_msgs::msg::String>("send_webots", 10);
@@ -18,6 +18,10 @@ EditorPanel::EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* edi
     editor_->installEventFilter(this);
 
     connect(sendButton, &QPushButton::clicked, this, &EditorPanel::onSendClicked);
+
+    connect(saveButton, &QPushButton::clicked, this, [this](){
+        emit saveRequested(editor_->toPlainText());
+    });
 }
 
 QString EditorPanel::getRml() const { 

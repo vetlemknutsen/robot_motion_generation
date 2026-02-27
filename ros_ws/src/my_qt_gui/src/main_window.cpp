@@ -2,6 +2,8 @@
 #include "ui_main_window.h"
 #include "my_qt_gui/editor_panel.hpp"
 #include "my_qt_gui/options_panel.hpp"
+#include "my_qt_gui/database_panel.hpp"
+#include <QInputDialog>
 
 MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget* parent)
 : QMainWindow(parent), node_(node), ui(new Ui::MainWindow)
@@ -15,6 +17,7 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget* parent)
         ui->txt_logs,
         ui->lbl_metadata,
         ui->sendButton,
+        ui->saveMotionButton,
         this);
 
     optionsPanel_ = new OptionsPanel(
@@ -26,6 +29,14 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget* parent)
         ui->browseButton,
         ui->label,
         this);
+
+    databasePanel_ = new DatabasePanel(
+        node_, 
+        ui->listWidget,
+        ui->loadMotionButton, 
+        ui->deleteMotionButton, 
+        this
+    );
 
     connect(optionsPanel_, &OptionsPanel::generateStarted, this, [this](const QString& metadata) {
         editorPanel_->setMetadata(metadata);
@@ -39,6 +50,14 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget* parent)
     });
 
     connect(optionsPanel_, &OptionsPanel::logMessage, editorPanel_, &EditorPanel::appendLog);
+
+    connect(databasePanel_, &DatabasePanel::motionLoaded, editorPanel_, &EditorPanel::setRml);
+
+    connect(editorPanel_, &EditorPanel::saveRequested, this, [this](const QString& rml){
+        bool ok;
+        QString name = QInputDialog::getText(this, "Save Motion", "Name:", QLineEdit::Normal, "", &ok);
+        databasePanel_->saveMotion(name, optionsPanel_->getCurrentRobot(), rml);
+    });
 
     editorPanel_->appendLog("Ready!");
 }

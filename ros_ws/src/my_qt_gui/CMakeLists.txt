@@ -20,9 +20,11 @@ add_executable(my_qt_gui_node
   src/main_window.cpp
   src/editor_panel.cpp 
   src/options_panel.cpp
+  src/database_panel.cpp
   include/my_qt_gui/main_window.hpp
   include/my_qt_gui/editor_panel.hpp 
   include/my_qt_gui/options_panel.hpp
+  include/my_qt_gui/database_panel.hpp
   ui/main_window.ui
 )
 

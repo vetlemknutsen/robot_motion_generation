@@ -13,7 +13,7 @@ class EditorPanel : public QWidget
     Q_OBJECT
 
 public:
-    EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* editor, QPlainTextEdit* logs, QLabel* metadata, QPushButton* sendButton, QWidget* parent = nullptr);
+    EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* editor, QPlainTextEdit* logs, QLabel* metadata, QPushButton* sendButton, QPushButton* saveButton, QWidget* parent = nullptr);
 
     QString getRml() const;
 
