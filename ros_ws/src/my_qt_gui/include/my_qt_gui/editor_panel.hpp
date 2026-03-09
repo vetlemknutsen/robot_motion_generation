@@ -6,7 +6,7 @@
 #include <QMovie>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
-#include <motion_pipeline_msgs/msg/pipeline_log.hpp>
+#include <motion_pipeline_msgs/msg/log_message.hpp>
 
 class EditorPanel : public QWidget
 {
@@ -28,14 +28,14 @@ signals:
 
 private slots:
     void onSendClicked();
-    void onLogReceived(const motion_pipeline_msgs::msg::PipelineLog::SharedPtr msg);
+    void onLogReceived(const motion_pipeline_msgs::msg::LogMessage::SharedPtr msg);
 
 private:
     bool eventFilter(QObject* obj, QEvent* event) override;
 
     std::shared_ptr<rclcpp::Node> node_;
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr send_pub_;
-    rclcpp::Subscription<motion_pipeline_msgs::msg::PipelineLog>::SharedPtr log_sub_;
+    rclcpp::Subscription<motion_pipeline_msgs::msg::LogMessage>::SharedPtr log_sub_;
 
     QPlainTextEdit* editor_;
     QPlainTextEdit* logs_;

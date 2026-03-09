@@ -10,7 +10,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/GetMotions.srv"
   "srv/DeleteMotion.srv"
   "srv/SaveMotion.srv"
-  "msg/PipelineLog.msg"
+  "msg/LogMessage.msg"
 )
 
 ament_package()

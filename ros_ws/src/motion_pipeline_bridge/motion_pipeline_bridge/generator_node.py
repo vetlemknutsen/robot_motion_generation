@@ -14,7 +14,7 @@ import signal
 from motion_pipeline.runtime.generate import generate_rml
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
 from motion_pipeline_bridge.database_logic import DatabaseLogic
-from motion_pipeline_msgs.msg import PipelineLog
+from motion_pipeline_msgs.msg import LogMessage
 from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot, GetMotions, SaveMotion, DeleteMotion
 
 class PipelineGeneratorNode(Node):
@@ -33,7 +33,7 @@ class PipelineGeneratorNode(Node):
         self.send_sub = self.create_subscription(String, "send_webots", self.on_send_request, 10)
         self.send_pub = self.create_publisher(String, "webots_motion", 10)
 
-        self.log_pub = self.create_publisher(PipelineLog, "pipeline_logs", 10)
+        self.log_pub = self.create_publisher(LogMessage, "pipeline_logs", 10)
 
         self.current_robot = None
         self.switching = False
@@ -66,7 +66,7 @@ class PipelineGeneratorNode(Node):
 
 
     def _publish_error(self, text: str):
-        output = PipelineLog(level=PipelineLog.ERROR, message=text)
+        output = LogMessage(level=LogMessage.ERROR, message=text)
         self.log_pub.publish(output)
 
     def on_switch_robot(self, request, response):
@@ -87,7 +87,7 @@ class PipelineGeneratorNode(Node):
                 self.get_logger().warn("Error killing old move group")
 
 
-        self.log_pub.publish(PipelineLog(level=PipelineLog.INFO, message=f"Starting IK solver for {robot}..."))
+        self.log_pub.publish(LogMessage(level=LogMessage.INFO, message=f"Starting IK solver for {robot}..."))
         self.move_group_process = subprocess.Popen(['ros2', 'launch', f'{robot}_moveit_config', 'move_group.launch.py'], start_new_session=True)
 
         client = self.create_client(GetPositionIK, '/compute_ik')
@@ -95,7 +95,7 @@ class PipelineGeneratorNode(Node):
         while not client.wait_for_service(timeout_sec=3.0):
             self.get_logger().info("Still waiting...")
 
-        self.log_pub.publish(PipelineLog(level=PipelineLog.INFO, message=f"IK solver for robot: {robot} ready!"))
+        self.log_pub.publish(LogMessage(level=LogMessage.INFO, message=f"IK solver for robot: {robot} ready!"))
         self.destroy_client(client)
 
         self.current_robot = robot
