@@ -1,20 +1,28 @@
 from pathlib import Path
 
+from motion_pipeline.adapters.base import Adapter
+from motion_pipeline.rml.base import Emitter
 import yaml
 
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
 from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
 from motion_pipeline.core.joint_level import Program
 from motion_pipeline.rml.rml_emitter import BasicRMLEmitter
-from motion_pipeline.rml.rml_text_to_json import rml_text_to_legacy_payload
+from motion_pipeline.rml.rml_text_to_json import LangiumRMLParser
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 from motion_pipeline.runtime.task_to_joint import motion_to_program
 
+from motion_pipeline.kinematics.ik_solver import MoveItIKClient
+
 ROBOTS_DIR = Path(__file__).parent / "configs" / "robots"
 
-ADAPTERS = {
-    "json" : "json",
-    "mediapipe_csv" : "mediapipe_csv"
+ADAPTERS: dict[str, type[Adapter]] = {
+    "json": JsonScenarioAdapter,
+    "mediapipe_csv": MediaPipeCSVAdapter,
+}
+
+EMITTERS: dict[str, type[Emitter]] = {
+    "rml": BasicRMLEmitter,
 }
 
 def build_robot_config(robot_key: str) -> RobotConfig:
@@ -36,12 +44,12 @@ def build_robot_config(robot_key: str) -> RobotConfig:
         joint_groups=preset.get("joint_groups", {}),
     )
 
-def build_adapter(adapter_key: str, robot: RobotConfig):
-    if adapter_key=="json":
-        return JsonScenarioAdapter()
-    if adapter_key=="mediapipe_csv":
-        return MediaPipeCSVAdapter()
-    raise ValueError(f"Unknown adapter: '{adapter_key}'. Available: {list(ADAPTERS.keys())}")
+def build_adapter(adapter_key: str) -> Adapter:
+    cls = ADAPTERS.get(adapter_key)
+    if cls is None: 
+        raise ValueError(f"Unknown adapter: '{adapter_key}'. Available: {list(ADAPTERS.keys())}")
+    return cls()
+
 
 def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Program:
     input_path = Path(input_path)
@@ -51,16 +59,24 @@ def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Prog
         raise ValueError(f"Input path is not a file: '{input_path}'")
 
     robot = build_robot_config(robot_key)
-    adapter = build_adapter(adapter_key, robot)
+    adapter = build_adapter(adapter_key)
+
     try:
         motion = adapter.to_motion(input_path)
     except Exception as e:
         raise RuntimeError(
             f"Adapter '{adapter_key}' failed to parse '{input_path}': {type(e).__name__}: {e}"
         ) from e
+    
+    _, tip = list(robot.end_effectors.values())[0]
+    ik = MoveItIKClient(
+        group_name=robot.get_group_name(),
+        base_frame=robot.get_base_frame(),
+        ee_link=tip
+    )
 
     try:
-        program = motion_to_program(motion, robot)
+        program = motion_to_program(motion, robot, ik)
     except Exception as e:
         raise RuntimeError(
             f"Failed to convert motion to program for robot '{robot_key}' "
@@ -69,16 +85,17 @@ def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Prog
 
     return program
 
-def generate_rml(input_path: Path, adapter_key: str, robot_key: str):
+def generate_output(input_path: Path, adapter_key: str, robot_key: str, emitter_key = "rml") -> str:
     robot = build_robot_config(robot_key)
-
     program = generate_program(input_path, adapter_key, robot_key)
 
-    if program.instructions:
-        first = program.instructions[0]
-    rml = BasicRMLEmitter(robot).emit(program)
-    return rml
+    emitter_cls = EMITTERS.get(emitter_key)
+    if emitter_cls is None:
+        raise ValueError(f"Unknown emitter: '{emitter_key}'. Available: {list(EMITTERS.keys())}")
+    emitter = emitter_cls(robot)
+    return emitter.emit(program)
+   
 
-def generate_rml_json_from_plaintext(text: str):
-    data = rml_text_to_legacy_payload(text)
-    return data
+def generate_rml_json_from_plaintext(text: str) -> dict:
+    parser = LangiumRMLParser()
+    return parser.parse(text)

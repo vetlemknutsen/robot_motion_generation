@@ -1,44 +1,31 @@
-import importlib
 import threading
 import json
 import yaml
-import motion_functions
-import helpers
 from controller import Robot
 from subscriber import Subscriber
+from motion_interpreter import MotionInterpreter
 import rclpy
 
 
 class RobotController(Robot):
     def __init__(self, config):
-        # Instance variable instruction
-        self.instruction = ''
+        self.pending_motion = None
+        self.motions = {}
 
-        # Instance variable scheduled
-        self.scheduled = []
-
-        # Initialize Robot from Webots API
         super().__init__()
         rclpy.init()
 
-        # Initialize subscriber/listener
         self.subscriber = Subscriber('webots_motion', self.messageCallback)
-
-        # Initialize devices (motors, sensors, cameras..)
         self.findAndEnableDevices(config)
+
+        self.interpreter = MotionInterpreter(self.motors, self.sensors, self.motor_set_position_sync)
 
 
     def findAndEnableDevices(self, config):
-        # Time step (Webots)
         self.timeStep = int(self.getBasicTimeStep())
-        
-        # Motors
         self.motors = {}
-
-        # Motor Position Sensors
         self.sensors = {}
 
-        # Populate Motors and motor position sensors from config file (dict of {joint_name : Webots unique_tag})
         for key, val in config['joints'].items():
             if val['motor'] is not None:
                 motor = self.getDevice(val['motor'])
@@ -47,17 +34,12 @@ class RobotController(Robot):
             if val['sensor'] is not None:
                 self.sensors[key] = self.getDevice(val['sensor'])
 
-
-    # Callback when receiving message through messaging system
     def messageCallback(self, msg):
         body = json.loads(msg.data)
-        if 'instruction' in body:
-            self.instruction = body['instruction']
-        else:
-            helpers.createNewMotion(body)
-            importlib.reload(motion_functions)
-            if 'def' in body:
-                self.instruction = body['def']
+        if 'def' in body:
+            name = body['def']
+            self.motions[name] = body 
+            self.pending_motion = name
 
 
     def motor_set_position_sync(self, tag_motor, tag_sensor, target, delay=None):
@@ -91,32 +73,25 @@ class RobotController(Robot):
         tag_sensor.disable()
 
 
-    # Controller loop
     def run(self):
         while True:
-            # Schedule instruction
-            if len(self.scheduled) > 0:
-                if self.instruction == '':
-                    self.instruction = self.scheduled.pop(0)
+            if self.pending_motion:
+                name = self.pending_motion 
+                self.pending_motion = None
             
-            # Perform instruction
-            if self.instruction is None:
-                print("Could not find matching motion, please check spelling of MoodCard..")
-            elif len(self.instruction) > 0:
-                print(f'Performing motion "{self.instruction}"')
-                eval("motion_functions." + self.instruction + "(self)") # Should be safe as it only invokes non-dunder-functions in ./motion_functions.py
-            
-            self.instruction = ''
+                if name in self.motions:
+                    print(f'Performing motion "{name}"')
+                    self.interpreter.execute(self.motions[name])
+                else: 
+                    print(f'Unknown motion: "{name}"')
 
             # Break simulation (https://cyberbotics.com/doc/reference/robot#wb_robot_step)
-            if robot_controller.step(self.timeStep) == -1:
+            if self.step(self.timeStep) == -1:
                 break
 
 
 
 ######## RUNS ON SIMULATION START ########
-
-# Read main config to get active robot
 with open('config.yaml') as f:
   main_config = yaml.safe_load(f)
 

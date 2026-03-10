@@ -1,8 +1,9 @@
+from motion_pipeline.rml.base import Emitter
 from motion_pipeline.core.joint_level import Move, MultiMove, Program
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 # Emitter that writes Program into RML
-class BasicRMLEmitter:
+class BasicRMLEmitter(Emitter):
     def __init__(self, config: RobotConfig) -> None:
         self.tab = "   "
         self.joint_map = config.joint_map  

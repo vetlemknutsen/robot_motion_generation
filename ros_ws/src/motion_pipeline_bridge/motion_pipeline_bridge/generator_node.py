@@ -11,16 +11,16 @@ from moveit_msgs.srv import GetPositionIK
 import os 
 import signal
 
-from motion_pipeline.runtime.generate import generate_rml
+from motion_pipeline.runtime.generate import generate_output
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
-from motion_pipeline_bridge.database_logic import DatabaseLogic
+from motion_pipeline_bridge.database_logic import SQLiteMotionStore
 from motion_pipeline_msgs.msg import LogMessage
 from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot, GetMotions, SaveMotion, DeleteMotion
 
 class PipelineGeneratorNode(Node):
     def __init__(self):
         super().__init__("motion_pipeline_generator")
-        self.db = DatabaseLogic("~/motions.db")
+        self.db = SQLiteMotionStore("~/motions.db")
 
         self.generate_srv = self.create_service(GenerateRequest, "generate_rml", self.on_generate_request)
         self.switch_srv = self.create_service(SwitchRobot, "switch_robot", self.on_switch_robot)
@@ -48,7 +48,7 @@ class PipelineGeneratorNode(Node):
         self.get_logger().info(f"Generate request: input_path='{request.input_path}")
 
         try: 
-            rml_text = generate_rml(Path(request.input_path), request.adapter, request.robot)
+            rml_text = generate_output(Path(request.input_path), request.adapter, request.robot)
             response.rml_text = rml_text 
             response.success = True
         except Exception as e: 
@@ -131,6 +131,6 @@ def main():
     finally:
         if node.move_group_process:
             node.move_group_process.terminate()
-        node.db.connection.close()
+        node.db.close()
         node.destroy_node()
         rclpy.shutdown()

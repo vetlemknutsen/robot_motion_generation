@@ -1,35 +1,24 @@
 import os
 from motion_pipeline.core.task_level import Motion
 from motion_pipeline.core.joint_level import Move, MultiMove, Program
-from motion_pipeline.kinematics.ik_solver import MoveItIKClient
+from motion_pipeline.kinematics.base import IKSolver
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 
-def motion_to_program(motion: Motion, config: RobotConfig) -> Program:
+def motion_to_program(motion: Motion, config: RobotConfig, ik: IKSolver) -> Program:
     instructions = []
-    ik = None
     prev_joints = None
 
     for frame in motion.frames:
         moves = []
 
         for target in frame.targets:
-            if ik is None:
-                _, tip = config.get_end_effector(target.side)
-                ik = MoveItIKClient(
-                    group_name=config.get_group_name(),
-                    base_frame=config.get_base_frame(),
-                    ee_link=tip
-                )
-
             # Try different orientations until IK succeeds
             orientations = [target.orientation] if target.orientation else config.get_orientation_options() or [None]
             joints = None
 
             for orient in orientations:
-
                 joints = ik.try_solve(target.position, orient, seed_state=prev_joints)
- 
                 if not joints:
                     print(f"IK failed for pos={target.position}, orient={orient}")
                 else:

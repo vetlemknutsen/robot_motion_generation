@@ -2,8 +2,10 @@ import sqlite3
 import os
 from pathlib import Path
 
-class DatabaseLogic:
-    def __init__(self, db_path):
+from motion_pipeline_bridge.storage_base import MotionStore
+
+class SQLiteMotionStore(MotionStore):
+    def __init__(self, db_path: str):
         self.db_path = os.path.expanduser(db_path) 
         self.connection = sqlite3.connect(self.db_path)
         self._init_db()
@@ -12,18 +14,18 @@ class DatabaseLogic:
     def _init_db(self):
         self.connection.execute("""
             CREATE TABLE IF NOT EXISTS motions (
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                name TEXT NOT NULL,
-                                robot TEXT NOT NULL,
-                                rml TEXT NOT NULL
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                robot TEXT NOT NULL,
+                rml TEXT NOT NULL
             )                        
         """)
     
-    def insert(self, name: str, robot: str, rml: str):
+    def insert(self, name: str, robot: str, rml: str) -> None:
         self.connection.execute("INSERT INTO motions (name, robot, rml) VALUES (?, ?, ?)", (name, robot, rml))
         self.connection.commit()
 
-    def delete(self, id: int):
+    def delete(self, id: int) -> None:
         self.connection.execute("DELETE FROM motions WHERE id = ?", (id,))
         self.connection.commit()
 
@@ -31,8 +33,10 @@ class DatabaseLogic:
         command = self.connection.execute("SELECT * FROM motions WHERE id = ?", (id,))
         return command.fetchone()
 
-    def get_all(self):
+    def get_all(self) -> None:
         command = self.connection.execute("SELECT * FROM  motions")
         return command.fetchall()
 
+    def close(self) -> None:
+        self.connection.close()
 

@@ -6,7 +6,9 @@ from geometry_msgs.msg import PoseStamped
 from moveit_msgs.srv import GetPositionIK
 from builtin_interfaces.msg import Duration
 
-class MoveItIKClient:
+from motion_pipeline.kinematics.base import IKSolver
+
+class MoveItIKClient(IKSolver):
     def __init__(self, group_name: str, base_frame: str, ee_link: str):
         self.group_name = group_name
         self.base_frame = base_frame
@@ -20,9 +22,8 @@ class MoveItIKClient:
         self,
         position: Sequence[float],
         orientation: Optional[Sequence[float]] = None,
-        avoid_collisions: bool = False,
         seed_state: Dict[str, float] = None
-    ):
+    ) -> Dict[str, float]:
         req = GetPositionIK.Request()
         req.ik_request.group_name = self.group_name
         req.ik_request.ik_link_name = self.ee_link
@@ -44,8 +45,8 @@ class MoveItIKClient:
             req.ik_request.robot_state.joint_state.name = []
             req.ik_request.robot_state.joint_state.position = []
 
-        req.ik_request.avoid_collisions = avoid_collisions
-        # currently give MoveIt 2 seconds to solve
+        req.ik_request.avoid_collisions = False
+        # currently give MoveIt 1 second to solve
         req.ik_request.timeout = Duration(sec=1, nanosec=0)
         future = self.cli.call_async(req)
         rclpy.spin_until_future_complete(self.node, future)
@@ -53,16 +54,3 @@ class MoveItIKClient:
         if res.error_code.val != res.error_code.SUCCESS:
             raise RuntimeError(f"IK failed {res.error_code.val}")
         return dict(zip(res.solution.joint_state.name, res.solution.joint_state.position))
-
-    def try_solve(
-        self,
-        position: Sequence[float],
-        orientation: Optional[Sequence[float]] = None,
-        avoid_collisions: bool = False,
-        seed_state: Dict[str, float] = None,
-    ) -> Optional[Dict[str, float]]:
-        try:
-            return self.solve(position, orientation, avoid_collisions, seed_state)
-        except RuntimeError as e:
-            print(e)
-            return None
