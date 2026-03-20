@@ -18,8 +18,9 @@ class RobotConfig:
     chains: dict = field(default_factory=dict)           # joints per side, {"right": ["joint1", "joint2", ...]}
     end_effectors: dict = field(default_factory=dict)    # (base_link, tip_link) per side for IK, {"right": ("base_link", "r_wrist")}
     grippers: dict = field(default_factory=dict)         # gripper joints + open/close per side
-    default_orientation: list = None                     # default end-effector orientation 
+    default_orientation: list = None                     # default end-effector orientation
     orientation_options: list = None                     # list of orientations to try if IK fails with default
+    base_offset: list = field(default_factory=lambda: [0.0, 0.0, 0.0])  # offset from world frame to base_frame
 
 
     # Structure: {side: {group: {rotation: joint_name}}}

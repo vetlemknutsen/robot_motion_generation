@@ -1,6 +1,7 @@
 name: NAO
 moveit_group: right_arm
 base_frame: base_link
+base_offset: [0.0, 0.0, 0.3]
 
 chains:
   right:

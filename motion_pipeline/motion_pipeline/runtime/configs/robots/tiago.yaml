@@ -1,6 +1,7 @@
 name: TIAGo
 moveit_group: arm_torso
 base_frame: base_footprint
+base_offset: [0.0, 0.0, 0.0]
 
 chains:
   right:

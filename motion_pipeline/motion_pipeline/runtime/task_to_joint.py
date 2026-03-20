@@ -1,4 +1,3 @@
-import os
 from motion_pipeline.core.task_level import Motion
 from motion_pipeline.core.joint_level import Move, MultiMove, Program
 from motion_pipeline.kinematics.base import IKSolver
@@ -18,7 +17,8 @@ def motion_to_program(motion: Motion, config: RobotConfig, ik: IKSolver) -> Prog
             joints = None
 
             for orient in orientations:
-                joints = ik.try_solve(target.position, orient, seed_state=prev_joints)
+                position = [p - o for p, o in zip(target.position, config.base_offset)]
+                joints = ik.try_solve(position, orient, seed_state=prev_joints)
                 if not joints:
                     print(f"IK failed for pos={target.position}, orient={orient}")
                 else:

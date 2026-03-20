@@ -1,6 +1,7 @@
 name: UR5e
 moveit_group: arm
 base_frame: base_link
+base_offset: [0.0, 0.0, 0.0]
 
 chains:
   right:
