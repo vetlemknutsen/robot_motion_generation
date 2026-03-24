@@ -114,6 +114,11 @@
              </item>
              <item>
               <property name="text">
+               <string>pr2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
                <string>tiago</string>
               </property>
              </item>

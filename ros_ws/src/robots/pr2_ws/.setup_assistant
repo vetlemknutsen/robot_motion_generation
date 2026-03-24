@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: pr2_moveit_config
+    relative_path: config/pr2.urdf
+  srdf:
+    relative_path: config/pr2.srdf
+  package_settings:
+    author_name: vetle
+    author_email: vetle@mail.com
+    generated_timestamp: 1774384223

@@ -6,7 +6,7 @@ from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 def motion_to_program(motion: Motion, config: RobotConfig, ik: IKSolver) -> Program:
     instructions = []
-    prev_joints = None
+    prev_joints = config.get_ik_seed() or None
 
     for frame in motion.frames:
         moves = []

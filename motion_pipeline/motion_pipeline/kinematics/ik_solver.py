@@ -48,9 +48,28 @@ class MoveItIKClient(IKSolver):
         req.ik_request.avoid_collisions = False
         # currently give MoveIt 1 second to solve
         req.ik_request.timeout = Duration(sec=1, nanosec=0)
+
+        self.node.get_logger().info(
+            f"IK request: group={self.group_name}, ee_link={self.ee_link}, "
+            f"frame={self.base_frame}, pos={list(position)}, "
+            f"orient={list(orientation) if orientation else None}, "
+            f"seed_joints={list(seed_state.keys()) if seed_state else None}"
+        )
+
         future = self.cli.call_async(req)
         rclpy.spin_until_future_complete(self.node, future)
         res = future.result()
+
+        if res is None:
+            raise RuntimeError("IK service call returned None (timeout or service unavailable)")
+
         if res.error_code.val != res.error_code.SUCCESS:
+            self.node.get_logger().warn(
+                f"IK failed: error_code={res.error_code.val}, "
+                f"solution_joints={list(res.solution.joint_state.name)}, "
+                f"solution_positions={list(res.solution.joint_state.position)}"
+            )
             raise RuntimeError(f"IK failed {res.error_code.val}")
+
+        self.node.get_logger().info(f"IK solved: {list(res.solution.joint_state.name)}")
         return dict(zip(res.solution.joint_state.name, res.solution.joint_state.position))

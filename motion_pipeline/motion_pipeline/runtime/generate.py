@@ -44,6 +44,7 @@ def build_robot_config(robot_key: str) -> RobotConfig:
         base_frame=preset["base_frame"],
         joint_groups=preset.get("joint_groups", {}),
         base_offset=preset.get("base_offset", [0.0, 0.0, 0.0]),
+        ik_seed=preset.get("ik_seed", {}),
     )
 
 def build_adapter(adapter_key: str) -> Adapter:
@@ -96,8 +97,8 @@ def generate_output(input_path: Path, adapter_key: str, robot_key: str, emitter_
         raise ValueError(f"Unknown emitter: '{emitter_key}'. Available: {list(EMITTERS.keys())}")
     emitter = emitter_cls(robot)
     rml_text = emitter.emit(program)
-    labeler = LLMLabeler()
-    rml_text = labeler.label_code(rml_text, robot_key)
+    # labeler = LLMLabeler()
+    # rml_text = labeler.label_code(rml_text, robot_key)
     return rml_text
    
 

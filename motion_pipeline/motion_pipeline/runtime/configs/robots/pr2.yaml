@@ -1,0 +1,56 @@
+name: PR2
+moveit_group: right_arm
+base_frame: base_footprint
+base_offset: [0.0, 0.0, 0.0]
+
+chains:
+  right:
+    - r_shoulder_pan_joint
+    - r_shoulder_lift_joint
+    - r_upper_arm_roll_joint
+    - r_elbow_flex_joint
+    - r_forearm_roll_joint
+    - r_wrist_flex_joint
+    - r_wrist_roll_joint
+
+joint_groups:
+  right:
+    shoulder:
+      pitch: r_shoulder_lift_joint
+      roll: r_upper_arm_roll_joint
+      yaw: r_shoulder_pan_joint
+    elbow:
+      pitch: r_elbow_flex_joint
+      yaw: r_forearm_roll_joint
+    wrist:
+      pitch: r_wrist_flex_joint
+      roll: r_wrist_roll_joint
+    gripper:
+      finger1: r_gripper_l_finger_joint
+      finger2: r_gripper_r_finger_joint
+
+
+end_effectors:
+  right: [torso_lift_link, r_wrist_roll_link]
+
+grippers:
+  right:
+    joints: [r_gripper_l_finger_joint, r_gripper_r_finger_joint]
+    open: 0.548
+    closed: 0.0
+
+default_orientation: [0.0, 0.0, 0.0, 1.0]
+orientation_options:
+  - [0.5, -0.5, -0.5, 0.5]
+  - [0.707, 0.0, 0.0, 0.707]
+
+ik_seed:
+  torso_lift_joint: 0.2
+  r_shoulder_pan_joint: -0.4
+  r_shoulder_lift_joint: 0.2
+  r_upper_arm_roll_joint: 0.0
+  r_elbow_flex_joint: -1.5
+  r_forearm_roll_joint: 0.0
+  r_wrist_flex_joint: -0.2
+  r_wrist_roll_joint: 0.0
+
