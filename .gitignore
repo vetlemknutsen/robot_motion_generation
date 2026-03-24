@@ -13,3 +13,4 @@ frontend/log/
 .qtcreator-build
 CMakeLists.txt.user
 *.egg-info/
+.env

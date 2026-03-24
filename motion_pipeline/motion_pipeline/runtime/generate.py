@@ -11,6 +11,7 @@ from motion_pipeline.rml.rml_emitter import BasicRMLEmitter
 from motion_pipeline.rml.rml_text_to_json import LangiumRMLParser
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 from motion_pipeline.runtime.task_to_joint import motion_to_program
+from motion_pipeline.llm.llm_labeler import LLMLabeler
 
 from motion_pipeline.kinematics.ik_solver import MoveItIKClient
 
@@ -94,7 +95,10 @@ def generate_output(input_path: Path, adapter_key: str, robot_key: str, emitter_
     if emitter_cls is None:
         raise ValueError(f"Unknown emitter: '{emitter_key}'. Available: {list(EMITTERS.keys())}")
     emitter = emitter_cls(robot)
-    return emitter.emit(program)
+    rml_text = emitter.emit(program)
+    labeler = LLMLabeler()
+    rml_text = labeler.label_code(rml_text, robot_key)
+    return rml_text
    
 
 def generate_rml_json_from_plaintext(text: str) -> dict:
