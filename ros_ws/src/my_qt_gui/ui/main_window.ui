@@ -122,6 +122,11 @@
                <string>ur5e</string>
               </property>
              </item>
+             <item>
+              <property name="text">
+               <string>atlas</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>

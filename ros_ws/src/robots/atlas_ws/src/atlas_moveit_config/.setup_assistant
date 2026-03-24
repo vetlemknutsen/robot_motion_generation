@@ -1,0 +1,12 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: "atlas_moveit_config"
+    relative_path: config/atlas.urdf
+  srdf:
+    relative_path: config/drc_skeleton.srdf
+  package_settings:
+    author_name: vetle
+    author_email: vetle@gmail.com
+    generated_timestamp: 1774274921
+
+

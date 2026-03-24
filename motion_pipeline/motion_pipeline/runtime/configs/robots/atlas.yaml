@@ -1,0 +1,33 @@
+name: Atlas
+moveit_group: right_arm
+base_frame: pelvis
+base_offset: [0.0, 0.0, 0.9]
+
+chains:
+  right:
+    - r_arm_usy
+    - r_arm_shx
+    - r_arm_ely
+    - r_arm_elx
+    - r_arm_uwy
+    - r_arm_mwx
+
+
+joint_groups:
+  right:
+    shoulder:
+      roll: r_arm_shx
+      yaw: r_arm_usy
+    elbow:
+      pitch: r_arm_ely
+      roll: r_arm_elx
+    wrist:
+      roll: r_arm_mwx
+      yaw: r_arm_uwy
+
+
+end_effectors:
+  right: [utorso, r_hand]
+
+default_orientation: [0.0, 0.0, 0.0, 1.0]
+

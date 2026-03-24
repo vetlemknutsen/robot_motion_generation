@@ -1,7 +1,7 @@
 name: UR5e
 
 joints:
-  # ARM — keys match RML: Side[0] + Joint.capitalize() + Rotation.capitalize()
+  # ARM
   RShoulderYaw:
     motor: shoulder_pan_joint
     sensor: shoulder_pan_joint_sensor

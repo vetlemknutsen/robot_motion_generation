@@ -6,7 +6,7 @@ joints:
     motor: torso_lift_joint
     sensor: torso_lift_joint_sensor
 
-  # ARM — keys match RML: Side[0] + Joint.capitalize() + Rotation.capitalize()
+  # ARM
   RShoulderPitch:
     motor: arm_1_joint
     sensor: arm_1_joint_sensor

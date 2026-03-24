@@ -1,0 +1,27 @@
+name: Atlas
+
+joints:
+  # ARM (semantic keys used by current RML mapping)
+  RShoulderRoll:
+    motor: RArmShx
+    sensor: null
+  RShoulderYaw:
+    motor: RArmUsy
+    sensor: null
+  RElbowPitch:
+    motor: RArmEly
+    sensor: null
+  RElbowRoll:
+    motor: RArmElx
+    sensor: null
+  RWristYaw:
+    motor: RArmUwy
+    sensor: null
+  RWristRoll:
+    motor: RArmMwx
+    sensor: null
+
+  # HEAD
+  HeadPitch:
+    motor: NeckAy
+    sensor: null
