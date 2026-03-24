@@ -20,5 +20,6 @@ RectangleArena {
 }
 Atlas {
   controller "robot_controller"
+  supervisor TRUE
 }
 

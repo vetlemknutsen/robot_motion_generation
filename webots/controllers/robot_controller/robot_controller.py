@@ -1,19 +1,25 @@
 import threading
 import json
 import yaml
-from controller import Robot
+from controller import Robot, Supervisor
 from subscriber import Subscriber
 from motion_interpreter import MotionInterpreter
 import rclpy
 
 
-class RobotController(Robot):
+class RobotController(Supervisor):
     def __init__(self, config):
         self.pending_motion = None
         self.motions = {}
 
         super().__init__()
         rclpy.init()
+
+        # Supervisor fields for pinning the robot base
+        self.root_node = self.getSelf()
+        self.translation_field = self.root_node.getField('translation')
+        self.rotation_field = self.root_node.getField('rotation')
+        self.pinned = False
 
         self.subscriber = Subscriber('webots_motion', self.messageCallback)
         self.findAndEnableDevices(config)
@@ -29,10 +35,18 @@ class RobotController(Robot):
         for key, val in config['joints'].items():
             if val['motor'] is not None:
                 motor = self.getDevice(val['motor'])
-                motor.setVelocity(motor.getMaxVelocity() * 0.5)
+                motor.setVelocity(motor.getMaxVelocity() * 0.1)
                 self.motors[key] = motor
             if val['sensor'] is not None:
                 self.sensors[key] = self.getDevice(val['sensor'])
+
+        for motor_name in config.get('locked_joints', []):
+            motor = self.getDevice(motor_name)
+            if motor is None:
+                print(f'WARNING: locked joint motor "{motor_name}" not found')
+                continue
+            motor.setPosition(0.0)
+            print(f'Locked joint: {motor_name}')
 
     def messageCallback(self, msg):
         body = json.loads(msg.data)
@@ -74,16 +88,30 @@ class RobotController(Robot):
 
 
     def run(self):
+        # Let the robot settle onto the ground for 1 second
+        settle_steps = int(1000 / self.timeStep)
+        for _ in range(settle_steps):
+            if self.step(self.timeStep) == -1:
+                return
+        # Capture settled position
+        self.pinned_translation = self.translation_field.getSFVec3f()
+        self.pinned_rotation = self.rotation_field.getSFRotation()
+        print(f'Robot pinned at {self.pinned_translation}')
+
         while True:
             if self.pending_motion:
-                name = self.pending_motion 
+                name = self.pending_motion
                 self.pending_motion = None
-            
+
                 if name in self.motions:
                     print(f'Performing motion "{name}"')
                     self.interpreter.execute(self.motions[name])
-                else: 
+                else:
                     print(f'Unknown motion: "{name}"')
+
+            # Pin the robot base to prevent tipping from arm movement
+            self.translation_field.setSFVec3f(self.pinned_translation)
+            self.rotation_field.setSFRotation(self.pinned_rotation)
 
             # Break simulation (https://cyberbotics.com/doc/reference/robot#wb_robot_step)
             if self.step(self.timeStep) == -1:

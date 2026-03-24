@@ -35,7 +35,7 @@ class MotionInterpreter:
             print(f"Unknown motor key: {key}")
             return
 
-        if sync:
+        if sync and key in self.sensors:
             self.sync_move(self.motors[key], self.sensors[key], position)
         else:
             self.motors[key].setPosition(position)

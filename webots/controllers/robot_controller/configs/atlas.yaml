@@ -25,3 +25,31 @@ joints:
   HeadPitch:
     motor: NeckAy
     sensor: null
+
+# Joints locked at their initial position on startup to prevent tipping
+locked_joints:
+  # Back/torso
+  - BackLbz
+  - BackMby
+  - BackUbx
+  # Left arm
+  - LArmUsy
+  - LArmShx
+  - LArmEly
+  - LArmElx
+  - LArmUwy
+  - LArmMwx
+  # Left leg
+  - LLegUhz
+  - LLegMhx
+  - LLegLhy
+  - LLegKny
+  - LLegUay
+  - LLegLax
+  # Right leg
+  - RLegUhz
+  - RLegMhx
+  - RLegLhy
+  - RLegKny
+  - RLegUay
+  - RLegLax
