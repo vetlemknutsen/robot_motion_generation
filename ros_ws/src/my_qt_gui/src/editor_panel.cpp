@@ -58,8 +58,9 @@ void EditorPanel::onSendClicked(){
 
 void EditorPanel::onLogReceived(const motion_pipeline_msgs::msg::LogMessage::SharedPtr msg){
     QString text = QString::fromStdString(msg->message);
-    QMetaObject::invokeMethod(this, [this, text]() {
-        logs_->appendPlainText(text);
+    QMetaObject::invokeMethod(this, [this, msg, text]() {
+        QString color = (msg->level == motion_pipeline_msgs::msg::LogMessage::ERROR) ? "#ff0000" : "#008000";
+        logs_ -> appendHtml(QString("<span style='color:%1'>%2</span>").arg(color).arg(text.toHtmlEscaped()));
     });
 }
 
@@ -72,6 +73,8 @@ bool EditorPanel::eventFilter(QObject* obj, QEvent* event){
 
 
 void EditorPanel::appendLog(const QString& text) { 
-    logs_->appendPlainText(text); 
+    logs_->appendHtml(QString("<span style='color:#008000'>%1</span>")
+    .arg(text.toHtmlEscaped()));
+
 }
 

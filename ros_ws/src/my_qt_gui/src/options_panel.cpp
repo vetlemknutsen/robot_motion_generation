@@ -2,10 +2,10 @@
 #include <QMetaObject>
 #include <QTimer>
 
-OptionsPanel::OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QLabel* statusLabel, QWidget* parent)
+OptionsPanel::OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QWidget* parent)
 : QWidget(parent), node_(node),
   pathEdit_(pathEdit), adapterBox_(adapterBox), robotBox_(robotBox),
-  generateButton_(generateButton), statusLabel_(statusLabel)
+  generateButton_(generateButton)
 {
     generate_client_ = node_->create_client<motion_pipeline_msgs::srv::GenerateRequest>("generate_rml");
     switch_robot_client_ = node_->create_client<motion_pipeline_msgs::srv::SwitchRobot>("switch_robot");

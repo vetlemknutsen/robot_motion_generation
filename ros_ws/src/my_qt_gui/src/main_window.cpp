@@ -27,7 +27,6 @@ MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget* parent)
         ui->robotBox,
         ui->generateButton,
         ui->browseButton,
-        ui->label,
         this);
 
     databasePanel_ = new DatabasePanel(

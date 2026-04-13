@@ -14,7 +14,7 @@ class OptionsPanel : public QWidget
     Q_OBJECT
 
 public:
-    OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QLabel* statusLabel, QWidget* parent = nullptr);
+    OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QWidget* parent = nullptr);
 
     QString getCurrentRobot() const {
         return currentRobot_; 
@@ -42,8 +42,7 @@ private:
     QComboBox* adapterBox_;
     QComboBox* robotBox_;
     QPushButton* generateButton_;
-    QLabel* statusLabel_;
 
-    QString currentRobot_ = "nao";
+    QString currentRobot_ = "tiago";
     bool robotLoading_ = false;
 };

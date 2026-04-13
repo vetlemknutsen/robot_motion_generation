@@ -41,7 +41,7 @@ class PipelineGeneratorNode(Node):
 
         self.get_logger().info("Generator node started")
 
-        self._switch_robot("nao")
+        self._switch_robot("tiago")
     
 
     def on_generate_request(self, request, response):
