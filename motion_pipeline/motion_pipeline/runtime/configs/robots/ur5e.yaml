@@ -37,8 +37,6 @@ grippers:
     open: 0.0495
     closed: 1.22
 
-default_orientation: [0.0, 0.707, 0.0, 0.707]
+default_orientation: [0.5, 0.5, 0.5, 0.5]
 orientation_options:
-  - [0.0, 0.707, 0.0, 0.707]
-  - [0.0, 0.0, 0.0, 1.0]
-  - [0.5, 0.5, -0.5, 0.5]
+
