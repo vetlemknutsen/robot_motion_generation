@@ -15,20 +15,19 @@ def motion_to_program(motion: Motion, config: RobotConfig, ik: IKSolver) -> Prog
             # Try different orientations until IK succeeds
             orientations = [target.orientation] if target.orientation else config.get_orientation_options() or [None]
             joints = None
+            solved = False
 
             for orient in orientations:
                 position = [p - o for p, o in zip(target.position, config.base_offset)]
                 joints = ik.try_solve(position, orient, seed_state=prev_joints)
-                if not joints:
-                    print(f"IK failed for pos={target.position}, orient={orient}")
-                else:
-                    print(f"IK joints keys: {list(joints.keys())}")
+                if joints:
+                    solved = True
                     prev_joints = joints
                     break
 
+            print(f"position: {target.position} solved: {str(solved).lower()}")
 
-            if not joints:
-                print(f"IK failed for {target.position}, skipping frame")
+            if not solved:
                 continue
 
             for name in config.get_chain(target.side):
