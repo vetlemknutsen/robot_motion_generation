@@ -29,8 +29,8 @@ void OptionsPanel::onGenerateClicked()
 
     auto request = std::make_shared<motion_pipeline_msgs::srv::GenerateRequest::Request>();
     request->input_path = path.toStdString();
-    request->adapter = adapter.toStdString();
-    request->robot = robot.toStdString();
+    request->adapter = adapter.toLower().toStdString();
+    request->robot = robot.toLower().toStdString();
 
     generate_client_->async_send_request(request,
         [this](rclcpp::Client<motion_pipeline_msgs::srv::GenerateRequest>::SharedFuture future) {
@@ -60,12 +60,12 @@ void OptionsPanel::onBrowseClicked()
 
 void OptionsPanel::onRobotChanged(const QString& robot)
 {
-    if (robot == currentRobot_ || robot.isEmpty()) return;
+    if (robot.toLower() == currentRobot_.toLower() || robot.isEmpty()) return;
 
     setLoadingState(true);
 
     auto request = std::make_shared<motion_pipeline_msgs::srv::SwitchRobot::Request>();
-    request->name = robot.toStdString();
+    request->name = robot.toLower().toStdString();
 
     switch_robot_client_->async_send_request(request,
         [this, robot](rclcpp::Client<motion_pipeline_msgs::srv::SwitchRobot>::SharedFuture future) {

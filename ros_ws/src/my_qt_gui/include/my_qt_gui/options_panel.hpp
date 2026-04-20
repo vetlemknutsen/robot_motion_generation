@@ -43,6 +43,6 @@ private:
     QComboBox* robotBox_;
     QPushButton* generateButton_;
 
-    QString currentRobot_ = "tiago";
+    QString currentRobot_ = "TIAGo";
     bool robotLoading_ = false;
 };

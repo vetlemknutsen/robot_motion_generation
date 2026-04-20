@@ -119,12 +119,12 @@ QGroupBox::title {
             <widget class="QComboBox" name="adapterBox">
              <item>
               <property name="text">
-               <string>json</string>
+               <string>JSON</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>mediapipe_csv</string>
+               <string>MediapipeCSV</string>
               </property>
              </item>
             </widget>
@@ -140,17 +140,22 @@ QGroupBox::title {
             <widget class="QComboBox" name="robotBox">
              <item>
               <property name="text">
-               <string>nao</string>
+               <string>NAO</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>tiago</string>
+               <string>TIAGo</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>ur5e</string>
+               <string>UR5e</string>
+              </property>
+             </item>
+            <item>
+              <property name="text">
+               <string>PR2</string>
               </property>
              </item>
             </widget>
