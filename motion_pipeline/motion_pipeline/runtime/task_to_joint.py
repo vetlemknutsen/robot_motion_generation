@@ -1,10 +1,10 @@
-from motion_pipeline.core.task_level import Motion
-from motion_pipeline.core.joint_level import Move, MultiMove, Program
+from motion_pipeline.core.task_level import TaskDescription
+from motion_pipeline.core.joint_level import Move, MultiMove, JointDescription
 from motion_pipeline.kinematics.base import IKSolver
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
 
-def motion_to_program(motion: Motion, config: RobotConfig, ik: IKSolver) -> Program:
+def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotConfig, ik: IKSolver) -> JointDescription:
     instructions = []
     prev_joints = None
 
@@ -47,4 +47,4 @@ def motion_to_program(motion: Motion, config: RobotConfig, ik: IKSolver) -> Prog
                     gripper_moves.append(Move(grip.side, j, "", val))
                 instructions.append(gripper_moves[0] if len(gripper_moves) == 1 else MultiMove(gripper_moves))
 
-    return Program(motion.name, instructions)
+    return JointDescription(motion.name, instructions)

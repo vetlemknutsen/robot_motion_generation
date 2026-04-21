@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from motion_pipeline.core.joint_level import Program
+from motion_pipeline.core.joint_level import JointDescription
     
 """
 Abstract base class for output emitters
@@ -9,6 +9,6 @@ See BasicRMLEmitter for an example
 """
 class Emitter(ABC):
     @abstractmethod
-    def emit(self, program: Program) -> str:
-        """Convert a Program to an output string."""
+    def emit(self, program: JointDescription) -> str:
+        """Convert a JointDescription to an output string."""
         ...

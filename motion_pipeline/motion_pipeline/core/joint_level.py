@@ -12,9 +12,9 @@ class Move:
 class MultiMove: 
     moves: List[Move]
 
-ProgramInstruction = Union[Move, MultiMove]
+JointInstruction = Union[Move, MultiMove]
 
 @dataclass
-class Program:
+class JointDescription:
     name: str
-    instructions: List[ProgramInstruction] = field(default_factory=list)
+    instructions: List[JointInstruction] = field(default_factory=list)

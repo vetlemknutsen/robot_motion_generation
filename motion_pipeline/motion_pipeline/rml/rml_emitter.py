@@ -1,14 +1,14 @@
 from motion_pipeline.rml.base import Emitter
-from motion_pipeline.core.joint_level import Move, MultiMove, Program
+from motion_pipeline.core.joint_level import Move, MultiMove, JointDescription
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
 
-# Emitter that writes Program into RML
+# Emitter that writes JointDescription into RML
 class BasicRMLEmitter(Emitter):
     def __init__(self, config: RobotConfig) -> None:
         self.tab = "   "
         self.joint_map = config.joint_map  
 
-    def emit(self, program: Program) -> str:
+    def emit(self, program: JointDescription) -> str:
         lines = [f"define {program.name}"]
 
         for instr in program.instructions:

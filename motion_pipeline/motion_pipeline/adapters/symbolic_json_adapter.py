@@ -2,11 +2,11 @@ import json
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.task_level import Frame, Motion, Target, GripperState
+from motion_pipeline.core.task_level import Frame, TaskDescription, Target, GripperState
 
 
 class JsonScenarioAdapter(Adapter):
-    def to_motion(self, source) -> Motion:
+    def to_taskdescription(self, source) -> TaskDescription:
         with Path(source).open() as f:
             data = json.load(f)
 
@@ -18,7 +18,7 @@ class JsonScenarioAdapter(Adapter):
             frame = self._parse_frame(i, frame_data)
             frames.append(frame)
 
-        return Motion(motion_name, frames)
+        return TaskDescription(motion_name, frames)
 
     def _parse_frame(self, time, frame_data):
         action = frame_data.get("action")

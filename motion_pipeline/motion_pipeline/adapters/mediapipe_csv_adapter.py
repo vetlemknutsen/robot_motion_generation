@@ -3,7 +3,7 @@ import math
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.task_level import Frame, Motion, Target, GripperState
+from motion_pipeline.core.task_level import Frame, TaskDescription, Target, GripperState
 
 SIDE = "right"
 PINCH_THRESHOLD = 0.05
@@ -11,12 +11,12 @@ PINCH_THRESHOLD = 0.05
 
 class MediaPipeCSVAdapter(Adapter):
 
-    def to_motion(self, source) -> Motion:
+    def to_taskdescription(self, source) -> TaskDescription:
         path = Path(source)
         with path.open() as f:
             rows = list(csv.DictReader(f))
         if not rows:
-            return Motion(path.stem, [])
+            return TaskDescription(path.stem, [])
 
         ax, ay, _ = self._avg_ankle(rows[0])
         frames = []
@@ -43,7 +43,7 @@ class MediaPipeCSVAdapter(Adapter):
                 grippers=[GripperState(side=SIDE, closed=grip)],
             ))
 
-        return Motion(path.stem, frames)
+        return TaskDescription(path.stem, frames)
 
     def _avg_ankle(self, row):
         right = [float(row["RIGHT_ANKLE_x"]), float(row["RIGHT_ANKLE_y"]), float(row["RIGHT_ANKLE_z"])]

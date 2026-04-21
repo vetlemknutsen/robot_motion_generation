@@ -41,7 +41,7 @@ class Frame:
 
 
 @dataclass
-class Motion:
+class TaskDescription:
     """
     Multiple steps/frames. This is what adapters produce, it's
     robot-independent and describes motion in task-space. The IK solver

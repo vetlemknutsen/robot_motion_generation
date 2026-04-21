@@ -6,11 +6,11 @@ import yaml
 
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
 from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
-from motion_pipeline.core.joint_level import Program
+from motion_pipeline.core.joint_level import JointDescription
 from motion_pipeline.rml.rml_emitter import BasicRMLEmitter
 from motion_pipeline.rml.rml_text_to_json import LangiumRMLParser
 from motion_pipeline.runtime.configs.robot_config import RobotConfig
-from motion_pipeline.runtime.task_to_joint import motion_to_program
+from motion_pipeline.runtime.task_to_joint import taskdescription_to_jointdescription
 from motion_pipeline.llm.llm_labeler import LLMLabeler
 
 from motion_pipeline.kinematics.ik_solver import MoveItIKClient
@@ -19,7 +19,7 @@ ROBOTS_DIR = Path(__file__).parent / "configs" / "robots"
 
 ADAPTERS: dict[str, type[Adapter]] = {
     "json": JsonScenarioAdapter,
-    "mediapipe_csv": MediaPipeCSVAdapter,
+    "mediapipecsv": MediaPipeCSVAdapter,
 }
 
 EMITTERS: dict[str, type[Emitter]] = {
@@ -53,7 +53,7 @@ def build_adapter(adapter_key: str) -> Adapter:
     return cls()
 
 
-def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Program:
+def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str) -> JointDescription:
     input_path = Path(input_path)
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: '{input_path}'")
@@ -64,7 +64,7 @@ def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Prog
     adapter = build_adapter(adapter_key)
 
     try:
-        motion = adapter.to_motion(input_path)
+        motion = adapter.to_taskdescription(input_path)
     except Exception as e:
         raise RuntimeError(
             f"Adapter '{adapter_key}' failed to parse '{input_path}': {type(e).__name__}: {e}"
@@ -78,10 +78,10 @@ def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Prog
     )
 
     try:
-        program = motion_to_program(motion, robot, ik)
+        program = taskdescription_to_jointdescription(motion, robot, ik)
     except Exception as e:
         raise RuntimeError(
-            f"Failed to convert motion to program for robot '{robot_key}' "
+            f"Failed to convert taskdescription to jointdescription for robot '{robot_key}' "
             f"from '{input_path}': {type(e).__name__}: {e}"
         ) from e
 
@@ -89,7 +89,7 @@ def generate_program(input_path: Path, adapter_key: str, robot_key: str) -> Prog
 
 def generate_output(input_path: Path, adapter_key: str, robot_key: str, emitter_key = "rml") -> str:
     robot = build_robot_config(robot_key)
-    program = generate_program(input_path, adapter_key, robot_key)
+    program = generate_jointdescription(input_path, adapter_key, robot_key)
 
     emitter_cls = EMITTERS.get(emitter_key)
     if emitter_cls is None:
