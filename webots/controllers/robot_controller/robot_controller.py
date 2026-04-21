@@ -15,7 +15,7 @@ class RobotController(Robot):
         super().__init__()
         rclpy.init()
 
-        self.subscriber = Subscriber('webots_motion', self.messageCallback)
+        self.subscriber = Subscriber('motion_commands', self.messageCallback)
         self.findAndEnableDevices(config)
 
         self.interpreter = MotionInterpreter(self.motors, self.sensors, self.motor_set_position_sync)

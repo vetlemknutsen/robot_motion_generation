@@ -30,8 +30,8 @@ class PipelineGeneratorNode(Node):
         self.delete_motions_srv = self.create_service(DeleteMotion, "delete_motion", self.on_delete_motion)
 
 
-        self.send_sub = self.create_subscription(String, "send_webots", self.on_send_request, 10)
-        self.send_pub = self.create_publisher(String, "webots_motion", 10)
+        self.send_sub = self.create_subscription(String, "rml_for_execution", self.on_send_request, 10)
+        self.send_pub = self.create_publisher(String, "motion_commands", 10)
 
         self.log_pub = self.create_publisher(LogMessage, "pipeline_logs", 10)
 
