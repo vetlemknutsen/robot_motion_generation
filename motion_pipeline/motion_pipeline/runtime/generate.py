@@ -53,7 +53,7 @@ def build_adapter(adapter_key: str) -> Adapter:
     return cls()
 
 
-def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str) -> JointDescription:
+def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str, node) -> JointDescription:
     input_path = Path(input_path)
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: '{input_path}'")
@@ -72,6 +72,7 @@ def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str
     
     _, tip = list(robot.end_effectors.values())[0]
     ik = MoveItIKClient(
+        node,
         group_name=robot.get_group_name(),
         base_frame=robot.get_base_frame(),
         ee_link=tip
@@ -87,9 +88,9 @@ def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str
 
     return program
 
-def generate_output(input_path: Path, adapter_key: str, robot_key: str, emitter_key = "rml") -> str:
+def generate_output(input_path: Path, adapter_key: str, robot_key: str, node, emitter_key = "rml") -> str:
     robot = build_robot_config(robot_key)
-    program = generate_jointdescription(input_path, adapter_key, robot_key)
+    program = generate_jointdescription(input_path, adapter_key, robot_key, node)
 
     emitter_cls = EMITTERS.get(emitter_key)
     if emitter_cls is None:

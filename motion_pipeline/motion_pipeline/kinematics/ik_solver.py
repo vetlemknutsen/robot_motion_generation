@@ -1,7 +1,9 @@
+import time
+
 import rclpy
+from rclpy.callback_groups import ReentrantCallbackGroup
 from typing import Dict, Optional, Sequence
 
-from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
 from moveit_msgs.srv import GetPositionIK
 from builtin_interfaces.msg import Duration
@@ -9,12 +11,13 @@ from builtin_interfaces.msg import Duration
 from motion_pipeline.kinematics.base import IKSolver
 
 class MoveItIKClient(IKSolver):
-    def __init__(self, group_name: str, base_frame: str, ee_link: str):
+    def __init__(self, node, group_name: str, base_frame: str, ee_link: str):
         self.group_name = group_name
         self.base_frame = base_frame
         self.ee_link = ee_link
-        self.node = Node("motion_pipeline_ik_client")
-        self.cli = self.node.create_client(GetPositionIK, "/compute_ik")
+        self.node = node
+        self.cb_group = ReentrantCallbackGroup()
+        self.cli = self.node.create_client(GetPositionIK, "/compute_ik", callback_group=self.cb_group)
         self.cli.wait_for_service()
 
     # call IK
@@ -49,7 +52,8 @@ class MoveItIKClient(IKSolver):
         # currently give MoveIt 1 second to solve
         req.ik_request.timeout = Duration(sec=1, nanosec=0)
         future = self.cli.call_async(req)
-        rclpy.spin_until_future_complete(self.node, future)
+        while not future.done():
+            time.sleep(0.01)
         res = future.result()
         if res.error_code.val != res.error_code.SUCCESS:
             raise RuntimeError(f"IK failed {res.error_code.val}")

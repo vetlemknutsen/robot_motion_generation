@@ -49,7 +49,7 @@ class PipelineGeneratorNode(Node):
         self.get_logger().info(f"Generate request: input_path='{request.input_path}")
 
         try: 
-            rml_text = generate_output(Path(request.input_path), request.adapter, request.robot)
+            rml_text = generate_output(Path(request.input_path), request.adapter, request.robot, node=self)
             response.rml_text = rml_text 
             response.success = True
         except Exception as e: 
