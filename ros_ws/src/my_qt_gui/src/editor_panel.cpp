@@ -8,7 +8,7 @@ EditorPanel::EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* edi
     send_pub_ = node_->create_publisher<std_msgs::msg::String>("rml_for_execution", 10);
     log_sub_ = node_->create_subscription<motion_pipeline_msgs::msg::LogMessage>("pipeline_logs", 10, std::bind(&EditorPanel::onLogReceived, this, std::placeholders::_1));
 
-    spinner_ = new QMovie("/home/vetle/robot_motion_generation/ros_ws/src/my_qt_gui/resources/loading.gif");
+    spinner_ = new QMovie("src/my_qt_gui/resources/loading.gif");
     spinnerLabel_ = new QLabel(editor_);
     spinnerLabel_->setMovie(spinner_);
     spinnerLabel_->setFixedSize(64, 64);

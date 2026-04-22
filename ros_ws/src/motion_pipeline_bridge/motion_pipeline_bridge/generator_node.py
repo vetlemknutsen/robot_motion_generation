@@ -10,6 +10,7 @@ import time
 from moveit_msgs.srv import GetPositionIK
 import os 
 import signal
+from rclpy.executors import MultiThreadedExecutor
 
 from motion_pipeline.runtime.generate import generate_output
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
@@ -127,7 +128,9 @@ def main():
     rclpy.init()
     node = PipelineGeneratorNode()
     try: 
-        rclpy.spin(node)
+        executor = MultiThreadedExecutor()
+        executor.add_node(node)
+        executor.spin()
     finally:
         if node.move_group_process:
             node.move_group_process.terminate()

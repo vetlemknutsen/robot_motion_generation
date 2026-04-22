@@ -7,7 +7,7 @@ from motion_pipeline_bridge.storage_base import MotionStore
 class SQLiteMotionStore(MotionStore):
     def __init__(self, db_path: str):
         self.db_path = os.path.expanduser(db_path) 
-        self.connection = sqlite3.connect(self.db_path)
+        self.connection = sqlite3.connect(self.db_path, check_same_thread=False)
         self._init_db()
 
 
