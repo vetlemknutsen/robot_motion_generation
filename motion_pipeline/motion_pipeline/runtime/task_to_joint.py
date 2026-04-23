@@ -25,7 +25,7 @@ def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotCo
                 if not joints:
                     print(f"Position {target.position} not reachable, skipping frame")
                 else:
-                    print(f"IK joints keys: {list(joints.keys())}")
+                    print(f"Solved for position {target.position}")
                     prev_joints = joints
                     break
 
