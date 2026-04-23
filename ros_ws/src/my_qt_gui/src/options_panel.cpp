@@ -1,6 +1,7 @@
 #include "my_qt_gui/options_panel.hpp"
 #include <QMetaObject>
 #include <QTimer>
+#include <QFileInfo>
 
 OptionsPanel::OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QWidget* parent)
 : QWidget(parent), node_(node),
@@ -22,7 +23,7 @@ void OptionsPanel::onGenerateClicked()
     QString path = pathEdit_->text();
     QString adapter = adapterBox_->currentText();
     QString robot = robotBox_->currentText();
-    QString metadata = "File: " + path + "   |   Adapter: " + adapter + "   |   Robot: " + robot;
+    QString metadata = "File: " + QFileInfo(path).fileName() + "   |   Adapter: " + adapter + "   |   Robot: " + robot;
 
     emit generateStarted(metadata);
     emit logMessage("Generate request sent...");

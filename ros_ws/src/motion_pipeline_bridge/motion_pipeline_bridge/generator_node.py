@@ -11,7 +11,7 @@ from moveit_msgs.srv import GetPositionIK
 import os 
 import signal
 from rclpy.executors import MultiThreadedExecutor
-
+from motion_pipeline.runtime.generate import build_robot_config
 from motion_pipeline.runtime.generate import generate_output
 from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
 from motion_pipeline_bridge.database_logic import SQLiteMotionStore
@@ -42,20 +42,20 @@ class PipelineGeneratorNode(Node):
 
         self.get_logger().info("Generator node started")
 
-        self._switch_robot("tiago")
+        self._switch_robot("nao")
     
 
     def on_generate_request(self, request, response):
         self.get_logger().info(f"Generate request: input_path='{request.input_path}")
-
+        display_name = build_robot_config(request.robot).name
         try: 
             rml_text, skipped, total = generate_output(Path(request.input_path), request.adapter, request.robot, node=self)
             if total > 0 and skipped == total:
-                self._publish_error(f"Generation failed: no positions reachable for {request.robot}")
+                self._publish_error(f"Generation failed: no positions reachable for {display_name}")
                 response.success = False
                 return response
             elif skipped > 0:
-                self.log_pub.publish(LogMessage(level=LogMessage.ERROR, message=f"{skipped}/{total} position(s) not reachable for {request.robot}"))
+                self.log_pub.publish(LogMessage(level=LogMessage.ERROR, message=f"{skipped}/{total} position(s) not reachable for {display_name}"))
             response.rml_text = rml_text 
             response.success = True
         except Exception as e: 
@@ -86,6 +86,7 @@ class PipelineGeneratorNode(Node):
         
 
     def _switch_robot(self, robot: str):
+        display_name = build_robot_config(robot).name
         if self.move_group_process:
             try:
                 os.killpg(os.getpgid(self.move_group_process.pid), signal.SIGTERM)
@@ -94,7 +95,7 @@ class PipelineGeneratorNode(Node):
                 self.get_logger().warn("Error killing old move group")
 
 
-        self.log_pub.publish(LogMessage(level=LogMessage.INFO, message=f"Starting IK solver for {robot}..."))
+        self.log_pub.publish(LogMessage(level=LogMessage.INFO, message=f"Starting IK solver for {display_name}..."))
         self.move_group_process = subprocess.Popen(['ros2', 'launch', f'{robot}_moveit_config', 'move_group.launch.py'], start_new_session=True)
 
         client = self.create_client(GetPositionIK, '/compute_ik')
@@ -102,7 +103,7 @@ class PipelineGeneratorNode(Node):
         while not client.wait_for_service(timeout_sec=3.0):
             self.get_logger().info("Still waiting...")
 
-        self.log_pub.publish(LogMessage(level=LogMessage.INFO, message=f"IK solver for robot: {robot} ready!"))
+        self.log_pub.publish(LogMessage(level=LogMessage.INFO, message=f"IK solver for robot: {display_name} ready!"))
         self.destroy_client(client)
 
         self.current_robot = robot
