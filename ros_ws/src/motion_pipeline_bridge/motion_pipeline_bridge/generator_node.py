@@ -49,7 +49,13 @@ class PipelineGeneratorNode(Node):
         self.get_logger().info(f"Generate request: input_path='{request.input_path}")
 
         try: 
-            rml_text = generate_output(Path(request.input_path), request.adapter, request.robot, node=self)
+            rml_text, skipped, total = generate_output(Path(request.input_path), request.adapter, request.robot, node=self)
+            if total > 0 and skipped == total:
+                self._publish_error(f"Generation failed: no positions reachable for {request.robot}")
+                response.success = False
+                return response
+            elif skipped > 0:
+                self.log_pub.publish(LogMessage(level=LogMessage.ERROR, message=f"{skipped}/{total} position(s) not reachable for {request.robot}"))
             response.rml_text = rml_text 
             response.success = True
         except Exception as e: 

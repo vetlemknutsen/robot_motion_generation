@@ -41,7 +41,7 @@ void OptionsPanel::onGenerateClicked()
                     emit logMessage("RML generated successfully.");
                 } else {
                     emit generateFailed(QString::fromStdString(response->error_message));
-                    emit logMessage("RML generate failed: " + QString::fromStdString(response->error_message));
+                    
                 }
             });
         });

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Optional, Sequence
 
-
 """
 Abstract base class for inverse kinematics solvers
 
@@ -33,5 +32,5 @@ class IKSolver(ABC):
         try:
             return self.solve(position, orientation, seed_state)
         except RuntimeError as e:
-            print(e)
+            print(f"IK solver error: {e}")
             return None

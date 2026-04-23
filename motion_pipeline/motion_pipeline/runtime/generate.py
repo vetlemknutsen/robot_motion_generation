@@ -79,18 +79,18 @@ def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str
     )
 
     try:
-        program = taskdescription_to_jointdescription(motion, robot, ik)
+        program, skipped, total = taskdescription_to_jointdescription(motion, robot, ik)
     except Exception as e:
         raise RuntimeError(
             f"Failed to convert taskdescription to jointdescription for robot '{robot_key}' "
             f"from '{input_path}': {type(e).__name__}: {e}"
         ) from e
 
-    return program
+    return program, skipped, total
 
 def generate_output(input_path: Path, adapter_key: str, robot_key: str, node, emitter_key = "rml") -> str:
     robot = build_robot_config(robot_key)
-    program = generate_jointdescription(input_path, adapter_key, robot_key, node)
+    program, skipped, total = generate_jointdescription(input_path, adapter_key, robot_key, node)
 
     emitter_cls = EMITTERS.get(emitter_key)
     if emitter_cls is None:
@@ -99,7 +99,7 @@ def generate_output(input_path: Path, adapter_key: str, robot_key: str, node, em
     rml_text = emitter.emit(program)
     labeler = LLMLabeler()
     rml_text = labeler.label_code(rml_text, robot_key)
-    return rml_text
+    return rml_text, skipped, total
    
 
 def generate_rml_json_from_plaintext(text: str) -> dict:

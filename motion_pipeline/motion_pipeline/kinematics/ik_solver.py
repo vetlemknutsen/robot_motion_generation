@@ -10,6 +10,7 @@ from builtin_interfaces.msg import Duration
 
 from motion_pipeline.kinematics.base import IKSolver
 
+
 class MoveItIKClient(IKSolver):
     def __init__(self, node, group_name: str, base_frame: str, ee_link: str):
         self.group_name = group_name

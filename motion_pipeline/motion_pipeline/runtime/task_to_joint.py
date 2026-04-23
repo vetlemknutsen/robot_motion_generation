@@ -7,11 +7,14 @@ from motion_pipeline.runtime.configs.robot_config import RobotConfig
 def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotConfig, ik: IKSolver) -> JointDescription:
     instructions = []
     prev_joints = None
+    skipped = 0
+    total = 0
 
     for frame in motion.frames:
         moves = []
 
         for target in frame.targets:
+            total += 1
             # Try different orientations until IK succeeds
             orientations = [target.orientation] if target.orientation else config.get_orientation_options() or [None]
             joints = None
@@ -20,7 +23,7 @@ def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotCo
                 position = [p - o for p, o in zip(target.position, config.base_offset)]
                 joints = ik.try_solve(position, orient, seed_state=prev_joints)
                 if not joints:
-                    print(f"IK failed for pos={target.position}, orient={orient}")
+                    print(f"Position {target.position} not reachable, skipping frame")
                 else:
                     print(f"IK joints keys: {list(joints.keys())}")
                     prev_joints = joints
@@ -28,6 +31,7 @@ def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotCo
 
 
             if not joints:
+                skipped += 1
                 print(f"IK failed for {target.position}, skipping frame")
                 continue
 
@@ -47,4 +51,4 @@ def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotCo
                     gripper_moves.append(Move(grip.side, j, "", val))
                 instructions.append(gripper_moves[0] if len(gripper_moves) == 1 else MultiMove(gripper_moves))
 
-    return JointDescription(motion.name, instructions)
+    return JointDescription(motion.name, instructions), skipped, total
