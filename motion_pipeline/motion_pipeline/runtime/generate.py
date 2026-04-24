@@ -44,6 +44,7 @@ def build_robot_config(robot_key: str) -> RobotConfig:
         base_frame=preset["base_frame"],
         joint_groups=preset.get("joint_groups", {}),
         base_offset=preset.get("base_offset", [0.0, 0.0, 0.0]),
+        ik_seed=preset.get("ik_seed", {})
     )
 
 def build_adapter(adapter_key: str) -> Adapter:

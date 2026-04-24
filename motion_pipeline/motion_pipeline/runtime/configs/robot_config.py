@@ -21,7 +21,7 @@ class RobotConfig:
     default_orientation: list = None                     # default end-effector orientation
     orientation_options: list = None                     # list of orientations to try if IK fails with default
     base_offset: list = field(default_factory=lambda: [0.0, 0.0, 0.0])  # offset from world frame to base_frame
-
+    ik_seed: dict = field(default_factory=dict)
 
     # Structure: {side: {group: {rotation: joint_name}}}
     # Example: {"right": {"shoulder": {"pitch": "arm_1_joint", "roll": "arm_2_joint"}, "gripper": {"finger1": "gripper_joint"}}}
@@ -60,3 +60,6 @@ class RobotConfig:
 
     def get_base_frame(self):
         return self.base_frame
+
+    def get_ik_seed(self) -> dict: 
+        return self.ik_seed
