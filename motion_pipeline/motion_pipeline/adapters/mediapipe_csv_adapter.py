@@ -36,7 +36,7 @@ class MediaPipeCSVAdapter(Adapter):
             except (KeyError, ValueError):
                 continue
 
-            pos = [0.5, round(wx - ax, 3), round(-(wy - ay), 3)]
+            pos = [0.7, round(wx - ax, 3), round(-(wy - ay), 3)]
             frames.append(Frame(
                 time=float(i),
                 targets=[Target(side=SIDE, position=pos)],
