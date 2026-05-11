@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from motion_pipeline.core.joint_level import JointDescription
+from motion_pipeline.types.JointDescription import JointDescription
     
 """
 Abstract base class for output emitters

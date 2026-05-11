@@ -6,11 +6,11 @@ import yaml
 
 from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
 from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
-from motion_pipeline.core.joint_level import JointDescription
+from motion_pipeline.types.JointDescription import JointDescription
 from motion_pipeline.rml.rml_emitter import BasicRMLEmitter
 from motion_pipeline.rml.rml_text_to_json import LangiumRMLParser
-from motion_pipeline.runtime.configs.robot_config import RobotConfig
-from motion_pipeline.runtime.task_to_joint import taskdescription_to_jointdescription
+from motion_pipeline.pipeline.configs.robot_config import RobotConfig
+from motion_pipeline.pipeline.transformer import taskdescription_to_jointdescription
 from motion_pipeline.llm.llm_labeler import LLMLabeler
 
 from motion_pipeline.kinematics.ik_solver import MoveItIKClient
@@ -26,7 +26,7 @@ EMITTERS: dict[str, type[Emitter]] = {
     "rml": BasicRMLEmitter,
 }
 
-def build_robot_config(robot_key: str) -> RobotConfig:
+def load_robot_config(robot_key: str) -> RobotConfig:
     yaml_path = ROBOTS_DIR / f"{robot_key}.yaml"
     if not yaml_path.exists():
         available = [f.stem for f in ROBOTS_DIR.glob("*.yaml")]
@@ -47,22 +47,22 @@ def build_robot_config(robot_key: str) -> RobotConfig:
         ik_seed=preset.get("ik_seed", {})
     )
 
-def build_adapter(adapter_key: str) -> Adapter:
+def create_adapter(adapter_key: str) -> Adapter:
     cls = ADAPTERS.get(adapter_key)
     if cls is None: 
         raise ValueError(f"Unknown adapter: '{adapter_key}'. Available: {list(ADAPTERS.keys())}")
     return cls()
 
 
-def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str, node) -> JointDescription:
+def to_joint_description(input_path: Path, adapter_key: str, robot_key: str, node) -> JointDescription:
     input_path = Path(input_path)
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: '{input_path}'")
     if not input_path.is_file():
         raise ValueError(f"Input path is not a file: '{input_path}'")
 
-    robot = build_robot_config(robot_key)
-    adapter = build_adapter(adapter_key)
+    robot = load_robot_config(robot_key)
+    adapter = create_adapter(adapter_key)
 
     try:
         motion = adapter.to_taskdescription(input_path)
@@ -89,9 +89,9 @@ def generate_jointdescription(input_path: Path, adapter_key: str, robot_key: str
 
     return program, skipped, total
 
-def generate_output(input_path: Path, adapter_key: str, robot_key: str, node, emitter_key = "rml") -> str:
-    robot = build_robot_config(robot_key)
-    program, skipped, total = generate_jointdescription(input_path, adapter_key, robot_key, node)
+def run_pipeline(input_path: Path, adapter_key: str, robot_key: str, node, emitter_key = "rml") -> str:
+    robot = load_robot_config(robot_key)
+    program, skipped, total = to_joint_description(input_path, adapter_key, robot_key, node)
 
     emitter_cls = EMITTERS.get(emitter_key)
     if emitter_cls is None:
@@ -103,6 +103,6 @@ def generate_output(input_path: Path, adapter_key: str, robot_key: str, node, em
     return rml_text, skipped, total
    
 
-def generate_rml_json_from_plaintext(text: str) -> dict:
+def rml_to_json(text: str) -> dict:
     parser = LangiumRMLParser()
     return parser.parse(text)

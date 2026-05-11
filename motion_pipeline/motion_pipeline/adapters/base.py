@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from motion_pipeline.core.task_level import TaskDescription
+from motion_pipeline.types.TaskDescription import TaskDescription
 
 
 class Adapter(ABC):

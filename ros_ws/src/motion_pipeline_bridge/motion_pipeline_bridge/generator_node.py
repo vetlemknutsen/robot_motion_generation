@@ -11,9 +11,9 @@ from moveit_msgs.srv import GetPositionIK
 import os 
 import signal
 from rclpy.executors import MultiThreadedExecutor
-from motion_pipeline.runtime.generate import build_robot_config
-from motion_pipeline.runtime.generate import generate_output
-from motion_pipeline.runtime.generate import generate_rml_json_from_plaintext
+from motion_pipeline.pipeline.pipeline import load_robot_config
+from motion_pipeline.pipeline.pipeline import run_pipeline
+from motion_pipeline.pipeline.pipeline import rml_to_json
 from motion_pipeline_bridge.database_logic import SQLiteMotionStore
 from motion_pipeline_msgs.msg import LogMessage
 from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot, GetMotions, SaveMotion, DeleteMotion
@@ -47,9 +47,9 @@ class PipelineGeneratorNode(Node):
 
     def on_generate_request(self, request, response):
         self.get_logger().info(f"Generate request: input_path='{request.input_path}")
-        display_name = build_robot_config(request.robot).name
+        display_name = load_robot_config(request.robot).name
         try: 
-            rml_text, skipped, total = generate_output(Path(request.input_path), request.adapter, request.robot, node=self)
+            rml_text, skipped, total = run_pipeline(Path(request.input_path), request.adapter, request.robot, node=self)
             if total > 0 and skipped == total:
                 self._publish_error(f"Generation failed: no positions reachable for {display_name}")
                 response.success = False
@@ -66,7 +66,7 @@ class PipelineGeneratorNode(Node):
 
     def on_send_request(self, msg):
         rml_plaintext = msg.data
-        rml_json = generate_rml_json_from_plaintext(rml_plaintext)
+        rml_json = rml_to_json(rml_plaintext)
         out = String()
         out.data = json.dumps(rml_json)
         self.send_pub.publish(out)
@@ -86,7 +86,7 @@ class PipelineGeneratorNode(Node):
         
 
     def _switch_robot(self, robot: str):
-        display_name = build_robot_config(robot).name
+        display_name = load_robot_config(robot).name
         if self.move_group_process:
             try:
                 os.killpg(os.getpgid(self.move_group_process.pid), signal.SIGTERM)

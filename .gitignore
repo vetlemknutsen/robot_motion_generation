@@ -14,4 +14,3 @@ frontend/log/
 CMakeLists.txt.user
 *.egg-info/
 .env
-.codex

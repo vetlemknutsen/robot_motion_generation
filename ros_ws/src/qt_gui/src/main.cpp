@@ -3,7 +3,7 @@
 #include <thread>
 #include <memory>
 
-#include "my_qt_gui/main_window.hpp"
+#include "qt_gui/main_window.hpp"
 
 
 int main(int argc, char *argv[]){

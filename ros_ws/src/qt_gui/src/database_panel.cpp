@@ -1,4 +1,4 @@
-#include "my_qt_gui/database_panel.hpp"
+#include "qt_gui/database_panel.hpp"
 #include <QMetaObject>
 #include <QTimer>
 

@@ -1,7 +1,7 @@
-from motion_pipeline.core.task_level import TaskDescription
-from motion_pipeline.core.joint_level import Move, MultiMove, JointDescription
+from motion_pipeline.types.TaskDescription import TaskDescription
+from motion_pipeline.types.JointDescription import Move, MultiMove, JointDescription
 from motion_pipeline.kinematics.base import IKSolver
-from motion_pipeline.runtime.configs.robot_config import RobotConfig
+from motion_pipeline.pipeline.configs.robot_config import RobotConfig
 
 
 def taskdescription_to_jointdescription(motion: TaskDescription, config: RobotConfig, ik: IKSolver) -> JointDescription:

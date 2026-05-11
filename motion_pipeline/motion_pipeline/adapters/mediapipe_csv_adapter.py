@@ -3,7 +3,7 @@ import math
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.task_level import Frame, TaskDescription, Target, GripperState
+from motion_pipeline.types.TaskDescription import Frame, TaskDescription, Target, GripperState
 
 SIDE = "right"
 PINCH_THRESHOLD = 0.05

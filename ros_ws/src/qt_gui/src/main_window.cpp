@@ -1,8 +1,8 @@
-#include "my_qt_gui/main_window.hpp"
+#include "qt_gui/main_window.hpp"
 #include "ui_main_window.h"
-#include "my_qt_gui/editor_panel.hpp"
-#include "my_qt_gui/options_panel.hpp"
-#include "my_qt_gui/database_panel.hpp"
+#include "qt_gui/editor_panel.hpp"
+#include "qt_gui/options_panel.hpp"
+#include "qt_gui/database_panel.hpp"
 #include <QInputDialog>
 
 MainWindow::MainWindow(std::shared_ptr<rclcpp::Node> node, QWidget* parent)

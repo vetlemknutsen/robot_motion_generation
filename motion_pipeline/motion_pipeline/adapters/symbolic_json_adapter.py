@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
-from motion_pipeline.core.task_level import Frame, TaskDescription, Target, GripperState
+from motion_pipeline.types.TaskDescription import Frame, TaskDescription, Target, GripperState
 
 
 class JsonScenarioAdapter(Adapter):
@@ -27,7 +27,7 @@ class JsonScenarioAdapter(Adapter):
         targets = []
         grippers = []
 
-        if action == "move":
+        if action == "reach":
             position = frame_data["position"]
             orientation = frame_data.get("orientation")
             if orientation:

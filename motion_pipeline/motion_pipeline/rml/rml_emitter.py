@@ -1,6 +1,6 @@
 from motion_pipeline.rml.base import Emitter
-from motion_pipeline.core.joint_level import Move, MultiMove, JointDescription
-from motion_pipeline.runtime.configs.robot_config import RobotConfig
+from motion_pipeline.types.JointDescription import Move, MultiMove, JointDescription
+from motion_pipeline.pipeline.configs.robot_config import RobotConfig
 
 # Emitter that writes JointDescription into RML
 class BasicRMLEmitter(Emitter):
