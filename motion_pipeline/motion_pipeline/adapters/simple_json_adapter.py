@@ -1,11 +1,11 @@
 import json
 from pathlib import Path
 
-from motion_pipeline.adapters.base import Adapter
+from motion_pipeline.adapters.base import Adapter, register_adapter
 from motion_pipeline.types.TaskDescription import Frame, TaskDescription, Target, GripperState
 
-
-class JsonScenarioAdapter(Adapter):
+@register_adapter("json")
+class SimpleJSONAdapter(Adapter):
     def to_taskdescription(self, source) -> TaskDescription:
         with Path(source).open() as f:
             data = json.load(f)

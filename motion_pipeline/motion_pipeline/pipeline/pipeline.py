@@ -1,11 +1,11 @@
 from pathlib import Path
 
 from motion_pipeline.adapters.base import Adapter
+import motion_pipeline.adapters
+from motion_pipeline.adapters.base import ADAPTERS
 from motion_pipeline.rml.base import Emitter
 import yaml
 
-from motion_pipeline.adapters.symbolic_json_adapter import JsonScenarioAdapter
-from motion_pipeline.adapters.mediapipe_csv_adapter import MediaPipeCSVAdapter
 from motion_pipeline.types.JointDescription import JointDescription
 from motion_pipeline.rml.rml_emitter import BasicRMLEmitter
 from motion_pipeline.rml.rml_text_to_json import LangiumRMLParser
@@ -16,11 +16,6 @@ from motion_pipeline.llm.llm_labeler import LLMLabeler
 from motion_pipeline.kinematics.ik_solver import MoveItIKClient
 
 ROBOTS_DIR = Path(__file__).parent / "configs" / "robots"
-
-ADAPTERS: dict[str, type[Adapter]] = {
-    "json": JsonScenarioAdapter,
-    "mediapipecsv": MediaPipeCSVAdapter,
-}
 
 EMITTERS: dict[str, type[Emitter]] = {
     "rml": BasicRMLEmitter,

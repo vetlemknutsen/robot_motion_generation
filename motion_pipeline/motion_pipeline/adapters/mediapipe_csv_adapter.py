@@ -2,13 +2,13 @@ import csv
 import math
 from pathlib import Path
 
-from motion_pipeline.adapters.base import Adapter
+from motion_pipeline.adapters.base import Adapter, register_adapter
 from motion_pipeline.types.TaskDescription import Frame, TaskDescription, Target, GripperState
 
 SIDE = "right"
 PINCH_THRESHOLD = 0.05
 
-
+@register_adapter("mediapipecsv")
 class MediaPipeCSVAdapter(Adapter):
 
     def to_taskdescription(self, source) -> TaskDescription:
