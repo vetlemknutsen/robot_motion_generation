@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MotionCommand",
+  "description": "JSON payload published on the motion_commands topic",
+  "type": "object",
+  "properties": {
+    "def": {
+      "type": "string"
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "move": {
+            "type": "object",
+            "properties": {
+              "side": {
+                "type": "string"
+              },
+              "joint": {
+                "type": "string"
+              },
+              "rotation": {
+                "type": "string"
+              },
+              "position": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "joint",
+              "position"
+            ]
+          },
+          "multimove": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "move": {
+                  "type": "object",
+                  "properties": {
+                    "side": {
+                      "type": "string"
+                    },
+                    "joint": {
+                      "type": "string"
+                    },
+                    "rotation": {
+                      "type": "string"
+                    },
+                    "position": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "joint",
+                    "position"
+                  ]
+                }
+              },
+              "required": [
+                "move"
+              ]
+            }
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  "required": [
+    "def",
+    "commands"
+  ]
+}

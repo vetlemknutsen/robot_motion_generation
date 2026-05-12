@@ -1,4 +1,5 @@
 import json
+from motion_pipeline.llm.base import Labeler
 from pathlib import Path
 from openai import OpenAI
 from dotenv import load_dotenv 
@@ -6,7 +7,7 @@ env_path = Path(__file__).resolve().parents[3] / ".env"
 load_dotenv(env_path)
 
 
-class LLMLabeler: 
+class LLMLabeler(Labeler): 
     def label_code(self, rml_text:str, robot_key: str) -> str: 
         try: 
             labels = self._get_labels(rml_text, robot_key)
