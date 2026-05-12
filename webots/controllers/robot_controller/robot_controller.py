@@ -18,7 +18,7 @@ class RobotController(Robot):
         self.subscriber = Subscriber('motion_commands', self.messageCallback)
         self.findAndEnableDevices(config)
 
-        self.interpreter = MotionInterpreter(self.motors, self.sensors, self.motor_set_position_sync)
+        self.interpreter = MotionInterpreter(self.motors, self.sensors, self.motor_set_position_sync, self.motor_set_positions_sync)
 
 
     def findAndEnableDevices(self, config):
@@ -42,35 +42,48 @@ class RobotController(Robot):
             self.pending_motion = name
 
 
+    '''
+    Sets motor position and waits for it to reach target position.
+    This stops target-positions to be overwritten.
+
+    ARGS:
+        tag_motor: (Webots tag) tag of motor to activate
+        tag_sensor: (Webots tag) tag of position sensor for motor
+        target: (Radians) target position of motor
+        delay: (int) optional max wait time in ms (default: no limit)
+    '''
+    # for Move
     def motor_set_position_sync(self, tag_motor, tag_sensor, target, delay=None):
-        '''
-        Sets motor position and waits for it to reach target position.
-        This stops target-positions to be overwritten.
+        self._wait_for_targets([(tag_motor, tag_sensor, target)], delay=delay)
 
-        ARGS:
-            tag_motor: (Webots tag) tag of motor to activate
-            tag_sensor: (Webots tag) tag of position sensor for motor
-            target: (Radians) target position of motor
-            delay: (int) optional max wait time in ms (default: no limit)
+    # for MultiMove
+    def motor_set_positions_sync(self, goals, delay=None):
+        self._wait_for_targets(goals, delay=delay)
 
-        USAGE:
-            Use for one motion every keyframe (preferably on motor where target position is changed next keyframe).
-        '''
-        DELTA = 0.001;  # max tolerated difference
-        tag_motor.setPosition(target)
-        tag_sensor.enable(self.timeStep)
+    def _wait_for_targets(self, goals, delay=None, delta=0.001):
+        remaining = delay 
+
+        for motor, sensor, target in goals: 
+            motor.setPosition(target)
+            sensor.enable(self.timeStep)
 
         while True:
             if self.step(self.timeStep) == -1:
-                break
-            effective = tag_sensor.getValue()
-            if abs(target - effective) <= DELTA:
-                break
-            if delay is not None:
-                delay -= self.timeStep
-                if delay <= 0:
-                    break
-        tag_sensor.disable()
+                break 
+
+            all_reached = all(abs(target - sensor.getValue()) <= delta
+                                for _, sensor, target in goals) 
+            if all_reached:
+                break 
+
+            if remaining is not None:
+                remaining -= self.timeStep 
+                if remaining <= 0:
+                    break 
+
+        for _, sensor, _ in goals:
+            sensor.disable()
+ 
 
 
     def run(self):
