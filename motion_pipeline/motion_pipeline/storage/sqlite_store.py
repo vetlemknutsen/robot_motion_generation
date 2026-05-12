@@ -2,7 +2,7 @@ import sqlite3
 import os
 from pathlib import Path
 
-from motion_pipeline_bridge.storage_base import MotionStore
+from motion_pipeline.storage.base import MotionStore
 
 class SQLiteMotionStore(MotionStore):
     def __init__(self, db_path: str):

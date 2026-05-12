@@ -14,7 +14,7 @@ from rclpy.executors import MultiThreadedExecutor
 from motion_pipeline.pipeline.pipeline import load_robot_config
 from motion_pipeline.pipeline.pipeline import run_pipeline
 from motion_pipeline.pipeline.pipeline import rml_to_json
-from motion_pipeline_bridge.database_logic import SQLiteMotionStore
+from motion_pipeline.storage.sqlite_store import SQLiteMotionStore
 from motion_pipeline_msgs.msg import LogMessage
 from motion_pipeline_msgs.srv import GenerateRequest, SwitchRobot, GetMotions, SaveMotion, DeleteMotion
 
