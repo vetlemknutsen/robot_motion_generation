@@ -1,79 +1,98 @@
 # Adding a New Robot
 
-Adding a robot involves three areas: the motion pipeline config, the MoveIt setup, and the Webots simulation.
+Adding a robot has three parts: pipeline YAML config, MoveIt package, and execution-side joint mapping.
 
-## 1. Motion pipeline config (required)
+## 1. Add pipeline robot config (required)
 
-Create a YAML file in `motion_pipeline/motion_pipeline/runtime/configs/robots/`.
+Create a YAML file in:
 
-The filename is the robot key used everywhere (GUI, MoveIt launch, etc). For example, `myrobot.yaml` means the key is `myrobot`.
+`motion_pipeline/motion_pipeline/pipeline/configs/robots/`
 
-Copy an existing config (e.g. `nao.yaml`) and fill in the values. See `robot_config.py` for what each field means. The required fields are:
+The filename is the robot key used by the backend. Example:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| `name` | Display name | `"MyRobot"` |
-| `moveit_group` | MoveIt planning group name | `"right_arm"` |
-| `base_frame` | TF base frame | `"base_link"` |
-| `chains` | Joints per side | `right: [joint1, joint2, ...]` |
-| `end_effectors` | Base + tip link per side (for IK) | `right: [base_link, tool0]` |
-| `joint_groups` | Abstract joint grouping for RML | see below |
+- file: `myrobot.yaml`
+- key: `myrobot`
 
-`joint_groups` maps joints to abstract names used in RML. For example:
+The key is lowercase (the GUI lowercases robot names before sending) and matches the filename, which is how the backend finds the robot at runtime.
+
+This YAML specifies what URDF and SRDF don't, like which joint plays the role of right shoulder pitch, what radian values count as gripper open/closed, what orientation to fall back on when the input has none, and what posture to seed IK with.
+
+Required fields:
+- `name`: Used for user-facing logs/messages (display name in generator output).
+- `moveit_group`: The MoveIt planning group (a named set of joints/links, for example one arm) that IK/planning should run on.
+- `base_frame`: The coordinate frame used for input target positions before they are sent to IK.
+- `chains`: In principle this can be derived from MoveIt group joints, but this pipeline keeps it explicit so you can control exactly which joints are emitted and in what order.
+- `end_effectors`: Provides the tip link required by IK requests for each side.
+- `joint_groups`: Required so the emitter can translate joint names into valid RML command tokens (`move <side> <group> <rotation> ...`). Without this mapping, joint moves are not emitted as executable RML.
+
+Optional fields:
+- `grippers`: Per-side gripper joints and numeric open/closed values to emit for gripper actions.
+- `default_orientation`: Quaternion used when a target has no explicit orientation.
+- `orientation_options`: List of fallback quaternions to try if IK fails with the first orientation.
+- `base_offset`: Used to convert world-referenced input positions into the robot `base_frame` used by IK. Needed when the robot base frame origin is offset (for example above ground, like a torso-level frame).
+- `ik_seed`: Initial joint values used to bias IK toward a preferred posture.
+
+`joint_groups` format is nested mapping, not list:
+
 ```yaml
 joint_groups:
   right:
-    shoulder: [joint1, joint2]
-    elbow: [joint3]
-    wrist: [joint4, joint5]
-```
-This lets the RML say `move right shoulder 1 to 1.5` instead of `move joint1 to 1.5`.
-
-Optional fields: `grippers`, `default_orientation`, `orientation_options`.
-
-The pipeline auto-discovers YAML files in this folder, so no code changes are needed.
-
-## 2. MoveIt config package (required)
-
-Create a MoveIt config package at `ros_ws/src/robots/<robot>_ws/src/<robot>_moveit_config/`.
-
-The package name must be `<robot>_moveit_config` where `<robot>` matches the YAML filename.
-
-It needs:
-- `config/<Robot>.urdf` — robot description
-- `config/<Robot>.srdf` — semantic description (planning groups, etc.)
-- `config/kinematics.yaml` — IK solver config
-- `launch/move_group.launch.py` — launches the MoveIt move_group node
-
-The easiest way is to use the MoveIt Setup Assistant to generate this from a URDF.
-
-## 3. GUI dropdown
-
-Add the robot key to the dropdown in `ros_ws/src/my_qt_gui/ui/main_window.ui`:
-
-Can be done with QT Designer or
-
-```xml
-<item>
-  <property name="text">
-    <string>myrobot</string>
-  </property>
-</item>
+    shoulder:
+      pitch: joint1
+      roll: joint2
+    elbow:
+      pitch: joint3
+    wrist:
+      yaw: joint4
 ```
 
-## 4. Webots simulation (optional)
+Add a `left` side (under `chains`, `end_effectors`, `joint_groups`, and `grippers`) only when your input actually uses it. If the input only uses one hand, having just `right` is enough.
 
-If you want to simulate the robot in Webots:
+## 2. Add MoveIt config package (required)
 
-1. Create a world file at `webots/worlds/myrobot.wbt`
-2. Create a joint mapping at `webots/controllers/robot_controller/configs/myrobot.yaml` that maps abstract joint names to Webots motor/sensor names
-3. Set `robot: myrobot` in `webots/controllers/robot_controller/config.yaml`
+The generator launches:
+
+`ros2 launch <robot>_moveit_config move_group.launch.py`
+
+So package name must match the robot key:
+
+- key: `myrobot`
+- package: `myrobot_moveit_config`
+
+Recommended workflow (same style as existing robots in `ros_ws/src/robots/*_ws`):
+
+1. Use MoveIt Setup Assistant with your robot URDF.
+2. Generate `<robot>_moveit_config`.
+3. Place it under:
+   `ros_ws/src/robots/<robot>_ws/src/<robot>_moveit_config/`
+
+## 3. Add execution-side joint mapping (required to execute motions)
+
+RML/joint descriptions use abstract names (`shoulder`, `elbow`, etc.), so you need a mapping layer to actual robot interfaces.
+
+For Webots in this repo:
+
+1. Add mapping:
+   `webots/controllers/robot_controller/configs/myrobot.yaml`
+2. Set active robot:
+   `webots/controllers/robot_controller/config.yaml`
+3. If needed, add world:
+   `webots/worlds/myrobot.wbt`
+
+For a real robot, provide an equivalent mapping in the execution bridge/controller that consumes generated commands.
+
+## 4. Add to GUI dropdown
+
+Edit:
+
+`ros_ws/src/qt_gui/ui/main_window.ui`
+
+Add robot text in `robotBox` (Qt Designer or XML). Any casing is fine for display; request is lowercased before backend call.
 
 ## 5. Build and test
 
 ```bash
-cd ros_ws && colcon build && source install/setup.bash
+colcon build
+source install/setup.bash
 ros2 launch motion_pipeline_bringup pipeline.launch.py
 ```
-
-Select your robot in the GUI dropdown.

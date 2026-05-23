@@ -1,66 +1,67 @@
 # Adding a New Input Adapter
 
-An adapter converts an input file (any format) into a `Motion` — the pipeline's robot-independent intermediate representation. The pipeline then handles IK and RML generation automatically.
+An adapter converts an input file into a `TaskDescription` (robot-independent task-space steps).
 
-## Steps
+## 1. Create the adapter
 
-### 1. Create the adapter file
+Create a new file in:
 
-Create a new file in `motion_pipeline/motion_pipeline/adapters/`, for example `my_adapter.py`. Subclass `Adapter` from `base.py` and implement the `to_motion()` method to parse your input file and return a `Motion` object. See the existing adapters for reference.
+`motion_pipeline/motion_pipeline/adapters/`
 
-A `Motion` is a list of `Frame`s. Each frame has:
-- `targets` — where to move the end-effector(s) (`Target` with side, position, optional orientation)
-- `grippers` — whether to open/close grippers (`GripperState` with side, closed)
-
-See `core/task_level.py` for the dataclass definitions.
-
-### 2. Register in generate.py
-
-In `motion_pipeline/motion_pipeline/runtime/generate.py`, add your adapter to the `ADAPTERS` dict:
+Example:
 
 ```python
-from motion_pipeline.adapters.my_adapter import MyAdapter
+from pathlib import Path
+from motion_pipeline.adapters.base import Adapter, register_adapter
+from motion_pipeline.types.TaskDescription import TaskDescription
 
-ADAPTERS = {
-    "json" : JsonScenarioAdapter,
-    "mediapipe_csv" : MediaPipeCSVAdapter,
-    ...
-    "my_adapter" : MyAdapter,
-}
+@register_adapter("myadapter")
+class MyAdapter(Adapter):
+    def to_taskdescription(self, source: Path) -> TaskDescription:
+        # parse file and return TaskDescription
+        ...
 ```
 
-### 3. Add to the GUI dropdown
+Notes:
+- Adapter keys should be lowercase (GUI sends adapter names in lowercase).
+- Implement `to_taskdescription(...)`
 
-In `ros_ws/src/my_qt_gui/ui/main_window.ui`, add an item to the `adapterBox`:
+## 2. Make sure it is imported
 
-Can be done with QT Designer or
+Add your adapter import in:
+
+`motion_pipeline/motion_pipeline/adapters/__init__.py`
+
+Example:
+
+```python
+from motion_pipeline.adapters import my_adapter
+```
+
+This is needed because the pipeline imports `motion_pipeline.adapters` to populate the adapter registry.
+
+## 3. Add it to GUI dropdown
+
+Edit:
+
+`ros_ws/src/qt_gui/ui/main_window.ui`
+
+Add item to `adapterBox` (via Qt Designer or XML). Example label:
 
 ```xml
-<item>
-  <property name="text">
-    <string>my_adapter</string>
-  </property>
-</item>
+<string>MyAdapter</string>
 ```
 
-### 4. Rebuild and test
+## 4. Rebuild and test
 
 ```bash
-cd ros_ws && colcon build && source install/setup.bash
+colcon build
+source install/setup.bash
 ```
 
-Then select your adapter in the GUI and run with an input file.
+Then select the adapter in GUI and generate.
 
-## Existing adapters for reference
+## Existing adapters
 
-- `symbolic_json_adapter.py` — parses a simple JSON format with move/gripper actions
-- `mediapipe_csv_adapter.py` — parses MediaPipe pose CSV files
-
-## Key types
-
-```
-Motion
-  └── Frame (one timestep)
-        ├── Target (side, position [x,y,z], orientation [x,y,z,w])
-        └── GripperState (side, closed)
-```
+- `simple_json_adapter.py` (key: `json`)
+- `mediapipe_csv_adapter.py` (key: `mediapipecsv`)
