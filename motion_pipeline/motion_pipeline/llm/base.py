@@ -10,5 +10,15 @@ class Labeler(ABC):
     """
     @abstractmethod
     def label_code(self, rml_text: str, robot_key: str) -> str:
-        """Annotate the given RML text and return the labeled RML."""
+        """Add intent labels to an RML program.
+        Subclasses implement this to annotate RML with high-level intent
+        comments (reach, grab, release, ...). Implementations should
+        return the original text unchanged on failure rather than raise.
+        Args:
+            rml_text: The RML program to label.
+            robot_key: Robot identifier, used to give the labeler robot-
+                specific context (e.g. how the gripper is closed).
+        Returns:
+            The labeled RML text.
+        """
         ...

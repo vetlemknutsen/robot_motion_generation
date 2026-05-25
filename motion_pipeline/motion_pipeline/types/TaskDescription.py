@@ -8,7 +8,7 @@ class Target:
     """
     End-effector target in task-space
     side: "right" or "left"
-    position: [x, y, z] in meters relative to robot base frame
+    position: [x, y, z] in meters in world coordinates
     orientation: optional orientation of end-effector [x, y, z, w]
     """
     side: str

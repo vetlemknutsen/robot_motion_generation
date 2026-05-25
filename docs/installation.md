@@ -47,7 +47,7 @@ The pipeline labels generated RML using an LLM. To enable this, put your key in 
 OPENAI_API_KEY=sk-...
 ```
 
-If you don't want labeling, comment out the import on [pipeline.py:14](motion_pipeline/motion_pipeline/pipeline/pipeline.py#L14) and the two labeler calls on [pipeline.py:96-97](motion_pipeline/motion_pipeline/pipeline/pipeline.py#L96-L97).
+If you don't want labeling, comment out the import on [pipeline.py:14](../motion_pipeline/motion_pipeline/pipeline/pipeline.py#L14) and the two labeler calls on [pipeline.py:96-97](../motion_pipeline/motion_pipeline/pipeline/pipeline.py#L96-L97).
 
 ## 6. Build
 

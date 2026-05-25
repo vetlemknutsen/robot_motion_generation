@@ -10,5 +10,11 @@ See BasicRMLEmitter for an example
 class Emitter(ABC):
     @abstractmethod
     def emit(self, program: JointDescription) -> str:
-        """Convert a JointDescription to an output string."""
+        """Render a joint-space program as output text.
+        Subclasses implement this to support new output formats, (swapping RML with something else)
+        Args:
+            program: The JointDescription to render.
+        Returns:
+            The rendered text.
+        """
         ...

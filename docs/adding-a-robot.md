@@ -1,8 +1,26 @@
 # Adding a New Robot
 
-Adding a robot has three parts: pipeline YAML config, MoveIt package, and execution-side joint mapping.
+Adding a robot has three parts: MoveIt package, pipeline YAML config, and execution-side joint mapping.
 
-## 1. Add pipeline robot config (required)
+## 1. Add MoveIt config package (required)
+
+The generator launches:
+
+`ros2 launch <robot>_moveit_config move_group.launch.py`
+
+So package name must match the robot key:
+
+- key: `myrobot`
+- package: `myrobot_moveit_config`
+
+Recommended workflow (same style as existing robots in `ros_ws/src/robots/*_ws`):
+
+1. Use MoveIt Setup Assistant with your robot URDF.
+2. Generate `<robot>_moveit_config`.
+3. Place it under:
+   `ros_ws/src/robots/<robot>_ws/src/<robot>_moveit_config/`
+
+## 2. Add pipeline robot config (required)
 
 Create a YAML file in:
 
@@ -47,24 +65,6 @@ joint_groups:
 ```
 
 Add a `left` side (under `chains`, `end_effectors`, `joint_groups`, and `grippers`) only when your input actually uses it. If the input only uses one hand, having just `right` is enough.
-
-## 2. Add MoveIt config package (required)
-
-The generator launches:
-
-`ros2 launch <robot>_moveit_config move_group.launch.py`
-
-So package name must match the robot key:
-
-- key: `myrobot`
-- package: `myrobot_moveit_config`
-
-Recommended workflow (same style as existing robots in `ros_ws/src/robots/*_ws`):
-
-1. Use MoveIt Setup Assistant with your robot URDF.
-2. Generate `<robot>_moveit_config`.
-3. Place it under:
-   `ros_ws/src/robots/<robot>_ws/src/<robot>_moveit_config/`
 
 ## 3. Add execution-side joint mapping (required to execute motions)
 

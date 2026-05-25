@@ -6,7 +6,9 @@ from typing import Dict, List, Tuple
 @dataclass
 class RobotConfig:
     """
-    Configuration for a robot in the pipeline
+    Configuration for a robot in the pipeline. 
+    Information the IK solver needs for the specific robot. 
+    (Some things could be extracted from URDF by parsing, kept simple here)
 
     To add a new robot, create a YAML file in configs/robots/
     It will be auto-discovered by the pipeline
@@ -23,19 +25,21 @@ class RobotConfig:
     base_offset: list = field(default_factory=lambda: [0.0, 0.0, 0.0])  # offset from world frame to base_frame
     ik_seed: dict = field(default_factory=dict)
 
-    # Structure: {side: {group: {rotation: joint_name}}}
-    # Example: {"right": {"shoulder": {"pitch": "arm_1_joint", "roll": "arm_2_joint"}, "gripper": {"finger1": "gripper_joint"}}}
+    # Nested dict that maps a joint to its human-readable category
+    # Lets us emit RML like "move right shoulder pitch ..." instead of raw joint names
     joint_groups: dict = field(default_factory=dict)
     
-    # built automatically from joint_groups in __post_init__
+    # reverse lookup: joint_name -> (side, group, orientation)
     joint_map: dict = field(default_factory=dict, init=False)
 
+    # flip joint groups inside-out so we can look things up by joint name
     def __post_init__(self):
         for side, groups in self.joint_groups.items():
             for group_name, rotations in groups.items():
                 for rotation, joint_name in rotations.items():
                     self.joint_map[joint_name] = (side, group_name, rotation)
 
+    # The getters below are thing wrappers so callers don't poke at the dicts directly
     def get_chain(self, name: str) -> List[str]:
         return self.chains.get(name, [])
 

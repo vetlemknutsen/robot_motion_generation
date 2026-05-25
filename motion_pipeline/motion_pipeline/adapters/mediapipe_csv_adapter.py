@@ -5,12 +5,13 @@ from pathlib import Path
 from motion_pipeline.adapters.base import Adapter, register_adapter
 from motion_pipeline.types.TaskDescription import Frame, TaskDescription, Target, GripperState
 
-SIDE = "right"
-PINCH_THRESHOLD = 0.05
+SIDE = "right" # which hand we track from the MediaPipe data
+PINCH_THRESHOLD = 0.05 # thumb-index distance below this counts as pinch
 
 @register_adapter("mediapipecsv")
 class MediaPipeCSVAdapter(Adapter):
 
+    # Read MediaPipe CSV and convert wrist positions into task-space targets
     def to_taskdescription(self, source) -> TaskDescription:
         path = Path(source)
         with path.open() as f:
@@ -18,6 +19,8 @@ class MediaPipeCSVAdapter(Adapter):
         if not rows:
             return TaskDescription(path.stem, [])
 
+        # use the first frame's ankle midpoint as the oriin so the motion is
+        # relative to the person standing, not to the camera
         ax, ay, _ = self._avg_ankle(rows[0])
         frames = []
         prev_grip = None
@@ -25,17 +28,21 @@ class MediaPipeCSVAdapter(Adapter):
 
         for i, row in enumerate(rows):
             # only generate frames when grip changes (grab/release)
+            # cuts down on frames
             grip = self._pinch(row)
             if grip == prev_grip:
                 continue
             prev_grip = grip
 
+            # skips rows that don't have valid wrist data
             try:
                 wx = float(row[f"{p}_WRIST_x"])
                 wy = float(row[f"{p}_WRIST_y"])
             except (KeyError, ValueError):
                 continue
 
+            # x=0.7 is fixed (forward reach), y/z come from wrist offset.
+            # y flips sign so up-on-screen becomes up-in-world
             pos = [0.7, round(wx - ax, 3), round(-(wy - ay), 3)]
             frames.append(Frame(
                 time=float(i),
@@ -45,11 +52,14 @@ class MediaPipeCSVAdapter(Adapter):
 
         return TaskDescription(path.stem, frames)
 
+    # midpoint between the two ankles, used as body's origin
     def _avg_ankle(self, row):
         right = [float(row["RIGHT_ANKLE_x"]), float(row["RIGHT_ANKLE_y"]), float(row["RIGHT_ANKLE_z"])]
         left = [float(row["LEFT_ANKLE_x"]), float(row["LEFT_ANKLE_y"]), float(row["LEFT_ANKLE_z"])]
         return [(r + l) / 2 for r, l in zip(right, left)]
 
+    # True if thumb and index finger tips are close enough to count as pinch
+    # if the data is missing, assume closed
     def _pinch(self, row):
         p = SIDE.upper()
         try:

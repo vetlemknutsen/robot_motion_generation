@@ -10,10 +10,7 @@ See MoveItIKClient for an example
 
 class IKSolver(ABC):
 
-    """
-    Solve IK for the given end-effector pose
-    Returns a dict mapping joint names to positions
-    """
+    # Every IK backend must implement this
     @abstractmethod
     def solve(
         self,
@@ -23,6 +20,8 @@ class IKSolver(ABC):
     ) -> Dict[str, float]:
         ...
 
+    # wrapper that catches errors and returns None instead of error
+    # for skipping frames solver cant
     def try_solve(
         self,
         position: Sequence[float],

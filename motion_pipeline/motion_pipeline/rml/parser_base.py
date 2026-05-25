@@ -10,5 +10,13 @@ See LangiumRMLParser for an example.
 class RMLParser(ABC):
     @abstractmethod
     def parse(self, rml_text: str) -> dict:
-        """Parse RML text and return a JSON dict."""
+        """Parse and validate RML text, returning its JSON representation.
+        Args:
+            rml_text: The RML source as a string.
+        Returns:
+            A dict matching the RML JSON schema.
+        Raises:
+            Exception: If the RML is invalid (specific exception type
+                depends on the implementation).
+        """
         ...
