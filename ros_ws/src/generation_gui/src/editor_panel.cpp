@@ -1,20 +1,27 @@
-#include "qt_gui/editor_panel.hpp"
+#include "generation_gui/editor_panel.hpp"
 #include <QEvent>
 #include <QMetaObject>
 
+/**
+ * Editor panel. Holds the RML text editor, log panel, and metadata label.
+ * Publishes RML to rml_for_execution when the user hits Send, and
+ * listens on pipeline_logs to display status messages.
+ */
 EditorPanel::EditorPanel(std::shared_ptr<rclcpp::Node> node, QPlainTextEdit* editor, QPlainTextEdit* logs, QLabel* metadata, QPushButton* sendButton, QPushButton* saveButton, QWidget* parent)
 : QWidget(parent), node_(node), editor_(editor), logs_(logs), metadata_(metadata)
 {
     send_pub_ = node_->create_publisher<std_msgs::msg::String>("rml_for_execution", 10);
     log_sub_ = node_->create_subscription<motion_pipeline_msgs::msg::LogMessage>("pipeline_logs", 10, std::bind(&EditorPanel::onLogReceived, this, std::placeholders::_1));
 
-    spinner_ = new QMovie("src/qt_gui/resources/loading.gif");
+    // loading spinner overlay shown while the pipeline runs
+    spinner_ = new QMovie("src/generation_gui/resources/loading.gif");
     spinnerLabel_ = new QLabel(editor_);
     spinnerLabel_->setMovie(spinner_);
     spinnerLabel_->setFixedSize(64, 64);
     spinnerLabel_->setScaledContents(true);
     spinnerLabel_->hide();
 
+    // listen for editor resize to keep the spinner centered
     editor_->installEventFilter(this);
 
     connect(sendButton, &QPushButton::clicked, this, &EditorPanel::onSendClicked);
@@ -38,6 +45,7 @@ void EditorPanel::setMetadata(const QString& text) {
     metadata_->setText(text); 
 }
 
+/// Show or hide the loading spinner
 void EditorPanel::showSpinner(bool visible){
     if (visible) {
         editor_->clear();
@@ -50,12 +58,14 @@ void EditorPanel::showSpinner(bool visible){
     }
 }
 
+/// Published the editor's RML to the executor
 void EditorPanel::onSendClicked(){
     std_msgs::msg::String msg;
     msg.data = editor_->toPlainText().toStdString();
     send_pub_->publish(msg);
 }
 
+/// Log callback
 void EditorPanel::onLogReceived(const motion_pipeline_msgs::msg::LogMessage::SharedPtr msg){
     QString text = QString::fromStdString(msg->message);
     QMetaObject::invokeMethod(this, [this, msg, text]() {

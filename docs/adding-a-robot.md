@@ -85,7 +85,7 @@ For a real robot, provide an equivalent mapping in the execution bridge/controll
 
 Edit:
 
-`ros_ws/src/qt_gui/ui/main_window.ui`
+`ros_ws/src/generation_gui/ui/main_window.ui`
 
 Add robot text in `robotBox` (Qt Designer or XML). Any casing is fine for display; request is lowercased before backend call.
 

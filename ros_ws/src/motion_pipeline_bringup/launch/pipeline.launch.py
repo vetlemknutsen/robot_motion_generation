@@ -13,9 +13,9 @@ def generate_launch_description():
         )
         ,
         Node(
-            package="qt_gui",
+            package="generation_gui",
             executable="qt_gui_node",
-            name="qt_gui",
+            name="generation_gui",
             output="screen",
         ),
     ])

@@ -140,12 +140,12 @@ QGroupBox::title {
             <widget class="QComboBox" name="robotBox">
              <item>
               <property name="text">
-               <string>NAO</string>
+               <string>TIAGo</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>TIAGo</string>
+               <string>NAO</string>
               </property>
              </item>
              <item>

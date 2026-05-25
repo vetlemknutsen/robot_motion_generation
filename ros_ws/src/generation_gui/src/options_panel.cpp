@@ -1,8 +1,12 @@
-#include "qt_gui/options_panel.hpp"
+#include "generation_gui/options_panel.hpp"
 #include <QMetaObject>
 #include <QTimer>
 #include <QFileInfo>
 
+/**
+ * Options panel. input file, adapter, robot dropdown, and Generate button.
+ * Calls /generate_rml and /switch_robot. 
+ */
 OptionsPanel::OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEdit, QComboBox* adapterBox, QComboBox* robotBox, QPushButton* generateButton, QPushButton* browseButton, QWidget* parent)
 : QWidget(parent), node_(node),
   pathEdit_(pathEdit), adapterBox_(adapterBox), robotBox_(robotBox),
@@ -16,6 +20,7 @@ OptionsPanel::OptionsPanel(std::shared_ptr<rclcpp::Node> node, QLineEdit* pathEd
     connect(robotBox_, &QComboBox::currentTextChanged, this, &OptionsPanel::onRobotChanged);
 }
 
+/// Build a GenerateRequest from the current UI state and send it. 
 void OptionsPanel::onGenerateClicked()
 {
     if (robotLoading_) return;
@@ -33,6 +38,7 @@ void OptionsPanel::onGenerateClicked()
     request->adapter = adapter.toLower().toStdString();
     request->robot = robot.toLower().toStdString();
 
+    // async so we don't block the UI thread waiting for IK
     generate_client_->async_send_request(request,
         [this](rclcpp::Client<motion_pipeline_msgs::srv::GenerateRequest>::SharedFuture future) {
             auto response = future.get();
@@ -48,6 +54,7 @@ void OptionsPanel::onGenerateClicked()
         });
 }
 
+/// Open a native file picker and put the chosen path into the line edit
 void OptionsPanel::onBrowseClicked()
 {
     QFileDialog dialog(this);
@@ -59,6 +66,7 @@ void OptionsPanel::onBrowseClicked()
         pathEdit_->setText(files.at(0));
 }
 
+/// Robot dropdown changed. Ask backend to load the robot's MoveIt.
 void OptionsPanel::onRobotChanged(const QString& robot)
 {
     if (robot.toLower() == currentRobot_.toLower() || robot.isEmpty()) return;
@@ -78,6 +86,7 @@ void OptionsPanel::onRobotChanged(const QString& robot)
         });
 }
 
+/// Grey out or re-enable controls during a robot switch
 void OptionsPanel::setLoadingState(bool loading)
 {
     robotLoading_ = loading;

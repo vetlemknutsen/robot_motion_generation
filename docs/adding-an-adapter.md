@@ -44,7 +44,7 @@ This is needed because the pipeline imports `motion_pipeline.adapters` to popula
 
 Edit:
 
-`ros_ws/src/qt_gui/ui/main_window.ui`
+`ros_ws/src/generation_gui/ui/main_window.ui`
 
 Add item to `adapterBox` (via Qt Designer or XML). Example label:
 

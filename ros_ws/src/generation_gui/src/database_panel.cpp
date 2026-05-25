@@ -1,7 +1,12 @@
-#include "qt_gui/database_panel.hpp"
+#include "generation_gui/database_panel.hpp"
 #include <QMetaObject>
 #include <QTimer>
 
+/**
+ * Database panel: lists saved motions and provides load/save/delete.
+ * Talks to the bridge's /get_motions, /save_motion, /delete_motion
+ * services. Calls refresh() after every write so the list stays in sync.
+ */
 DatabasePanel::DatabasePanel(std::shared_ptr<rclcpp::Node> node,
                              QListWidget* list,
                              QPushButton* loadButton,
@@ -16,9 +21,12 @@ DatabasePanel::DatabasePanel(std::shared_ptr<rclcpp::Node> node,
     connect(loadButton,   &QPushButton::clicked, this, &DatabasePanel::onLoadClicked);
     connect(deleteButton, &QPushButton::clicked, this, &DatabasePanel::onDeleteClicked);
 
+    // populate the list on startup
     refresh();
 }
 
+/// Reload the motion list from the backend. 
+/// Retry every 200 ms, since service may not be up at startup 
 void DatabasePanel::refresh()
 {
     if (!get_motions_client_->service_is_ready()){
@@ -44,6 +52,7 @@ void DatabasePanel::refresh()
         });
 }
 
+/// Save a motion, then refresh
 void DatabasePanel::saveMotion(const QString& name, const QString& robot, const QString& rml)
 {
     auto request = std::make_shared<motion_pipeline_msgs::srv::SaveMotion::Request>();
@@ -60,6 +69,7 @@ void DatabasePanel::saveMotion(const QString& name, const QString& robot, const 
         });
 }
 
+/// Emit the selectd motion's RML
 void DatabasePanel::onLoadClicked()
 {
     auto* item = list_->currentItem();
@@ -67,6 +77,7 @@ void DatabasePanel::onLoadClicked()
     emit motionLoaded(item->data(Qt::UserRole + 1).toString());
 }
 
+/// Delete selected motion and refresh
 void DatabasePanel::onDeleteClicked()
 {
     auto* item = list_->currentItem();

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(qt_gui)
+project(generation_gui)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -21,10 +21,10 @@ add_executable(qt_gui_node
   src/editor_panel.cpp 
   src/options_panel.cpp
   src/database_panel.cpp
-  include/qt_gui/main_window.hpp
-  include/qt_gui/editor_panel.hpp 
-  include/qt_gui/options_panel.hpp
-  include/qt_gui/database_panel.hpp
+  include/generation_gui/main_window.hpp
+  include/generation_gui/editor_panel.hpp 
+  include/generation_gui/options_panel.hpp
+  include/generation_gui/database_panel.hpp
   ui/main_window.ui
 )
 
