@@ -2,6 +2,8 @@
 
 A pipeline that turns motion inputs (recorded video keypoints, hand-authored JSON, and other sources) into executable robot motion programs written in RML (Robot Motion Language). Generated programs can be run in Webots or sent to a real robot through an execution bridge.
 
+See [docs/demo.mp4](docs/demo.mp4) for a short walkthrough of the system in action.
+
 ## Quickstart
 
 After [installation](docs/installation.md), launch the pipeline.
