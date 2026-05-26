@@ -24,4 +24,4 @@ JointCommand = Union[Move, MultiMove]
 @dataclass
 class JointDescription:
     name: str
-    instructions: List[JointCommand] = field(default_factory=list)
+    commands: List[JointCommand] = field(default_factory=list)
