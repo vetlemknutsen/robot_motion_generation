@@ -1,0 +1,10 @@
+{
+  "name": "simple_example",
+  "frames": [
+    {"action": "reach", "side": "right", "position": [0.5, -0.3, 0.7]},
+    {"action": "gripper", "side": "right", "state": "closed"},
+    {"action": "reach", "side": "right", "position": [0.5, 0.3, 0.7]},
+    {"action": "gripper", "side": "right", "state": "open"}
+  ]
+}
+
